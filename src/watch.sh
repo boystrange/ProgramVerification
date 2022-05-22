@@ -1,3 +1,3 @@
 #!/bin/sh
-exec watchexec -c "(make && echo DONE)"
+exec watchexec -c -d 100 make
 

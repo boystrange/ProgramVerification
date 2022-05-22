@@ -10,6 +10,10 @@ markdown files for all of the sources.
 Here is the list of modules corresponding to the lectures of the
 course.
 
+```agda
+import Installation
+```
+
 ## Library
 
 Here is the complete list of modules implementing the library used

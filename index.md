@@ -1,6 +1,6 @@
 ---
+title: Program Verification
 ---
 
-* [Main]({% link pages/Main.md %})
-* [TestPage]({% link pages/TestPage.md %})
+[Go to the Main module]({% link pages/Main.md %}).
 
