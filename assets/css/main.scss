@@ -1,0 +1,49 @@
+---
+---
+
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@700&family=Alegreya:ital,wght@0,400;0,700;1,400&family=Fira+Code&display=swap');
+
+$theme-color: #004080;
+$theme-contrast: #93A1A1;
+$luca-red: #800000;
+$luca-green: #008000;
+$luca-blue: #000080;
+
+$code-background: #EEE;
+
+///////////
+// FONTS //
+///////////
+
+$header-font: "Alegreya Sans";
+$text-font: "Alegreya";
+$code-font: "Fira Code";
+
+$unit: 16pt;
+
+$grid-color: #00000010;
+
+html {
+    font-family: $text-font;
+    font-size: $unit;
+}
+
+body {
+    width: 960px;
+    margin: auto;
+}
+
+pre, code {
+    font-family: $code-font;
+    font-size: 90%;
+    background-color: $code-background;
+    padding: 0;
+}
+
+pre {
+    padding: 1ex;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $header-font;
+}
