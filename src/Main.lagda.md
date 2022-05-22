@@ -13,8 +13,8 @@ course.
 ### 1. Introduction
 
 ```agda
-import Installation
 import Demo
+import Installation
 ```
 
 ## Library

@@ -68,29 +68,30 @@ variables `m` and `n` initialized with 0 and 1.
 Now, since `fast-fibo` (and particularly `fibo-gen` on which it
 relies) is substantially more complex than `fibo`, we may wonder
 whether it is in fact equivalent to `fibo`. We may perform a few
-test asking Agda to evaluate `fast-fibo` on a **necessarily finite**
-set of examples, but the only way to be absolutely sure that `fibo`
-and `fast-fibo` are the same function is by **proving** that they
-are equivalent.
+test asking Agda to evaluate `fast-fibo`, but these tests are
+**necessarily finite**. The only way to be absolutely sure that
+`fibo` and `fast-fibo` are the same function is by **proving** that
+they are equivalent.
 
 It is not too difficult to come up with a pen-and-paper proof that
 `fibo` and `fast-fibo` are indeed equivalent, but the doubt might
 remain that the proof could contain a mistake. After all, we're
-human and humans make mistake. Here is where Agda comes to the
-rescue, in that it provides the tools for **checking** whether an
-equivance proof for `fibo` and `fast-fibo` is valid. Even more
-surprisingly, the equivalence proof turns out to be a collection of
-functions written in the same language in which we have implemented
-`fibo` and `fast-fibo`.
+humans and all humans make mistakes. Here is where Agda comes to the
+rescue, in that it provides us with some tools for **checking**
+whether an equivance proof for `fibo` and `fast-fibo` is valid. Even
+more surprisingly, the equivalence proof turns out to be a
+collection of functions written in the same language in which we
+have implemented `fibo` and `fast-fibo`.
 
-Below are the two functions, called `lemma` and `theorem` that prove
-the equivalence of `fibo` and `fast-fibo`. In this course we will
-learn how to write such proofs with the help of the interactive
-features of Agda.  For this quick introduction, though, it may be
-worth to have a look at the **types** of these functions, in which
-we can find occurrences of the `∀` symbol (the universal
-quantifier), the `->` symbol (logical implication), the `==` symbol
-(propositional equality). In particular, the type of `theorem`
+Below are two functions, called `lemma` and `theorem` that prove the
+equivalence of `fibo` and `fast-fibo`. For the time being they look
+like almost random sequences of meaningless symbols. In this course
+we will learn how to write such proofs with the help of the
+interactive features of Agda. For the sake of this quick
+introduction, though, it may be worth to notice that in the
+**types** of these functions we recognize occurrences of `∀` (the
+*universal quantifier*), `->` (*logical implication*), and `==`
+(*propositional equality*). In particular the type of `theorem`
 specifies that, for every natural number `k`, the value resulting
 from the application `fast-fibo k` is the same value resulting from
 the application `fibo k`.
@@ -126,4 +127,5 @@ theorem k =
 By checking that these functions adhere to the types we've given
 them, Agda certifies that `fibo` and `fast-fibo` are equivalent. So,
 from now on we can safely use whichever function is more convenient
-depending on the context.
+depending on the context, preferring `fibo` or `fast-fibo` depending
+on whether readability or performance is more important.

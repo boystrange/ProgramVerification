@@ -37,7 +37,11 @@ pre, code {
     font-family: $code-font;
     font-size: 90%;
     background-color: $code-background;
-    padding: 0;
+}
+
+code {
+    padding: 0 2px;
+    border-radius: 3px;
 }
 
 pre {
