@@ -19,13 +19,8 @@ import Installation
 
 ## Library
 
-Here is the complete list of modules implementing the library used
-in the course.
-
 ```agda
-import Type
-import Equality
-import Nat
+import Library
 ```
 
 ## Test Page

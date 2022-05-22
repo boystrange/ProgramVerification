@@ -1,16 +1,20 @@
+title: Program Verification
+theme: minima
+
 exclude:
   - Makefile
   - "*.zip"
   - "*.dot"
   - src
   - old
+  - vendor
 
 defaults:
   -
     scope:
       path: "" # all files in the project
     values:
-      layout: "default"
+      layout: "page"
 
 kramdown:
   parse_block_html: true
