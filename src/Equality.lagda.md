@@ -13,37 +13,31 @@ module Equality where
 
   {-# BUILTIN EQUALITY _==_ #-}
 
-  ==-symmetric : ∀{A : Type} {x y : A} -> x == y -> y == x
-  ==-symmetric refl = refl
+  symm : ∀{A : Type} {x y : A} -> x == y -> y == x
+  symm refl = refl
 
-  ==-transitive : ∀{A : Type} {x y z : A} -> x == y -> y == z -> x == z
-  ==-transitive refl refl = refl
+  trans : ∀{A : Type} {x y z : A} -> x == y -> y == z -> x == z
+  trans refl refl = refl
 
-  context : ∀{A B : Type} (f : A -> B) {x y : A} -> x == y -> f x == f y
-  context _ refl = refl
+  cong : ∀{A B : Type} (f : A -> B) {x y : A} -> x == y -> f x == f y
+  cong _ refl = refl
 
   subst : ∀{A : Type} (P : A -> Type) {x y : A} -> x == y -> P x -> P y
   subst _ refl p = p
 
-  begin_ : ∀{A : Set} (x : A) -> x == x
-  begin_ _ = refl
+  begin_ : ∀{A : Set} {x y : A} -> x == y -> x == y
+  begin_ p = p
 
-  infix 2 begin_
+  _end : ∀{A : Set} (x : A) -> x == x
+  _end _ = refl
 
-  _end : ∀{A : Set} {x y : A} -> x == y -> x == y
-  _end eq = eq
+  _==⟨_⟩_ : ∀{A : Set} (x : A) {y z : A} -> x == y -> y == z -> x == z
+  _==⟨_⟩_ _ = trans
 
-  infix 1 _end
+  _==⟨⟩_ : ∀{A : Set} (x : A) {y : A} -> x == y -> x == y
+  _ ==⟨⟩ p = p
 
-  by-equals : ∀{A : Set} {x y : A} -> x == y -> (z : A) -> y == z -> x == z
-  by-equals p _ q = ==-transitive p q
-
-  by-refl : ∀{A : Set} (x : A) -> x == x -> x == x
-  by-refl _ refl = refl
-
-  syntax by-equals eq z reason = eq ==⟨ reason ⟩ z
-  infixl 1 by-equals
-
-  syntax by-refl z eq = eq ==⟨⟩ z
-  infixl 1 by-refl
+  infix  1 begin_
+  infixr 2 _==⟨⟩_ _==⟨_⟩_
+  infix  3 _end
 ```

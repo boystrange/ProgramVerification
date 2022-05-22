@@ -12,50 +12,13 @@ Below this text there is some hidden Agda code
 ```agda
 open import Type
 open import Equality
+open import Nat
 ```
 -->
 
 ```agda
-data ℕ : Type where
-  zero : ℕ
-  succ : ℕ -> ℕ
-```
-
-```agda
 five : ℕ
 five = succ (succ (succ (succ (succ zero))))
-```
-
-```agda
-_+_ : ℕ -> ℕ -> ℕ
-zero   + y = y
-succ x + y = succ (x + y)
-
-infixl 6 _+_
-```
-
-```agda
-+-associative : (x y z : ℕ) -> x + (y + z) == (x + y) + z
-+-associative zero     y z = refl
-+-associative (succ x) y z = context succ (+-associative x y z)
-
-+-zero : ∀(x : ℕ) -> x == x + zero
-+-zero zero = refl
-+-zero (succ x) = context succ (+-zero x)
-
-+-succ : ∀(x y : ℕ) -> succ (x + y) == x + succ y
-+-succ zero y = refl
-+-succ (succ x) y = context succ (+-succ x y)
-
-+-commutative : (x y : ℕ) -> x + y == y + x
-+-commutative zero y = +-zero y
-+-commutative (succ x) y =
-  begin
-    succ x + y   ==⟨⟩
-    succ (x + y) ==⟨ context succ (+-commutative x y) ⟩
-    succ (y + x) ==⟨ +-succ y x ⟩
-    y + succ x
-  end
 ```
 
 No longer display?
@@ -82,5 +45,15 @@ columns. Here are examples of _emphasized text_, **bold text** and
 `inline code`.
 
 ## Second argument
+
+```agda
+_ : 2 == succ (succ zero)
+_ = begin
+      2 ==⟨⟩
+      succ (succ zero) ==⟨⟩
+      2 ==⟨⟩
+      succ 1
+    end
+```
 
 ## Exercises

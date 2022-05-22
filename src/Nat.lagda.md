@@ -36,15 +36,15 @@ succ n ! = n * (n !)
 
 +-associative : ∀(x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-associative zero y z = refl
-+-associative (succ x) y z = context succ (+-associative x y z)
++-associative (succ x) y z = cong succ (+-associative x y z)
 
 +-zero : ∀(x : ℕ) -> x == x + 0
 +-zero zero     = refl
-+-zero (succ x) = context succ (+-zero x)
++-zero (succ x) = cong succ (+-zero x)
 
 +-succ : ∀(x y : ℕ) -> succ (x + y) == x + succ y
 +-succ zero y = refl
-+-succ (succ x) y = context succ (+-succ x y)
++-succ (succ x) y = cong succ (+-succ x y)
 
 -- lemma+succ : ∀(x y : ℕ) -> succ x + y == x + succ y
 -- lemma+succ zero y = refl
@@ -55,7 +55,7 @@ succ n ! = n * (n !)
 +-commutative (succ x) y =
   begin
     succ x + y   ==⟨⟩
-    succ (x + y) ==⟨ context succ (+-commutative x y) ⟩
+    succ (x + y) ==⟨ cong succ (+-commutative x y) ⟩
     succ (y + x) ==⟨ +-succ y x ⟩
     y + succ x
   end

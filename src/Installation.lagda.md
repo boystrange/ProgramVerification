@@ -8,6 +8,8 @@ module Installation where
 ```
 -->
 
+Emacs, Agda, Visual Studio Code
+
 The instructions that follow have been originally written by [Peter
 Selinger and Frank
 Fu](https://www.mathstat.dal.ca/~selinger/agda-lectures/). While I
