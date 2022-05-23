@@ -1,14 +1,13 @@
 ---
-title: Nat
+title: Natural Numbers
 ---
 
 ```agda
 module Nat where
 
-open import Type
 open import Equality
 
-data ℕ : Type where
+data ℕ : Set where
   zero : ℕ
   succ : ℕ -> ℕ
 

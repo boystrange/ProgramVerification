@@ -10,7 +10,6 @@ Below this text there is some hidden Agda code
 
 <!--
 ```agda
-open import Type
 open import Equality
 open import Nat
 ```

@@ -223,6 +223,6 @@ pasted it.  Now type `Ctrl-C` followed by `Ctrl-L` in Emacs. This
 will color the above Agda code, confirming that Agda has
 successfully checked its validity.
 
-## Exercises
+## Homework
 
 1. Install and setup Agda.

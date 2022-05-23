@@ -130,7 +130,7 @@ from now on we can safely use whichever function is more convenient
 depending on the context, preferring `fibo` or `fast-fibo` depending
 on whether readability or performance is more important.
 
-## Exercises
+## Homework
 
 1. Let $F_i$ be the $i$-th Fibonacci number, defined by the equations
 
