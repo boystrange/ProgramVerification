@@ -1,5 +1,5 @@
 ---
-title: Program Verification
+title: Introduction to Program Verification
 ---
 
 ## Lectures
@@ -10,6 +10,7 @@ title: Program Verification
 
 ## References
 
+* Ana Bove and Peter Dybjer, [Dependent Types at Work](https://doi.org/10.1007/978-3-642-03153-3_2), 2008.
 * David Darais, course on [Software Verification](http://david.darais.com/courses/2018-08-cs295A/), 2018.
 * Samuel Mimram, [Program = Proof](https://www.lix.polytechnique.fr/Labo/Samuel.Mimram/teaching/INF551/course.pdf), 2020.
 * Diviánszky Péter, [Agda tutorial](https://people.inf.elte.hu/divip/AgdaTutorial/Index.html).
