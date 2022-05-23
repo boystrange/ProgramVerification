@@ -129,3 +129,18 @@ them, Agda certifies that `fibo` and `fast-fibo` are equivalent. So,
 from now on we can safely use whichever function is more convenient
 depending on the context, preferring `fibo` or `fast-fibo` depending
 on whether readability or performance is more important.
+
+## Exercises
+
+1. Let $F_i$ be the $i$-th Fibonacci number, defined by the equations
+
+   $$
+     F_0 = 0
+     \qquad
+     F_1 = 1
+     \qquad
+     F_{i+2} = F_i + F_{i+1}
+   $$
+
+   Using pencil and paper, prove that `fibo-gen` $F_i$ $F_{i+1}$ $k$
+   = $F_{i+k}$ by induction on $k$.
