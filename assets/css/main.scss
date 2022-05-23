@@ -17,3 +17,22 @@ code {
 pre {
     padding: 1ex;
 }
+
+.btn-copy-code {
+    float: right;
+    background: transparent;
+    font-size: larger;
+    border: 0;
+
+    &:hover {
+    cursor: pointer;
+    }
+}
+
+button {
+    font-size: x-small;
+}
+
+.solution {
+    display: none;
+}

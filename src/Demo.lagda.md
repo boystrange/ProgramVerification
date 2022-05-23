@@ -144,3 +144,13 @@ on whether readability or performance is more important.
 
    Using pencil and paper, prove that `fibo-gen` $F_i$ $F_{i+1}$ $k$
    = $F_{i+k}$ by induction on $k$.
+
+   > By induction on $k$. There are two base cases: when $k = 0$,
+   > then `fibo-gen` $F_i$ $F_{i+1}$ $0$ = $F_i$ = $F_{i+k}$; when
+   > $k = 1$, then `fibo-gen` $F_i$ $F_{i+1}$ $1$ = $F_{i+1}$ =
+   > $F_{i+k}$. In the inductive case we have $k > 1$. By definition
+   > of `fibo-gen` we have `fibo-gen` $F_i$ $F_{i+1}$ $k$ =
+   > `fibo-gen` $F_{i+1}$ $F_{i+2}$ $(k-1)$. Using the induction
+   > hypothesis we conclude `fibo-gen` $F_{i+1}$ $F_{i+2}$ $(k-1)$ =
+   > $F_{i+k}$.
+   {:.solution}
