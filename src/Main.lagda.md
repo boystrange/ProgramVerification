@@ -14,7 +14,7 @@ course.
 
 ```agda
 import Demo
-import Installation
+import Setup
 ```
 
 ## Library

@@ -1,26 +1,39 @@
 ---
-title: Installation
+title: Setup
 ---
 
 <!--
 ```agda
-module Installation where
+module Setup where
 ```
 -->
 
-Emacs, Agda, Visual Studio Code
+In order to use Agda it is necessary to install a suitable
+combination of tools, including at least Agda itself and an
+editor. The procedure varies substantially depending on the
+Operating System. Below are some instructions originally written by
+[Peter Selinger and Frank
+Fu](https://www.mathstat.dal.ca/~selinger/agda-lectures/) to install
+Agda and Emacs on [Linux](#linux), [Mac OS](#mac-os) and [Windows
+10](#windows-10). While I am reasonably sure that the given
+instructions for Linux and Mac OS are still valid, I have no
+experience at all on installing Agda on Windows. At the bottom of
+the page is a simple [sanity check](#sanity-check) to verify whether
+the installation has been successful.
 
-The instructions that follow have been originally written by [Peter
-Selinger and Frank
-Fu](https://www.mathstat.dal.ca/~selinger/agda-lectures/). While I
-am reasonably sure that the given instructions for Linux and Mac OS
-are still valid, I have no experience at all on installing Agda on
-Windows. It may be worth also having a look at the installation
-instructions in the [Agda
-documentation](https://agda.readthedocs.io/en/latest/getting-started/installation.html#prebuilt-packages).
+Before following these instructions, it may be worth having a look
+at the [Agda
+documentation](https://agda.readthedocs.io/en/latest/getting-started/installation.html#prebuilt-packages)
+in case there are more up-to-date and/or specific installation
+procedures for your Operating System. In particular, Agda is known
+to work reasonably well also in combination with [Visual Studio
+Code](https://code.visualstudio.com), which is a more
+"modern-looking" editor compared to Emacs.
 
 There is also an [online service](https://agdapad.quasicoherent.io/)
-that can be used to try Agda without installing it.
+that can be used to try Agda without installing it. Note that the
+availability of this service may not be guaranteed and that its use
+may be limited to "simple" Agda programs.
 
 ## Linux
 
@@ -31,108 +44,80 @@ recent version of Linux. For example, Ubuntu 20.04 comes with Agda
 2.6. Older versions of Ubuntu may come with older Agda versions,
 which may or may not lead to problems.
 
-First, install Emacs using the package manager of your distribution.
-E.g., in Ubuntu, you can enter the following in the terminal.
+1. Install Emacs using the package manager of your distribution.
+   E.g., in Ubuntu, you can enter the following in the terminal.
 
-```bash
-sudo apt update
-sudo apt install emacs
-```
+   ```bash
+   sudo apt update
+   sudo apt install emacs
+   ```
 
-Then, install Agda using your package manager.  E.g., in Ubuntu, you
-can enter the followings in the terminal.
+2. Install Agda using your package manager.  E.g., in Ubuntu, you
+   can enter the followings in the terminal.
 
-```bash
-sudo apt install agda
-```
+   ```bash
+   sudo apt install agda
+   ```
 
-Perhaps you also need this, but with Ubuntu 20.10, this package is
-not needed:
+   Perhaps you also need this, but with Ubuntu 20.10, this package is
+   not needed:
 
-```bash
-sudo apt install agda-mode
-```
+   ```bash
+   sudo apt install agda-mode
+   ```
 
-Now, create a `.emacs` file in your home directory and paste the
-following text to it.
+3. Create a `.emacs` file in your home directory and paste the
+   following text to it.
 
-```elisp
-(load-file (let ((coding-system-for-read 'utf-8))
-       (shell-command-to-string "agda-mode locate")))
-```
-
-To check that the installation was successful, create an empty file
-called `nat.agda`, open it in emacs and paste the following Agda
-code to the file.
-
-```agda
-data NatLinux : Set where
-  Z : NatLinux
-  S : NatLinux -> NatLinux
-```
-
-Notice that there is no color for the above Agda code after you
-pasted it.  Now type `Ctrl-C`, followed by `Ctrl-L` in Emacs. This
-will color the above Agda code.
+   ```elisp
+   (load-file (let ((coding-system-for-read 'utf-8))
+          (shell-command-to-string "agda-mode locate")))
+   ```
 
 ## Mac OS
 
-Install command line tools for XCode if you haven't done so before.
+1. Install command line tools for XCode if you haven't done so before.
 
-Go to
-[https://developer.apple.com/download/more/](https://developer.apple.com/download/more/)
-and download the DMG file for command line tools for XCode 12.3 (or
-a more recent version). You will be asked to use your Apple
-credentials to sign in.  Once you have downloaded the DMG file,
-double click to install as usual.
+   Go to
+   [https://developer.apple.com/download/more/](https://developer.apple.com/download/more/)
+   and download the DMG file for command line tools for XCode 12.3 (or
+   a more recent version). You will be asked to use your Apple
+   credentials to sign in.  Once you have downloaded the DMG file,
+   double click to install as usual.
 
-Install [Home Brew](https://brew.sh).  Open a terminal and enter the
-following:
+2. Install [Home Brew](https://brew.sh).  Open a terminal and enter the
+   following:
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
 
-Install Emacs. In the terminal, enter the following:
+3. Install Emacs. In the terminal, enter the following:
 
-```bash
-brew install --cask --no-quarantine emacs
-```
+   ```bash
+   brew install --cask --no-quarantine emacs
+   ```
 
-Note: now you should be able to find Emacs in your `/Application`
-folder.  If double clicking the icon does not open it because "Apple
-cannot check it for malicious software", right-click on the icon and
-click open. After this, Emacs should be opened alright.
+   Note: now you should be able to find Emacs in your `/Application`
+   folder.  If double clicking the icon does not open it because "Apple
+   cannot check it for malicious software", right-click on the icon and
+   click open. After this, Emacs should be opened alright.
 
-Install Agda.  In the terminal, enter the following:
+4. Install Agda.  In the terminal, enter the following:
 
-```bash
-brew install agda
-```
+   ```bash
+   brew install agda
+   ```
 
-Now if you enter `agda --version`, you should see something like
-`Agda version 2.6.1.2` (or a more recent version, depending on which
-one you have installed).
+   Now if you enter `agda --version`, you should see something like
+   `Agda version 2.6.1.2` (or a more recent version, depending on which
+   one you have installed).
 
-Set up Agda.  In the terminal, enter the following:
+5. Set up Agda.  In the terminal, enter the following:
 
-```bash
-agda-mode setup
-```
-
-To check that the installation was successful, create an empty file
-called `nat.agda` and open it in Emacs.  Paste the following Agda
-code to the file.
-
-```agda
-data NatMac : Set where
-  Z : NatMac
-  S : NatMac -> NatMac
-```
-
-Notice that there is no color for the above Agda code after you
-pasted it.  Now type `Ctrl-C` followed by `Ctrl-L` in Emacs. This
-will color the above Agda code.
+   ```bash
+   agda-mode setup
+   ```
 
 ## Windows 10
 
@@ -157,7 +142,7 @@ platform.
 2. Copy and paste the following command to the Powershell and type
    return.
 
-   ```bash
+   ```posh
    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
    ```
 
@@ -188,13 +173,13 @@ Now configure Emacs and Agda mode.
 1. In the Powershell, enter the following command (please replace
    'name' with your own username):
 
-   ```bash
+   ```posh
    $env:Path += ";C:\Users\name\AppData\Roaming\cabal\bin"
    ```
 
    Then follow with the following command:
 
-   ```bash
+   ```posh
    [Environment]::SetEnvironmentVariable("INCLUDE", $env:INCLUDE, [System.EnvironmentVariableTarget]::User)
    ```
 
@@ -204,7 +189,7 @@ Now configure Emacs and Agda mode.
 3. Enter the following command (please replace 'name' with your own
    username).
 
-   ```bash
+   ```posh
    echo "" >> C:\Users\name\AppData\Roaming\.emacs
    ```
 
@@ -221,16 +206,19 @@ Now configure Emacs and Agda mode.
           (shell-command-to-string "agda-mode locate")))
    ```
 
+## Sanity Check
+
 To check that the installation was successful, create an empty file
 called `nat.agda` and open it in Emacs. Paste the following Agda
 code to the file.
 
 ```agda
-data NatWin : Set where
-  Z : NatWin
-  S : NatWin -> NatWin
+data Nat : Set where
+  Z : Nat
+  S : Nat -> Nat
 ```
 
 Notice that there is no color for the above Agda code after you
 pasted it.  Now type `Ctrl-C` followed by `Ctrl-L` in Emacs. This
-will color the above Agda code.
+will color the above Agda code, confirming that Agda has
+successfully checked its validity.
