@@ -9,6 +9,8 @@ markdown files for all of the sources.
 -- LECTURE 1
 import Demo
 import Setup
+import Lambda
+import Interactive
 
 -- LIBRARY
 import Library

@@ -12,6 +12,10 @@ module Library where
 -->
 
 ```agda
+import Fun
+import Sigma
+import Product
 import Equality
 import Nat
+import List
 ```

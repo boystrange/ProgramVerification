@@ -1,8 +1,6 @@
 ---
-title:   Test slides
+title: Test page
 ---
-
-# Introduction
 
 ## This is a test argument
 
@@ -19,6 +17,11 @@ open import Nat
 five : ℕ
 five = succ (succ (succ (succ (succ zero))))
 ```
+
+## Interactive programming
+
+Use `?` to denote unknown terms, use `CTRL-C` followed by `CTRL-R`
+to refine a hole.
 
 No longer display?
 
@@ -38,7 +41,7 @@ then show how Agda can be used to prove facts also about imperative
 programs involving **mutable state**.
 
 Lecture notes are provided in the form of "dense slides", which
-intermix prose, Agda code and mathematical formulas. This is an
+interleave prose, Agda code and mathematical formulas. This is an
 example of dense slide, which includes a row with two same-width
 columns. Here are examples of _emphasized text_, **bold text** and
 `inline code`.

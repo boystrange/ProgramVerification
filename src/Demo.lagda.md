@@ -10,11 +10,11 @@ open import Nat
 -->
 
 To get a taste of Agda, let us write a `fibo` function that computes
-the $k$-th number in the sequence of Fibonacci, that is the sequence
+the k-th number in the sequence of Fibonacci, that is the sequence
 
-$$
-  0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, \dots
-$$
+```text
+  0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
+```
 
 that starts with 0 followed by 1 and such that each subsequent
 number is the sum of the previous two. For example, we expect `fibo`
@@ -32,13 +32,13 @@ fibo (succ (succ k)) = fibo k + fibo (succ k)
 ```
 
 Once this script is loaded, we can ask Agda to compute the result of
-applying `fibo` to some numbers. By pressing `CTRL-C` followed by
-`CTRL-N` and then entering 11 we obtain 55, as expected.
+applying `fibo` to some numbers. By pressing `C-c C-n` and then
+entering `fibo 11` we obtain 55, as expected.
 
 It is a known fact that the shown implementation of `fibo` is very
-inefficient. In fact, the time for computing the $k$-th Fibonacci
-number is exponential in $k$. We can propose a more efficient,
-albeit slightly more complex function that computes the $k$-th
+inefficient. In fact, the time for computing the k-th Fibonacci
+number is exponential in k. We can propose a more efficient,
+albeit slightly more complex function that computes the k-th
 Fibonacci number in linear time, as follows.
 
 ```agda
@@ -67,8 +67,8 @@ variables `m` and `n` initialized with 0 and 1.
 
 Now, since `fast-fibo` (and particularly `fibo-gen` on which it
 relies) is substantially more complex than `fibo`, we may wonder
-whether it is in fact equivalent to `fibo`. We may perform a few
-test asking Agda to evaluate `fast-fibo`, but these tests are
+whether `fast-fibo` is in fact equivalent to `fibo`. We may perform
+a few test asking Agda to evaluate `fast-fibo`, but these tests are
 **necessarily finite**. The only way to be absolutely sure that
 `fibo` and `fast-fibo` are the same function is by **proving** that
 they are equivalent.
@@ -83,10 +83,10 @@ more surprisingly, the equivalence proof turns out to be a
 collection of functions written in the same language in which we
 have implemented `fibo` and `fast-fibo`.
 
-Below are two functions, called `lemma` and `theorem` that prove the
-equivalence of `fibo` and `fast-fibo`. For the time being they look
-like almost random sequences of meaningless symbols. In this course
-we will learn how to write such proofs with the help of the
+Below are two functions, called `lemma` and `theorem`, that prove
+the equivalence of `fibo` and `fast-fibo`. For the time being they
+look like almost random sequences of meaningless symbols. In this
+course we will learn how to write such proofs with the help of the
 interactive features of Agda. For the sake of this quick
 introduction, though, it may be worth to notice that in the
 **types** of these functions we recognize occurrences of `∀` (the
@@ -126,9 +126,9 @@ theorem k =
 
 By checking that these functions adhere to the types we've given
 them, Agda certifies that `fibo` and `fast-fibo` are equivalent. So,
-from now on we can safely use whichever function is more convenient
-depending on the context, preferring `fibo` or `fast-fibo` depending
-on whether readability or performance is more important.
+from now on we can safely use whichever function is more convenient,
+preferring `fibo` or `fast-fibo` depending on whether readability or
+performance is more important.
 
 ## Homework
 
