@@ -106,4 +106,5 @@ module Properties where
       (f ∘ g) x :: map (f ∘ g) xs   ==⟨⟩
       map (f ∘ g) (x :: xs)
     end
+
 ```

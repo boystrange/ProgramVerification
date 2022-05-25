@@ -2,13 +2,23 @@
 title: First steps with Agda
 ---
 
-<!--
+## Sets and types
+
+* both sets and types are collections of elements, but in set theory
+* the same element can belong to different sets, whereas in type
+  theory every element inhabits exactly one type
+* typical operations on sets are support union, intersection,
+  cartesian product, arrow is function space
+* typical operations on types are cartesian product, disjoint union
+
+To try out the examples discussed in this section and to solve the
+proposed exercises it is necessary to include the `Product` module,
+which defines the cartesian product for types. We will understand
+its definition in a [later section](???).
+
 ```agda
 open import Product
 ```
--->
-
-## Sets and types
 
 ## Simple types
 

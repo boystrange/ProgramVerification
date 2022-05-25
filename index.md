@@ -7,6 +7,7 @@ title: Static Analysis and Program Verification
 1. Introduction
    * [A taste of Agda]({% link pages/Demo.md %})
    * [Installation and setup]({% link pages/Setup.md %})
+   * [First steps in Agda]({% link pages/Lambda.md %})
 
 ## References
 
