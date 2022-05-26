@@ -12,6 +12,17 @@ import Setup
 import Lambda
 import Interactive
 
+import InsertionSort
+
+-- non terminating functions, using measures, intrinsic verification
+import QuickSort
+
+-- Binary search trees
+
+-- example of Dan Licata (balanced trees?)
+
+-- Regular expression matching (inference systems)
+
 -- LIBRARY
 import Library
 

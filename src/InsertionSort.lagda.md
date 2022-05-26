@@ -6,84 +6,102 @@ module InsertionSort where
 
 module SortedLists where
 
+open import Fun
 open import List
+open import List.Properties
 open import Permutation
 open import Equality
 open import Unit
 open import Sum
 open import Product
 open import Logic
-open import TotalOrder
 
 variable A : Set
 
+infix 4 _≼_
+
 -- guardare lezioni su overloading di Peter Selinger
 postulate
-  _<=_ : A -> A -> Set
-  total : (x y : A) -> (x <= y) ⊎ (y <= x)
-  antisymmetry : (x y : A) -> x <= y -> y <= x -> x == y
-  reflexivity : (x : A) -> x <= x
-  transitivity : {x y z : A} -> x <= y -> y <= z -> x <= z
+  _≼_       : A -> A -> Set
+  ≼total    : (x y : A) -> x ≼ y ∨ y ≼ x
+  ≼antisymm : (x y : A) -> x ≼ y -> y ≼ x -> x == y
+  ≼refl     : (x : A) -> x ≼ x
+  ≼trans    : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z
 
-insert : A -> List A -> List A
-insert x [] = x :: []
-insert x (y :: ys) with total x y
-... | left x<=y = x :: (y :: ys)
-... | right y<=x = y :: insert x ys
-
-insert-sort : List A -> List A
-insert-sort [] = []
-insert-sort (x :: xs) = insert x (insert-sort xs)
-
-_<=L_ : A -> List A -> Set
-x <=L [] = ⊤
-x <=L (y :: ys) = (x <= y) ∧ (x <=L ys)
+_≼*_ : A -> List A -> Set
+x ≼* xs = all (x ≼_) xs
 
 sorted : List A -> Set
 sorted [] = ⊤
-sorted (x :: xs) = (x <=L xs) ∧ sorted xs
+sorted (x :: xs) = x ≼* xs ∧ sorted xs
 
-all<= : ∀{x y : A}{xs : List A} -> x <= y -> y <=L xs -> x <=L xs
-all<= {xs = []} x<=y y<= = <>
-all<= {xs = z :: xs} x<=y (y<=z , y<=) = transitivity x<=y y<=z , all<= x<=y y<=
+module Extrinsic where
 
-all<=-insert : ∀{x y : A}{xs : List A} -> y <= x -> y <=L xs -> y <=L insert x xs
-all<=-insert {xs = []} y<=x y<= = y<=x , <>
-all<=-insert {_} {x} {_} {z :: xs} y<=x (y<=z , y<=) with total x z
-... | left x<=z = y<=x , (y<=z , y<=)
-... | right z<=x = y<=z , all<=-insert y<=x y<=
+  insert : A -> List A -> List A
+  insert x [] = x :: []
+  insert x (y :: ys) with ≼total x y
+  ... | left x≼y = x :: (y :: ys)
+  ... | right y≼x = y :: insert x ys
 
-sorted-insert-sorted : (x : A) (xs : List A) -> sorted xs -> sorted (insert x xs)
-sorted-insert-sorted x [] p = <> , <>
-sorted-insert-sorted x (y :: ys) (y<= , ys-sorted) with total x y
-... | left x<=y = (x<=y , all<= x<=y y<=) , y<= , ys-sorted
-... | right y<=x = all<=-insert y<=x y<= , sorted-insert-sorted x ys ys-sorted
+  insert-sort : List A -> List A
+  insert-sort [] = []
+  insert-sort (x :: xs) = insert x (insert-sort xs)
 
-insert-sort-sorted : ∀(xs : List A) -> sorted (insert-sort xs)
-insert-sort-sorted [] = <>
-insert-sort-sorted (x :: xs) = sorted-insert-sorted x (insert-sort xs) p
-  where
-    p = insert-sort-sorted xs
+  all≼-insert : ∀{x y : A}{xs : List A} -> y ≼ x -> y ≼* xs -> y ≼* insert x xs
+  all≼-insert {xs = []} y≼x y≼ = y≼x , <>
+  all≼-insert {_} {x} {_} {z :: xs} y≼x (y≼z , y≼) with ≼total x z
+  ... | left x≼z = y≼x , (y≼z , y≼)
+  ... | right z≼x = y≼z , all≼-insert y≼x y≼
 
-insert-permutation : (x : A) (xs : List A) -> (x :: xs) ## insert x xs
-insert-permutation x [] = none
-insert-permutation x (y :: ys) with total x y
-... | left x<=y = none
-... | right y<=x =
-  #begin
-    (x :: (y :: ys)) ##⟨ just here ⟩
-    (y :: (x :: ys)) ##⟨ ##-cong (insert-permutation x ys) ⟩
-    (y :: insert x ys)
-  #end
+  sorted-insert-sorted : (x : A) (xs : List A) -> sorted xs -> sorted (insert x xs)
+  sorted-insert-sorted x [] p = <> , <>
+  sorted-insert-sorted x (y :: ys) (y≼ , ys-sorted) with ≼total x y
+  ... | left x≼y = (x≼y , all-all (y ≼_) (x ≼_) (≼trans x≼y) y≼) , y≼ , ys-sorted
+  ... | right y≼x = all≼-insert y≼x y≼ , sorted-insert-sorted x ys ys-sorted
 
-insert-sort-permutation : ∀(xs : List A) -> xs ## insert-sort xs
-insert-sort-permutation [] = none
-insert-sort-permutation (x :: xs) =
-  #begin
-    (x :: xs)                 ##⟨ ##-cong (insert-sort-permutation xs) ⟩
-    (x :: insert-sort xs)     ##⟨ insert-permutation x (insert-sort xs) ⟩
-    insert x (insert-sort xs)
-  #end
+  insert-sort-sorted : ∀(xs : List A) -> sorted (insert-sort xs)
+  insert-sort-sorted [] = <>
+  insert-sort-sorted (x :: xs) = sorted-insert-sorted x (insert-sort xs) p
+    where
+      p = insert-sort-sorted xs
 
+  insert-permutation : (x : A) (xs : List A) -> x :: xs # insert x xs
+  insert-permutation x [] = #refl
+  insert-permutation x (y :: ys) with ≼total x y
+  ... | left x≼y = #refl
+  ... | right y≼x =
+    #begin
+      x :: y :: ys     #⟨ #swap ⟩
+      y :: x :: ys     #⟨ #cong (insert-permutation x ys) ⟩
+      y :: insert x ys
+    #end
+
+  insert-sort-permutation : ∀(xs : List A) -> xs # insert-sort xs
+  insert-sort-permutation [] = #refl
+  insert-sort-permutation (x :: xs) =
+    #begin
+      x :: xs                   #⟨ #cong (insert-sort-permutation xs) ⟩
+      x :: insert-sort xs       #⟨ insert-permutation x (insert-sort xs) ⟩
+      insert x (insert-sort xs)
+    #end
+
+module Intrisic where
+
+  insert : (x : A) (xs : List A) -> sorted xs -> ∃[ ys ] x :: xs # ys ∧ sorted ys
+  insert x [] psorted = [ x ] , #refl , <> , <>
+  insert x (y :: xs) (y≼*xs , psorted) with ≼total x y
+  ... | left x≼y = ( x :: y :: xs
+                   , #refl
+                   , ( x≼y , all-all (y ≼_) (x ≼_) (≼trans x≼y) y≼*xs)
+                   , y≼*xs
+                   , psorted )
+  ... | right y≼x with insert x xs psorted
+  ... | ys , π , ysorted = y :: ys , #trans #swap (#cong π) , #all (y ≼_) π (y≼x , y≼*xs) , ysorted
+
+  insert-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ sorted ys
+  insert-sort [] = [] , #refl , <>
+  insert-sort (x :: xs) with insert-sort xs
+  ... | ys , π , ysorted with insert x ys ysorted
+  ... | zs , π' , zsorted = zs , #trans (#cong π) π' , zsorted
 
 ```

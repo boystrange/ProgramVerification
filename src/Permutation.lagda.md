@@ -4,60 +4,65 @@
 ```agda
 module Permutation where
 
+open import Nat
+open import Product
 open import List
-
--- exchange
-data _#_ {A : Set} : List A -> List A -> Set where
-
--- permutation = finite sequence of exchanges
-data _##_ {A : Set} : List A -> List A -> Set where
-  none : ∀{xs : List A} -> xs ## xs
-  here : ∀{x y : A} {xs : List A} -> (x :: (y :: xs)) ## (y :: (x :: xs))
-  next : ∀{x : A} {xs ys : List A} -> xs ## ys -> (x :: xs) ## (x :: ys)
-  _|>_ : ∀{xs ys zs : List A} -> xs ## ys -> ys ## zs -> xs ## zs
-
--- #-commutative : ∀{A : Set} {xs ys : List A} -> xs # ys -> ys # xs
--- #-commutative here = here
--- #-commutative (next p) = next (#-commutative p)
-
-#begin_ : ∀{A : Set} {xs ys : List A} -> xs ## ys -> xs ## ys
-#begin_ ps = ps
-
-_#end : ∀{A : Set} (xs : List A) -> xs ## xs
-_#end xs = none
-
-_##⟨_⟩_ : ∀{A : Set} (xs : List A) {ys zs : List A} -> xs ## ys -> ys ## zs -> xs ## zs
-_##⟨_⟩_ _ = _|>_
-
-_##⟨⟩_ : ∀{A : Set} (xs : List A) {ys : List A} -> xs ## ys -> xs ## ys
-_ ##⟨⟩ ps = ps
+open import Logic
+open import Equality
 
 infix  1 #begin_
-infixr 2 _##⟨⟩_ _##⟨_⟩_
+infixr 2 _#⟨⟩_ _#⟨_⟩_
 infix  3 _#end
+infix  4 _#_
 
-##-commutative : ∀{A : Set} {xs ys : List A} -> xs ## ys -> ys ## xs
-##-commutative none = none
-##-commutative here = here
-##-commutative (next ps) = next (##-commutative ps)
-##-commutative (ps |> qs) = ##-commutative qs |> ##-commutative ps
+-- permutation = finite sequence of exchanges
+data _#_ {A : Set} : List A -> List A -> Set where
+  #refl  : ∀{xs : List A} -> xs # xs
+  #swap  : ∀{x y : A} {xs : List A} -> x :: y :: xs # y :: x :: xs
+  #cong  : ∀{x : A} {xs ys : List A} -> xs # ys -> x :: xs # x :: ys
+  #trans : ∀{xs ys zs : List A} -> xs # ys -> ys # zs -> xs # zs
 
-##-cong-l : ∀{A : Set} {xs ys zs : List A} -> xs ## ys -> (zs ++ xs) ## (zs ++ ys)
-##-cong-l {zs = []} ps = ps
-##-cong-l {zs = x :: zs} ps = next (##-cong-l ps)
+#begin_ : ∀{A : Set} {xs ys : List A} -> xs # ys -> xs # ys
+#begin_ ps = ps
 
-##-cong-r : ∀{A : Set} {xs ys zs : List A} -> xs ## ys -> (xs ++ zs) ## (ys ++ zs)
-##-cong-r none = none
-##-cong-r here = here
-##-cong-r (next ps) = next (##-cong-r ps)
-##-cong-r (ps |> qs) = ##-cong-r ps |> ##-cong-r qs
+_#end : ∀{A : Set} (xs : List A) -> xs # xs
+_#end xs = #refl
 
-##-push : ∀{A : Set} {x : A} {xs ys : List A} -> (x :: (xs ++ ys)) ## (xs ++ (x :: ys))
-##-push {xs = []} = none
-##-push {xs = x :: xs} =
-  #begin
-    _ ##⟨ here ⟩
-    _ ##⟨ next ##-push ⟩
-    _
-  #end
+_#⟨_⟩_ : ∀{A : Set} (xs : List A) {ys zs : List A} -> xs # ys -> ys # zs -> xs # zs
+_#⟨_⟩_ _ = #trans
+
+_#⟨⟩_ : ∀{A : Set} (xs : List A) {ys : List A} -> xs # ys -> xs # ys
+_ #⟨⟩ ps = ps
+
+#length : ∀{A : Set} {xs ys : List A} -> xs # ys -> length xs == length ys
+#length #refl = refl
+#length #swap = refl
+#length (#cong π) = cong succ (#length π)
+#length (#trans π π') = trans (#length π) (#length π')
+
+#symm : ∀{A : Set} {xs ys : List A} -> xs # ys -> ys # xs
+#symm #refl = #refl
+#symm #swap = #swap
+#symm (#cong ps) = #cong (#symm ps)
+#symm (#trans ps qs) = #trans (#symm qs) (#symm ps)
+
+#cong++r : ∀{A : Set} {xs ys zs : List A} -> xs # ys -> zs ++ xs # zs ++ ys
+#cong++r {zs = []} ps = ps
+#cong++r {zs = x :: zs} ps = #cong (#cong++r ps)
+
+#cong++l : ∀{A : Set} {xs ys zs : List A} -> xs # ys -> xs ++ zs # ys ++ zs
+#cong++l #refl = #refl
+#cong++l #swap = #swap
+#cong++l (#cong ps) = #cong (#cong++l ps)
+#cong++l (#trans ps qs) = #trans (#cong++l ps) (#cong++l qs)
+
+#push : ∀{A : Set} {x : A} {xs ys : List A} -> x :: xs ++ ys # xs ++ x :: ys
+#push {xs = []} = #refl
+#push {xs = _ :: _} = #trans #swap (#cong #push)
+
+#all : ∀{A : Set} {xs ys : List A} (P : A -> Set) -> xs # ys -> all P xs -> all P ys
+#all P #refl ps = ps
+#all P #swap (px , py , ps) = py , px , ps
+#all P (#cong π) (px , ps) = px , #all P π ps
+#all P (#trans π π') ps = #all P π' (#all P π ps)
 ```

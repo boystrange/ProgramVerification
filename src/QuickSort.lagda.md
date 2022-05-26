@@ -4,90 +4,91 @@
 ```agda
 module QuickSort where
 
+open import Unit
 open import Nat
 open import Product
 open import Sum
 open import Equality
 open import List
+open import List.Properties
 open import LessThan
 open import Permutation
 open import Logic
 open import Bool
+open import Logic
 
 variable A : Set
 
-data Ordering {A : Set} (R : A -> A -> Set) : A -> A -> Set where
-  EQ : ∀{x : A} -> Ordering R x x
-  LT : ∀{x y : A} -> R x y -> Ordering R x y
-  GT : ∀{x y : A} -> R y x -> Ordering R x y
+infix 4 _≼_ _≼*_ _*≼_
 
 -- guardare lezioni su overloading di Peter Selinger
 postulate
-  _≼_ : A -> A -> Set
-  total : (x y : A) -> (x ≼ y) ∨ (y ≼ x)
-  reflexive : (x : A) -> x ≼ x
-  antisymmetric : (x y : A) -> x ≼ y -> y ≼ x -> x == y
-  transitive : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z
+  _≼_       : A -> A -> Set
+  ≼total    : (x y : A) -> x ≼ y ∨ y ≼ x
+  ≼refl     : (x : A) -> x ≼ x
+  ≼antisymm : (x y : A) -> x ≼ y -> y ≼ x -> x == y
+  ≼trans    : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z
 
-partition : ∀{A : Set} -> A -> List A -> List A × List A
-partition x [] = [] , []
-partition x (y :: xs) with total x y
-... | left x≼y = let ys , zs = partition x xs in y :: ys , zs
-... | right y≼x = let ys , zs = partition x xs in ys , y :: zs
+_≼*_ : A -> List A -> Set
+x ≼* xs = all (x ≼_) xs
 
--- quick-sort : ∀{A : Set} -> List A -> List A
--- quick-sort [] = []
--- quick-sort (x :: xs) =
---   let ys , zs = partition x xs in
---   quick-sort ys ++ (x :: quick-sort zs)
+_*≼_ : List A -> A -> Set
+xs *≼ x = all (_≼ x) xs
 
-partition<= : ∀{A : Set} (x : A) (xs : List A) (n : ℕ) -> length xs <= n ->
-  let ys , zs = partition x xs in
-  length ys <= n × length zs <= n
-partition<= x [] n p = zero , zero
-partition<= x (y :: xs) (succ n) (succ p) with total x y
-... | left x≼y = let p1 , p2 = partition<= x xs n p in succ p1 , <=-succ p2
-... | right y≼x = let p1 , p2 = partition<= x xs n p in <=-succ p1 , succ p2
+partition : (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs × ys *≼ x × x ≼* zs
+partition x [] = [] , [] , #refl , <> , <>
+partition x (u :: xs) with ≼total x u | partition x xs
+... | left  x≼u | ys , zs , π , py , pz =
+  ys , (u :: zs) , (#trans (#cong π) #push) , py , x≼u , pz
+... | right u≼x | ys , zs , π , py , pz =
+  u :: ys , zs , #cong π , (u≼x , py) , pz
 
-partition-permutation : ∀{A : Set} (x : A) (xs : List A) (n : ℕ) -> length xs <= n ->
-  let ys , zs = partition x xs in
-  (x :: xs) ## (ys ++ (x :: zs))
-partition-permutation x [] n px = none
-partition-permutation x (y :: xs) (succ n) (succ p) with total x y
-... | left x≼y =
-  #begin
-    (x :: (y :: xs)) ##⟨ here ⟩
-    (y :: (x :: xs)) ##⟨ next (partition-permutation x xs n p) ⟩
-    _
-  #end
-... | right y≼x =
-  let ys , zs = partition x xs in
-  #begin
-    (x :: (y :: xs)) ##⟨ here ⟩
-    (y :: (x :: xs)) ##⟨ next (partition-permutation x xs n p) ⟩
-    (y :: (ys ++ (x :: zs))) ##⟨ ##-push ⟩
-    (ys ++ (y :: (x :: zs))) ##⟨ ##-cong-l here ⟩
-    (ys ++ (x :: (y :: zs)))
-  #end
+sorted : List A -> Set
+sorted [] = ⊤
+sorted (x :: xs) = (x ≼* xs) × sorted xs
 
-quick-sort : ∀{A : Set} (n : ℕ) (xs : List A) -> length xs <= n -> List A
-quick-sort _ [] _ = []
-quick-sort (succ n) (x :: xs) (succ p) =
-  let ys , zs = partition x xs in
-  let py , pz = partition<= x xs n p in
-  quick-sort n ys py ++ (x :: quick-sort n zs pz)
+sorted-++ : {z : A} {xs ys : List A} -> sorted xs -> xs *≼ z -> z ≼* ys -> sorted ys -> sorted (xs ++ z :: ys)
+sorted-++ {xs = []} p xs≼z z≼ys q = z≼ys , q
+sorted-++ {_} {z} {xs = x :: xs} (x≼xs , p) (x≼z , xs≼z) z≼ys q =
+  all-++ (x ≼_) x≼xs (x≼z , all-all (z ≼_) (x ≼_) (≼trans x≼z) z≼ys) , sorted-++ p xs≼z z≼ys q
 
-quick-sort-permutation : ∀{A : Set} (n : ℕ) (xs : List A) (p : length xs <= n) -> xs ## quick-sort n xs p
-quick-sort-permutation n [] p = none
-quick-sort-permutation (succ n) (x :: xs) (succ p) =
-  let ys , zs = partition x xs in
-  let py , pz = partition<= x xs n p in
-  let indy = quick-sort-permutation n ys py in
-  let indz = quick-sort-permutation n zs pz in
-  #begin
-    (x :: xs)         ##⟨ partition-permutation x xs n p ⟩
-    (ys ++ (x :: zs)) ##⟨ ##-cong-l (next indz) ⟩
-    (ys ++ (x :: quick-sort n zs pz)) ##⟨ ##-cong-r indy ⟩
-    (quick-sort n ys py ++ (x :: quick-sort n zs pz))
-  #end
+{-# TERMINATING #-}
+nt-quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ sorted ys
+nt-quick-sort [] = [] , #refl , <>
+nt-quick-sort (x :: xs) with partition x xs
+... | ys , zs , π , py , pz with nt-quick-sort ys | nt-quick-sort zs
+... | ys' , πy , sys | zs' , πz , szs =
+  let π' = #begin
+             x :: xs         #⟨ #cong π ⟩
+             x :: ys ++ zs   #⟨ #cong (#cong++l πy) ⟩
+             x :: ys' ++ zs  #⟨ #cong (#cong++r πz) ⟩
+             x :: ys' ++ zs' #⟨ #push ⟩
+             ys' ++ x :: zs'
+           #end in
+  (ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs)
+
+lemma : {n : ℕ} {xs ys zs : List A} -> xs # ys ++ zs -> length xs <= n -> length ys <= n ∧ length zs <= n
+lemma {xs = xs} {ys} {zs} π bound = <=split+ (subst (λ x -> x <= _) eq bound)
+  where
+    eq : length xs == length ys + length zs
+    eq = begin
+           length xs         ==⟨ #length π ⟩
+           length (ys ++ zs) ==⟨ ++-length ys zs ⟩
+           length ys + length zs
+         end
+
+quick-sort : {n : ℕ} (xs : List A) -> length xs <= n -> ∃[ ys ] xs # ys ∧ sorted ys
+quick-sort [] _ = [] , #refl , <>
+quick-sort (x :: xs) (succ T) with partition x xs
+... | ys , zs , π , py , pz with lemma π T
+... | Ty , Tz with quick-sort ys Ty | quick-sort zs Tz
+... | ys' , πy , sys | zs' , πz , szs =
+  let π' = #begin
+             x :: xs         #⟨ #cong π ⟩
+             x :: ys ++ zs   #⟨ #cong (#cong++l πy) ⟩
+             x :: ys' ++ zs  #⟨ #cong (#cong++r πz) ⟩
+             x :: ys' ++ zs' #⟨ #push ⟩
+             ys' ++ x :: zs'
+           #end in
+  (ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs)
 ```

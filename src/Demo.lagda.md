@@ -6,6 +6,7 @@ title: A taste of Agda
 ```agda
 open import Equality
 open import Nat
+open import Nat.Properties
 ```
 -->
 

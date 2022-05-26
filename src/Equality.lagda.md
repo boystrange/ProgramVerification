@@ -4,9 +4,13 @@
 ```agda
 module Equality where
 
+infix  1 begin_
+infixr 2 _==⟨⟩_ _==⟨_⟩_
+infix  3 _end
+infix  4 _==_
+
 data _==_ {A : Set} : A -> A -> Set where
   refl : ∀{x : A} -> x == x
-infix 4 _==_
 
 {-# BUILTIN EQUALITY _==_ #-}
 
@@ -33,8 +37,4 @@ _==⟨_⟩_ _ = trans
 
 _==⟨⟩_ : ∀{A : Set} (x : A) {y : A} -> x == y -> x == y
 _ ==⟨⟩ p = p
-
-infix  1 begin_
-infixr 2 _==⟨⟩_ _==⟨_⟩_
-infix  3 _end
 ```
