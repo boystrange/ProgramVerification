@@ -2,7 +2,9 @@
 ---
 
 ```agda
-module QuickSort where
+import TotalOrder
+
+module QuickSort (A : Set) (ord : TotalOrder.TotalOrder A) where
 
 open import Unit
 open import Nat
@@ -10,6 +12,7 @@ open import Product
 open import Sum
 open import Equality
 open import List
+open import List.Sorted A ord
 open import List.Properties
 open import LessThan
 open import Permutation
@@ -17,25 +20,9 @@ open import Logic
 open import Bool
 open import Logic
 
-variable A : Set
+open TotalOrder.TotalOrder ord
 
-infix 4 _≼_ _≼*_ _*≼_
-
--- guardare lezioni su overloading di Peter Selinger
-postulate
-  _≼_       : A -> A -> Set
-  ≼total    : (x y : A) -> x ≼ y ∨ y ≼ x
-  ≼refl     : (x : A) -> x ≼ x
-  ≼antisymm : (x y : A) -> x ≼ y -> y ≼ x -> x == y
-  ≼trans    : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z
-
-_≼*_ : A -> List A -> Set
-x ≼* xs = all (x ≼_) xs
-
-_*≼_ : List A -> A -> Set
-xs *≼ x = all (_≼ x) xs
-
-partition : (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs × ys *≼ x × x ≼* zs
+partition : (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ ys *≼ x ∧ x ≼* zs
 partition x [] = [] , [] , #refl , <> , <>
 partition x (u :: xs) with ≼total x u | partition x xs
 ... | left  x≼u | ys , zs , π , py , pz =
@@ -43,13 +30,9 @@ partition x (u :: xs) with ≼total x u | partition x xs
 ... | right u≼x | ys , zs , π , py , pz =
   u :: ys , zs , #cong π , (u≼x , py) , pz
 
-sorted : List A -> Set
-sorted [] = ⊤
-sorted (x :: xs) = (x ≼* xs) × sorted xs
-
 sorted-++ : {z : A} {xs ys : List A} -> sorted xs -> xs *≼ z -> z ≼* ys -> sorted ys -> sorted (xs ++ z :: ys)
 sorted-++ {xs = []} p xs≼z z≼ys q = z≼ys , q
-sorted-++ {_} {z} {xs = x :: xs} (x≼xs , p) (x≼z , xs≼z) z≼ys q =
+sorted-++ {z} {xs = x :: xs} (x≼xs , p) (x≼z , xs≼z) z≼ys q =
   all-++ (x ≼_) x≼xs (x≼z , all-all (z ≼_) (x ≼_) (≼trans x≼z) z≼ys) , sorted-++ p xs≼z z≼ys q
 
 {-# TERMINATING #-}

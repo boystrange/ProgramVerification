@@ -20,4 +20,7 @@ curry f x y = f (x , y)
 
 uncurry : ∀{A B C : Set} -> (A -> B -> C) -> A × B -> C
 uncurry f (x , y) = f x y
+
+flip : ∀{A B C : Set} -> (A -> B -> C) -> B -> A -> C
+flip f x y = f y x
 ```

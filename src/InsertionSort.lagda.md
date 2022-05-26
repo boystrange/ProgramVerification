@@ -2,12 +2,15 @@
 ---
 
 ```agda
-module InsertionSort where
+import TotalOrder
+
+module InsertionSort (A : Set) (ord : TotalOrder.TotalOrder A) where
 
 module SortedLists where
 
 open import Fun
 open import List
+open import List.Sorted A ord
 open import List.Properties
 open import Permutation
 open import Equality
@@ -16,24 +19,7 @@ open import Sum
 open import Product
 open import Logic
 
-variable A : Set
-
-infix 4 _≼_
-
--- guardare lezioni su overloading di Peter Selinger
-postulate
-  _≼_       : A -> A -> Set
-  ≼total    : (x y : A) -> x ≼ y ∨ y ≼ x
-  ≼antisymm : (x y : A) -> x ≼ y -> y ≼ x -> x == y
-  ≼refl     : (x : A) -> x ≼ x
-  ≼trans    : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z
-
-_≼*_ : A -> List A -> Set
-x ≼* xs = all (x ≼_) xs
-
-sorted : List A -> Set
-sorted [] = ⊤
-sorted (x :: xs) = x ≼* xs ∧ sorted xs
+open TotalOrder.TotalOrder ord
 
 module Extrinsic where
 
@@ -49,7 +35,7 @@ module Extrinsic where
 
   all≼-insert : ∀{x y : A}{xs : List A} -> y ≼ x -> y ≼* xs -> y ≼* insert x xs
   all≼-insert {xs = []} y≼x y≼ = y≼x , <>
-  all≼-insert {_} {x} {_} {z :: xs} y≼x (y≼z , y≼) with ≼total x z
+  all≼-insert {x} {_} {z :: xs} y≼x (y≼z , y≼) with ≼total x z
   ... | left x≼z = y≼x , (y≼z , y≼)
   ... | right z≼x = y≼z , all≼-insert y≼x y≼
 

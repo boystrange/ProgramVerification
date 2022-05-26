@@ -18,6 +18,8 @@ title: Static Analysis and Program Verification
 * Aaron Stump, [Verified Functional Programming in Agda](http://www.morganclaypoolpublishers.com/catalog_Orig/product_info.php?cPath=24&products_id=908), 2016.
 * Phil Wadler, Wen Kokke and Jeremy G. Siek, [Programming Language Foundations in Agda](https://plfa.github.io), 2019.
 
+## Fira Code Font
+
 ## Copyright
 
 The course material in this site has been posted for your personal
