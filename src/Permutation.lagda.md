@@ -7,6 +7,7 @@ module Permutation where
 open import Nat
 open import Product
 open import List
+open import List.Properties
 open import Logic
 open import Equality
 
@@ -65,4 +66,27 @@ _ #⟨⟩ ps = ps
 #all P #swap (px , py , ps) = py , px , ps
 #all P (#cong π) (px , ps) = px , #all P π ps
 #all P (#trans π π') ps = #all P π' (#all P π ps)
+
+++-permutation : ∀{A : Set} (xs ys : List A) -> xs ++ ys # ys ++ xs
+++-permutation [] ys rewrite lemma-++-[] ys = #refl
+++-permutation (x :: xs) ys =
+  #begin
+    (x :: xs) ++ ys #⟨⟩
+    x :: xs ++ ys #⟨ #push ⟩
+    xs ++ x :: ys #⟨ ++-permutation xs (x :: ys) ⟩
+    (x :: ys) ++ xs #⟨⟩
+    x :: ys ++ xs #⟨ #push ⟩
+    ys ++ x :: xs
+  #end
+
+reverse-permutation : ∀{A : Set} (xs : List A) -> reverse xs # xs
+reverse-permutation [] = #refl
+reverse-permutation (x :: xs) =
+  #begin
+    reverse (x :: xs) #⟨⟩
+    reverse xs ++ [ x ] #⟨ ++-permutation (reverse xs) [ x ] ⟩
+    [ x ] ++ reverse xs #⟨⟩
+    x :: reverse xs #⟨ #cong (reverse-permutation xs) ⟩
+    x :: xs
+  #end
 ```

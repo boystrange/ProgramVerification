@@ -26,6 +26,10 @@ m < n = succ m <= n
 _>_ : ℕ -> ℕ -> Set
 m > n = n < m
 
+<implies<= : ∀(m n : ℕ) -> m < n -> m <= n
+<implies<= zero n p = zero
+<implies<= (succ m) (succ n) (succ p) = succ (<implies<= m n p)
+
 <=-succ : ∀{m n : ℕ} -> m <= n -> m <= succ n
 <=-succ zero = zero
 <=-succ (succ p) = succ (<=-succ p)
@@ -54,14 +58,19 @@ m > n = n < m
 <=trans zero q = zero
 <=trans (succ p) (succ q) = succ (<=trans p q)
 
-<=trichotomy : (m n : ℕ) -> m < n ∨ m == n ∨ m > n
-<=trichotomy zero zero = right (left refl)
-<=trichotomy zero (succ n) = left (succ zero)
-<=trichotomy (succ m) zero = right (right (succ zero))
+data Trichotomy (m n : ℕ) : Set where
+  LT : m < n  -> Trichotomy m n
+  EQ : m == n -> Trichotomy m n
+  GT : m > n  -> Trichotomy m n
+
+<=trichotomy : (m n : ℕ) -> Trichotomy m n
+<=trichotomy zero zero = EQ refl
+<=trichotomy zero (succ n) = LT (succ zero)
+<=trichotomy (succ m) zero = GT (succ zero)
 <=trichotomy (succ m) (succ n) with <=trichotomy m n
-... | left lt = left (succ lt)
-... | right (left eq) = right (left (cong succ eq))
-... | right (right gt) = right (right (succ gt))
+... | LT lt   = LT (succ lt)
+... | EQ refl = EQ refl
+... | GT gt   = GT (succ gt)
 
 <=-total-order : TotalOrder ℕ
 TotalOrder._≼_       <=-total-order = _<=_

@@ -13,6 +13,9 @@ module List.Properties where
   open import Logic
   open import Product
 
+  ::-injective : ∀{A : Set} {x y : A} {xs ys : List A} -> x :: xs == y :: ys -> x == y ∧ xs == ys
+  ::-injective refl = refl , refl
+
   ++-length : ∀{A : Set} (xs ys : List A) -> length (xs ++ ys) == length xs + length ys
   ++-length []        ys = refl
   ++-length (_ :: xs) ys = cong succ (++-length xs ys)
@@ -24,6 +27,9 @@ module List.Properties where
   lemma-++-[] : ∀{A : Set} (xs : List A) -> xs ++ [] == xs
   lemma-++-[] [] = refl
   lemma-++-[] (x :: xs) = cong (x ::_) (lemma-++-[] xs)
+
+  lemma-[]-++ : ∀{A : Set} (xs ys : List A) -> [] == xs ++ ys -> xs == [] ∧ ys == []
+  lemma-[]-++ [] _ refl = refl , refl
 
   reverse-++ : ∀{A : Set} (xs ys : List A) -> reverse (xs ++ ys) == reverse ys ++ reverse xs
   reverse-++ [] ys = symm (lemma-++-[] (reverse ys))

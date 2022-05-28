@@ -28,8 +28,8 @@ _∨_ = _⊎_
 ¬ : Set -> Set
 ¬ A = A -> ⊥
 
-⊥-elim : ∀{A : Set} -> ⊥ -> A
-⊥-elim ()
+absurd : ∀{A : Set} -> ⊥ -> A
+absurd ()
 
 ∃ : ∀{A : Set} -> (A -> Set) -> Set
 ∃ = Σ _
