@@ -11,8 +11,8 @@ infixr 2 _==⟨⟩_ _==⟨_⟩_
 infix  3 _end
 infix  4 _==_ _!=_
 
-data _==_ {A : Set} : A -> A -> Set where
-  refl : ∀{x : A} -> x == x
+data _==_ {A : Set} (x : A) : A -> Set where
+  refl : x == x
 
 _!=_ : {A : Set} -> A -> A -> Set
 x != y = ¬ (x == y)

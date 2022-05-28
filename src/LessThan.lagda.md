@@ -5,6 +5,7 @@
 module LessThan where
 
 open import Nat
+open import Nat.Properties
 open import Logic
 open import Sum
 open import Product
@@ -26,13 +27,16 @@ m < n = succ m <= n
 _>_ : ℕ -> ℕ -> Set
 m > n = n < m
 
-<implies<= : ∀(m n : ℕ) -> m < n -> m <= n
-<implies<= zero n p = zero
-<implies<= (succ m) (succ n) (succ p) = succ (<implies<= m n p)
+<implies<= : {m n : ℕ} -> m < n -> m <= n
+<implies<= {zero} {_} _ = zero
+<implies<= {succ _} {succ _} (succ p) = succ (<implies<= p)
 
 <=-succ : ∀{m n : ℕ} -> m <= n -> m <= succ n
 <=-succ zero = zero
 <=-succ (succ p) = succ (<=-succ p)
+
+<=-succ-succ : {m n : ℕ} -> succ m <= succ n -> m <= n
+<=-succ-succ (succ p) = p
 
 <=split+ : ∀{x y z : ℕ} -> x + y <= z -> (x <= z) ∧ (y <= z)
 <=split+ {zero} p = zero , p
@@ -78,5 +82,36 @@ TotalOrder.≼total    <=-total-order = <=total
 TotalOrder.≼antisymm <=-total-order = <=antisymm
 TotalOrder.≼refl     <=-total-order = <=refl
 TotalOrder.≼trans    <=-total-order = <=trans
+
+<=-cong-+ : ∀{x x' y y'} -> x <= x' -> y <= y' -> x + y <= x' + y'
+<=-cong-+ zero zero = zero
+<=-cong-+ {_} {x'} {_} {succ y'} zero (succ q) rewrite symm (+-succ x' y') =
+  succ (<=-cong-+ zero q)
+<=-cong-+ (succ p) q = succ (<=-cong-+ p q)
+
+<=min : ∀{x y z} -> x <= y -> x <= z -> x <= min y z
+<=min zero q = zero
+<=min (succ p) (succ q) = succ (<=min p q)
+
+<=max : ∀{x y z} -> x <= z -> y <= z -> max x y <= z
+<=max zero q = q
+<=max (succ p) zero = succ p
+<=max (succ p) (succ q) = succ (<=max p q)
+
+infix  1 <=begin_
+infixr 2 _<=⟨⟩_ _<=⟨_⟩_
+infix  3 _<=end
+
+<=begin_ : {x y : ℕ} -> x <= y -> x <= y
+<=begin_ p = p
+
+_<=end : (x : ℕ) -> x <= x
+_<=end = <=refl
+
+_<=⟨_⟩_ : (x : ℕ) {y z : ℕ} -> x <= y -> y <= z -> x <= z
+_<=⟨_⟩_ _ = <=trans
+
+_<=⟨⟩_ : (x : ℕ) {y : ℕ} -> x <= y -> x <= y
+_ <=⟨⟩ p = p
 
 ```

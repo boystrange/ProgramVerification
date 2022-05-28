@@ -14,8 +14,8 @@ open import Equality
 open import List
 open import List.Sorted A ord
 open import List.Properties
+open import List.Permutation
 open import LessThan
-open import Permutation
 open import Logic
 open import Bool
 open import Logic

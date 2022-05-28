@@ -12,7 +12,7 @@ open import Fun
 open import List
 open import List.Sorted A ord
 open import List.Properties
-open import Permutation
+open import List.Permutation
 open import Equality
 open import Unit
 open import Sum

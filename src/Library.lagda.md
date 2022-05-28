@@ -13,9 +13,21 @@ module Library where
 
 ```agda
 import Fun
+
 import Sigma
 import Product
 import Equality
+import Logic
+
+import Unit
+import Empty
+import Bool
+import Char
 import Nat
+import Nat.Properties
+import Fin
 import List
+import List.Properties
+import List.Permutation
+import Vec
 ```

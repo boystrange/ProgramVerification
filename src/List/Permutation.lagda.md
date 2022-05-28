@@ -2,7 +2,7 @@
 ---
 
 ```agda
-module Permutation where
+module List.Permutation where
 
 open import Nat
 open import Product

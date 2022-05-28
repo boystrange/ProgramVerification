@@ -12,16 +12,17 @@ import Setup
 import Lambda
 import Interactive
 
+-- insertion sort (intrinsic and extrinsic)
 import InsertionSort
 
 -- non terminating functions, using measures, intrinsic verification
 import QuickSort
 
--- Binary search trees
-
--- example of Dan Licata (balanced trees?)
+-- Red black trees
+import RedBlackTree
 
 -- Regular expression matching (inference systems)
+import Regex
 
 -- LIBRARY
 import Library
