@@ -18,7 +18,8 @@ import InsertionSort
 -- non terminating functions, using measures, intrinsic verification
 import QuickSort
 
--- Red black trees
+-- Red black trees (definition of data structure enforces
+-- invariants, mutual induction and mutual recursion, <= reasoning)
 import RedBlackTree
 
 -- Regular expression matching (inference systems)

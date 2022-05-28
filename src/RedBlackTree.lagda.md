@@ -19,21 +19,20 @@ module RedBlackTree (A : Set) where
   data RedBlackTree : ℕ -> Set
   data BlackTree : ℕ -> Set
   data RedTree : ℕ -> Set
-  data RedRedTree : ℕ -> Set
 
   data RedBlackTree where
-    red : ∀{n} -> RedTree n -> RedBlackTree n
+    red   : ∀{n} -> RedTree n -> RedBlackTree n
     black : ∀{n} -> BlackTree n -> RedBlackTree n
 
   data BlackTree where
-    leaf : BlackTree 1
+    leaf : BlackTree 0
     node : ∀{n} -> A -> RedBlackTree n -> RedBlackTree n -> BlackTree (succ n)
 
   data RedTree where
     node : ∀{n} -> A -> BlackTree n -> BlackTree n -> RedTree n
 
-  data RedRedTree where
-    red : ∀{n} -> RedTree n -> RedRedTree n
+  data RedRedTree : ℕ -> Set where
+    red   : ∀{n} -> RedTree n -> RedRedTree n
     black : ∀{n} -> BlackTree n -> RedRedTree n
     red-l : ∀{n} -> A -> RedTree n -> RedBlackTree n -> RedRedTree n
     red-r : ∀{n} -> A -> RedBlackTree n -> RedTree n -> RedRedTree n
@@ -83,47 +82,73 @@ module RedBlackTree (A : Set) where
   insert : ∀{n} -> A -> RedBlackTree n -> ∃[ m ] RedBlackTree m
   insert x t = blacken (into-red-black x t)
 
-  depth : ∀{n} -> (ℕ -> ℕ -> ℕ) -> RedBlackTree n -> ℕ
-  depth-red : ∀{n} -> (ℕ -> ℕ -> ℕ) -> RedTree n -> ℕ
-  depth-black : ∀{n} -> (ℕ -> ℕ -> ℕ) -> BlackTree n -> ℕ
+  module Size where
+    size* : ∀{n} -> RedBlackTree n -> ℕ
+    sizeR : ∀{n} -> RedTree n -> ℕ
+    sizeB : ∀{n} -> BlackTree n -> ℕ
 
-  depth f (red t) = depth-red f t
-  depth f (black t) = depth-black f t
+    size* (red   t) = sizeR t
+    size* (black t) = sizeB t
 
-  depth-red f (node _ l r) = succ (f (depth-black f l) (depth-black f r))
+    sizeR (node _ l r) = succ (sizeB l + sizeB r)
 
-  depth-black _ leaf = 0
-  depth-black f (node _ l r) = succ (f (depth f l) (depth f r))
+    sizeB leaf = 0
+    sizeB (node _ l r) = succ (size* l + size* r)
 
-  min-depth : ∀{n} (t : RedBlackTree n) -> n <= succ (depth min t)
-  min-depth-red : ∀{n} (t : RedTree n) -> n <= depth-red min t
-  min-depth-black : ∀{n} (t : BlackTree n) -> n <= succ (depth-black min t)
+    ⌊size*⌋ : ∀{n} (t : RedBlackTree n) -> 2 ^ n <= succ (size* t)
+    ⌊sizeR⌋ : ∀{n} (t : RedTree n)      -> 2 ^ n <= sizeR t
+    ⌊sizeB⌋ : ∀{n} (t : BlackTree n)    -> 2 ^ n <= succ (sizeB t)
 
-  min-depth (red t) = <=-succ (min-depth-red t)
-  min-depth (black t) = min-depth-black t
+    ⌊size*⌋ (red   t) = <=-succ (⌊sizeR⌋ t)
+    ⌊size*⌋ (black t) = ⌊sizeB⌋ t
 
-  min-depth-red (node _ l r) = <=min (min-depth-black l) (min-depth-black r)
+    ⌊sizeR⌋ {n} (node _ l r) =
+      <=begin
+        2 ^ n                    =<=⟨ +-zero (2 ^ n) ⟩
+        2 ^ n + 0                <=⟨ <=-cong-+ (<=refl (2 ^ n)) zero ⟩
+        2 ^ n + sizeB r          <=⟨ <=-cong-+ (⌊sizeB⌋ l) (<=refl (sizeB r)) ⟩
+        succ (sizeB l) + sizeB r
+      <=end
 
-  min-depth-black leaf = succ zero
-  min-depth-black (node _ l r) = succ (<=min (min-depth l) (min-depth r))
+    ⌊sizeB⌋ leaf = succ zero
+    ⌊sizeB⌋ {succ n} (node _ l r) =
+      <=begin
+        2 ^ n + (2 ^ n + 0)             =<=⟨ symm (cong (2 ^ n +_) (+-zero (2 ^ n))) ⟩
+        2 ^ n + 2 ^ n                   <=⟨ <=-cong-+ (⌊size*⌋ l) (⌊size*⌋ r) ⟩
+        succ (size* l) + succ (size* r) =<=⟨ symm (+-succ (succ (size* l)) (size* r)) ⟩
+        succ (succ (size* l + size* r))
+      <=end
 
-  max-depth : ∀{n} (t : RedBlackTree n) -> depth max t < n + n
-  max-depth-red : ∀{n} (t : RedTree n) -> depth-red max t < n + n
-  max-depth-black : ∀{n} (t : BlackTree n) -> succ (depth-black max t) < n + n
+  module Depth where
 
-  max-depth (red t) = max-depth-red t
-  max-depth (black t) = <implies<= (max-depth-black t)
+    depth* : ∀{n} -> RedBlackTree n -> ℕ
+    depthR : ∀{n} -> RedTree n -> ℕ
+    depthB : ∀{n} -> BlackTree n -> ℕ
 
-  max-depth-red (node _ l r) = <=max (max-depth-black l) (max-depth-black r)
+    depth* (red t) = depthR t
+    depth* (black t) = depthB t
 
-  max-depth-black leaf = succ (succ zero)
-  max-depth-black {succ n} (node _ l r) rewrite symm (+-succ n n) =
-    succ (succ (<=max (max-depth l) (max-depth r)))
+    depthR (node _ l r) = succ (max (depthB l) (depthB r))
 
-  theorem : ∀{n} (t : RedBlackTree n) -> depth max t <= depth min t + depth min t
-  theorem (red t) = <implies<= (<=trans (max-depth-red t) (<=-cong-+ (min-depth-red t) (min-depth-red t)))
-  theorem (black t) with max-depth-black t | min-depth-black t
-  ... | M+2<=2n | n<=m+1 with <=-cong-+ n<=m+1 n<=m+1
-  ... | 2n<=2m+2 rewrite symm (+-succ (depth-black min t) (depth-black min t)) =
-    <=-succ-succ (<=-succ-succ (<=trans M+2<=2n 2n<=2m+2))
+    depthB leaf = 0
+    depthB (node _ l r) = succ (max (depth* l) (depth* r))
+
+    ⌈depth*⌉ : ∀{n} (t : RedBlackTree n) -> depth* t <= succ (2 * n)
+    ⌈depthR⌉ : ∀{n} (t : RedTree n) -> depthR t <= succ (2 * n)
+    ⌈depthB⌉ : ∀{n} (t : BlackTree n) -> depthB t <= 2 * n
+
+    ⌈depth*⌉ (red t) = ⌈depthR⌉ t
+    ⌈depth*⌉ (black t) = <=-succ (⌈depthB⌉ t)
+
+    ⌈depthR⌉ {n} (node _ l r) =
+      succ (<=max (⌈depthB⌉ l) (⌈depthB⌉ r))
+
+    ⌈depthB⌉ leaf = zero
+    ⌈depthB⌉ {succ n} (node _ l r) =
+      <=begin
+        succ (max (depth* l) (depth* r)) <=⟨ succ (<=max (⌈depth*⌉ l) (⌈depth*⌉ r)) ⟩
+        succ (succ (2 * n))              =<=⟨ refl ⟩
+        succ (succ (n + (n + 0)))        =<=⟨ cong succ (+-succ n (n + 0)) ⟩
+        succ (n + succ (n + 0))
+      <=end
 ```

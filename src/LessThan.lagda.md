@@ -99,7 +99,7 @@ TotalOrder.≼trans    <=-total-order = <=trans
 <=max (succ p) (succ q) = succ (<=max p q)
 
 infix  1 <=begin_
-infixr 2 _<=⟨⟩_ _<=⟨_⟩_
+infixr 2 _<=⟨⟩_ _<=⟨_⟩_ _=<=⟨_⟩_
 infix  3 _<=end
 
 <=begin_ : {x y : ℕ} -> x <= y -> x <= y
@@ -107,6 +107,9 @@ infix  3 _<=end
 
 _<=end : (x : ℕ) -> x <= x
 _<=end = <=refl
+
+_=<=⟨_⟩_ : (x : ℕ) {y z : ℕ} -> x == y -> y <= z -> x <= z
+_=<=⟨_⟩_ _ refl p = p
 
 _<=⟨_⟩_ : (x : ℕ) {y z : ℕ} -> x <= y -> y <= z -> x <= z
 _<=⟨_⟩_ _ = <=trans
