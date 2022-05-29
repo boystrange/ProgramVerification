@@ -25,3 +25,4 @@ kramdown:
   math_engine: mathjax
 
 mathjax_url: 'https://cdn.jsdelivr.net/npm/mathjax@3'
+custom_font: true
