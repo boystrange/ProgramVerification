@@ -10,6 +10,7 @@ module List.Properties where
   open import Nat
   open import List
   open import Equality
+  open import Equality.Reasoning
   open import Logic
   open import Product
 

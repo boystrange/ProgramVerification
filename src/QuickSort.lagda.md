@@ -11,6 +11,7 @@ open import Nat
 open import Product
 open import Sum
 open import Equality
+open import Equality.Reasoning
 open import List
 open import List.Sorted A ord
 open import List.Properties

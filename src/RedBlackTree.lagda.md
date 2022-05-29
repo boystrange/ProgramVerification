@@ -9,6 +9,7 @@ module RedBlackTree (A : Set) where
   open import Logic
   open import Product
   open import LessThan
+  open import LessThan.Reasoning
   open import Equality
 
   data Order : Set where
@@ -103,21 +104,21 @@ module RedBlackTree (A : Set) where
     ⌊size*⌋ (black t) = ⌊sizeB⌋ t
 
     ⌊sizeR⌋ {n} (node _ l r) =
-      <=begin
-        2 ^ n                    =<=⟨ +-zero (2 ^ n) ⟩
+      begin
+        2 ^ n                    ==⟨ +-zero (2 ^ n) ⟩
         2 ^ n + 0                <=⟨ <=-cong-+ (<=refl (2 ^ n)) zero ⟩
         2 ^ n + sizeB r          <=⟨ <=-cong-+ (⌊sizeB⌋ l) (<=refl (sizeB r)) ⟩
         succ (sizeB l) + sizeB r
-      <=end
+      end
 
     ⌊sizeB⌋ leaf = succ zero
     ⌊sizeB⌋ {succ n} (node _ l r) =
-      <=begin
-        2 ^ n + (2 ^ n + 0)             =<=⟨ symm (cong (2 ^ n +_) (+-zero (2 ^ n))) ⟩
+      begin
+        2 ^ n + (2 ^ n + 0)             ==⟨ symm (cong (2 ^ n +_) (+-zero (2 ^ n))) ⟩
         2 ^ n + 2 ^ n                   <=⟨ <=-cong-+ (⌊size*⌋ l) (⌊size*⌋ r) ⟩
-        succ (size* l) + succ (size* r) =<=⟨ symm (+-succ (succ (size* l)) (size* r)) ⟩
+        succ (size* l) + succ (size* r) ==⟨ symm (+-succ (succ (size* l)) (size* r)) ⟩
         succ (succ (size* l + size* r))
-      <=end
+      end
 
   module Depth where
 
@@ -145,10 +146,10 @@ module RedBlackTree (A : Set) where
 
     ⌈depthB⌉ leaf = zero
     ⌈depthB⌉ {succ n} (node _ l r) =
-      <=begin
+      begin
         succ (max (depth* l) (depth* r)) <=⟨ succ (<=max (⌈depth*⌉ l) (⌈depth*⌉ r)) ⟩
-        succ (succ (2 * n))              =<=⟨ refl ⟩
-        succ (succ (n + (n + 0)))        =<=⟨ cong succ (+-succ n (n + 0)) ⟩
+        succ (succ (2 * n))              ==⟨ refl ⟩
+        succ (succ (n + (n + 0)))        ==⟨ cong succ (+-succ n (n + 0)) ⟩
         succ (n + succ (n + 0))
-      <=end
+      end
 ```

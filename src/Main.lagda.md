@@ -15,7 +15,7 @@ import Interactive
 -- insertion sort (intrinsic and extrinsic)
 import InsertionSort
 
--- non terminating functions, using measures, intrinsic verification
+-- non-structural recursion using measures, intrinsic verification
 import QuickSort
 
 -- Red black trees (definition of data structure enforces
@@ -24,6 +24,8 @@ import RedBlackTree
 
 -- Regular expression matching (inference systems)
 import Regex
+
+-- Euclidean division (termination, well founded recursion)
 
 -- LIBRARY
 import Library

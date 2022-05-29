@@ -9,6 +9,7 @@ Below this text there is some hidden Agda code
 <!--
 ```agda
 open import Equality
+open import Equality.Reasoning
 open import Nat
 ```
 -->
