@@ -1,4 +1,5 @@
 ---
+title: Red black trees
 ---
 
 A red black tree is a binary search tree in which nodes are colored
@@ -28,43 +29,75 @@ data Order : Set where
   LT EQ GT : Order
 
 postulate compare : A -> A -> Order
+```
 
+We represent a red black tree using three distinct data types, `RedTree`, `BlackTree` and `RedBlackTree`. As their names suggest, they are used to represent red black trees having a red root, a black root and an uncertain root respectively. In this way, we can enforce the property that the children of a red-rooted tree are necessarily black, whereas the children of a black-rooted tree can be either red or black. In addition, each of these data types has a natural number as index which represents its black height. In this way, we can enforce the fact that sibling subtrees must have the same black height.
+
+Clearly, these data types are mutually dependent on each other. For this reason, we cannot simply define them one after the other in an Agda script. Rather, we separate their *declaration* from their *definition*, so that all of them have been declared by the time they are defined.
+
+A data type declaration resembles a data type definition, except for the fact that the `where` keyword is omitted and no costructor is given:
+
+```agda
 data RedBlackTree : ℕ -> Set
 data BlackTree : ℕ -> Set
 data RedTree : ℕ -> Set
+```
 
+A `RedBlackTree` with black height `n` is either a red tree with black height `n` or a black tree with black height `n`.
+
+```agda
 data RedBlackTree where
-  red   : ∀{n} -> RedTree n -> RedBlackTree n
-  black : ∀{n} -> BlackTree n -> RedBlackTree n
+  red   : {n : ℕ} -> RedTree n -> RedBlackTree n
+  black : {n : ℕ} -> BlackTree n -> RedBlackTree n
+```
 
+A `BlackTree` is either a `leaf` (which has black height 0) or a `node`, whose black height is one plus that of its two children. The children of a black node are red black trees, so their roots can be either red or black (and need not be of the same color).
+
+```agda
 data BlackTree where
   leaf : BlackTree 0
-  node : ∀{n} -> A -> RedBlackTree n -> RedBlackTree n -> BlackTree (succ n)
+  node : {n : ℕ} -> A -> RedBlackTree n -> RedBlackTree n -> BlackTree (succ n)
+```
 
+A `RedTree` with black height `n` is necessarily a `node` (recall that leaves are black by convention) and its children are necessarily black-rooted trees with black height `n`.
+
+```agda
 data RedTree where
-  node : ∀{n} -> A -> BlackTree n -> BlackTree n -> RedTree n
+  node : {n : ℕ} -> A -> BlackTree n -> BlackTree n -> RedTree n
+```
 
-data RedRedTree : ℕ -> Set where
-  red   : ∀{n} -> RedTree n -> RedRedTree n
-  black : ∀{n} -> BlackTree n -> RedRedTree n
-  red-l : ∀{n} -> A -> RedTree n -> RedBlackTree n -> RedRedTree n
-  red-r : ∀{n} -> A -> RedBlackTree n -> RedTree n -> RedRedTree n
+As it turns out, when we insert an element into a red black tree there can be a moment in which the tree is temporarily ill formed, in the sense that it violates condition (2) above. To accommodate the intermediate form we also introduce another data type, called `SomeTree`, which is either a plain red black tree or a red-rooted node in which one (but not both) of its children is also red.
 
-balance-l : ∀{n} -> A -> RedRedTree n -> RedBlackTree n -> RedBlackTree (succ n)
+```agda
+data SomeTree : ℕ -> Set where
+  red   : {n : ℕ} -> RedTree n -> SomeTree n
+  black : {n : ℕ} -> BlackTree n -> SomeTree n
+  red-l : {n : ℕ} -> A -> RedTree n -> RedBlackTree n -> SomeTree n
+  red-r : {n : ℕ} -> A -> RedBlackTree n -> RedTree n -> SomeTree n
+```
+
+```agda
+balance-l :
+  {n : ℕ} -> A -> SomeTree n -> RedBlackTree n -> RedBlackTree (succ n)
 balance-l z (red t) r = black (node z (red t) r)
 balance-l z (black t) r = black (node z (black t) r)
-balance-l z (red-l y (node x a b) c) d = red (node y (node x (black a) (black b)) (node z c d))
-balance-l z (red-r y a (node x b c)) d = red (node x (node y a (black b)) (node z (black c) d))
+balance-l z (red-l y (node x a b) c) d =
+  red (node y (node x (black a) (black b)) (node z c d))
+balance-l z (red-r y a (node x b c)) d =
+  red (node x (node y a (black b)) (node z (black c) d))
 
-balance-r : ∀{n} -> A -> RedBlackTree n -> RedRedTree n -> RedBlackTree (succ n)
+balance-r :
+  {n : ℕ} -> A -> RedBlackTree n -> SomeTree n -> RedBlackTree (succ n)
 balance-r z a (red t) = black (node z a (red t))
 balance-r z a (black t) = black (node z a (black t))
-balance-r z a (red-l y (node x b c) d) = red (node x (node z a (black b)) (node y (black c) d))
-balance-r z a (red-r y b (node x c d)) = red (node y (node z a b) (node x (black c) (black d)))
+balance-r z a (red-l y (node x b c) d) =
+  red (node x (node z a (black b)) (node y (black c) d))
+balance-r z a (red-r y b (node x c d)) =
+  red (node y (node z a b) (node x (black c) (black d)))
 
-into-red-black : ∀{n} -> A -> RedBlackTree n -> RedRedTree n
-into-black     : ∀{n} -> A -> BlackTree n -> RedBlackTree n
-into-red       : ∀{n} -> A -> RedTree n -> RedRedTree n
+into-red-black : {n : ℕ} -> A -> RedBlackTree n -> SomeTree n
+into-black     : {n : ℕ} -> A -> BlackTree n -> RedBlackTree n
+into-red       : {n : ℕ} -> A -> RedTree n -> SomeTree n
 
 into-black x leaf = red (node x leaf leaf)
 into-black x (node y l r) with compare x y
@@ -86,82 +119,83 @@ into-red-black x (black t) with into-black x t
 ... | black t = black t
 into-red-black x (red t) = into-red x t
 
-blacken : ∀{n} -> RedRedTree n -> ∃[ m ] RedBlackTree m
+blacken : {n : ℕ} -> SomeTree n -> ∃[ m ] RedBlackTree m
 blacken (red (node x l r)) = _ , black (node x (black l) (black r))
 blacken (black t) = _ , black t
 blacken (red-l x l r) = _ , black (node x (red l) r)
 blacken (red-r x l r) = _ , black (node x l (red r))
 
-insert : ∀{n} -> A -> RedBlackTree n -> ∃[ m ] RedBlackTree m
+insert : {n : ℕ} -> A -> RedBlackTree n -> ∃[ m ] RedBlackTree m
 insert x t = blacken (into-red-black x t)
+```
 
-module Size where
-  size* : ∀{n} -> RedBlackTree n -> ℕ
-  sizeR : ∀{n} -> RedTree n -> ℕ
-  sizeB : ∀{n} -> BlackTree n -> ℕ
+```agda
+size* : {n : ℕ} -> RedBlackTree n -> ℕ
+sizeR : {n : ℕ} -> RedTree n -> ℕ
+sizeB : {n : ℕ} -> BlackTree n -> ℕ
 
-  size* (red   t) = sizeR t
-  size* (black t) = sizeB t
+size* (red   t) = sizeR t
+size* (black t) = sizeB t
 
-  sizeR (node _ l r) = succ (sizeB l + sizeB r)
+sizeR (node _ l r) = succ (sizeB l + sizeB r)
 
-  sizeB leaf = 0
-  sizeB (node _ l r) = succ (size* l + size* r)
+sizeB leaf = 0
+sizeB (node _ l r) = succ (size* l + size* r)
 
-  ⌊size*⌋ : ∀{n} (t : RedBlackTree n) -> 2 ^ n <= succ (size* t)
-  ⌊sizeR⌋ : ∀{n} (t : RedTree n)      -> 2 ^ n <= sizeR t
-  ⌊sizeB⌋ : ∀{n} (t : BlackTree n)    -> 2 ^ n <= succ (sizeB t)
+⌊size*⌋ : {n : ℕ} (t : RedBlackTree n) -> 2 ^ n <= succ (size* t)
+⌊sizeR⌋ : {n : ℕ} (t : RedTree n)      -> 2 ^ n <= sizeR t
+⌊sizeB⌋ : {n : ℕ} (t : BlackTree n)    -> 2 ^ n <= succ (sizeB t)
 
-  ⌊size*⌋ (red   t) = <=-succ (⌊sizeR⌋ t)
-  ⌊size*⌋ (black t) = ⌊sizeB⌋ t
+⌊size*⌋ (red   t) = <=-succ (⌊sizeR⌋ t)
+⌊size*⌋ (black t) = ⌊sizeB⌋ t
 
-  ⌊sizeR⌋ {n} (node _ l r) =
-    begin
-      2 ^ n                    ==⟨ +-zero (2 ^ n) ⟩
-      2 ^ n + 0                <=⟨ <=-cong-+ (<=refl (2 ^ n)) zero ⟩
-      2 ^ n + sizeB r          <=⟨ <=-cong-+ (⌊sizeB⌋ l) (<=refl (sizeB r)) ⟩
-      succ (sizeB l) + sizeB r
-    end
+⌊sizeR⌋ {n} (node _ l r) =
+  begin
+    2 ^ n                    ==⟨ +-zero (2 ^ n) ⟩
+    2 ^ n + 0                <=⟨ <=-cong-+ (<=refl (2 ^ n)) zero ⟩
+    2 ^ n + sizeB r          <=⟨ <=-cong-+ (⌊sizeB⌋ l) (<=refl (sizeB r)) ⟩
+    succ (sizeB l) + sizeB r
+  end
 
-  ⌊sizeB⌋ leaf = succ zero
-  ⌊sizeB⌋ {succ n} (node _ l r) =
-    begin
-      2 ^ n + (2 ^ n + 0)             ==⟨ symm (cong (2 ^ n +_) (+-zero (2 ^ n))) ⟩
-      2 ^ n + 2 ^ n                   <=⟨ <=-cong-+ (⌊size*⌋ l) (⌊size*⌋ r) ⟩
-      succ (size* l) + succ (size* r) ==⟨ symm (+-succ (succ (size* l)) (size* r)) ⟩
-      succ (succ (size* l + size* r))
-    end
+⌊sizeB⌋ leaf = succ zero
+⌊sizeB⌋ {succ n} (node _ l r) =
+  begin
+    2 ^ n + (2 ^ n + 0)             ==⟨ symm (cong (2 ^ n +_) (+-zero (2 ^ n))) ⟩
+    2 ^ n + 2 ^ n                   <=⟨ <=-cong-+ (⌊size*⌋ l) (⌊size*⌋ r) ⟩
+    succ (size* l) + succ (size* r) ==⟨ symm (+-succ (succ (size* l)) (size* r)) ⟩
+    succ (succ (size* l + size* r))
+  end
+```
 
-module Depth where
+```agda
+depth* : {n : ℕ} -> RedBlackTree n -> ℕ
+depthR : {n : ℕ} -> RedTree n -> ℕ
+depthB : {n : ℕ} -> BlackTree n -> ℕ
 
-  depth* : ∀{n} -> RedBlackTree n -> ℕ
-  depthR : ∀{n} -> RedTree n -> ℕ
-  depthB : ∀{n} -> BlackTree n -> ℕ
+depth* (red t) = depthR t
+depth* (black t) = depthB t
 
-  depth* (red t) = depthR t
-  depth* (black t) = depthB t
+depthR (node _ l r) = succ (max (depthB l) (depthB r))
 
-  depthR (node _ l r) = succ (max (depthB l) (depthB r))
+depthB leaf = 0
+depthB (node _ l r) = succ (max (depth* l) (depth* r))
 
-  depthB leaf = 0
-  depthB (node _ l r) = succ (max (depth* l) (depth* r))
+⌈depth*⌉ : {n : ℕ} (t : RedBlackTree n) -> depth* t <= succ (2 * n)
+⌈depthR⌉ : {n : ℕ} (t : RedTree n) -> depthR t <= succ (2 * n)
+⌈depthB⌉ : {n : ℕ} (t : BlackTree n) -> depthB t <= 2 * n
 
-  ⌈depth*⌉ : ∀{n} (t : RedBlackTree n) -> depth* t <= succ (2 * n)
-  ⌈depthR⌉ : ∀{n} (t : RedTree n) -> depthR t <= succ (2 * n)
-  ⌈depthB⌉ : ∀{n} (t : BlackTree n) -> depthB t <= 2 * n
+⌈depth*⌉ (red t) = ⌈depthR⌉ t
+⌈depth*⌉ (black t) = <=-succ (⌈depthB⌉ t)
 
-  ⌈depth*⌉ (red t) = ⌈depthR⌉ t
-  ⌈depth*⌉ (black t) = <=-succ (⌈depthB⌉ t)
+⌈depthR⌉ {n} (node _ l r) =
+  succ (<=max (⌈depthB⌉ l) (⌈depthB⌉ r))
 
-  ⌈depthR⌉ {n} (node _ l r) =
-    succ (<=max (⌈depthB⌉ l) (⌈depthB⌉ r))
-
-  ⌈depthB⌉ leaf = zero
-  ⌈depthB⌉ {succ n} (node _ l r) =
-    begin
-      succ (max (depth* l) (depth* r)) <=⟨ succ (<=max (⌈depth*⌉ l) (⌈depth*⌉ r)) ⟩
-      succ (succ (2 * n))              ==⟨ refl ⟩
-      succ (succ (n + (n + 0)))        ==⟨ cong succ (+-succ n (n + 0)) ⟩
-      succ (n + succ (n + 0))
-    end
+⌈depthB⌉ leaf = zero
+⌈depthB⌉ {succ n} (node _ l r) =
+  begin
+    succ (max (depth* l) (depth* r)) <=⟨ succ (<=max (⌈depth*⌉ l) (⌈depth*⌉ r)) ⟩
+    succ (succ (2 * n))              ==⟨ refl ⟩
+    succ (succ (n + (n + 0)))        ==⟨ cong succ (+-succ n (n + 0)) ⟩
+    succ (n + succ (n + 0))
+  end
 ```
