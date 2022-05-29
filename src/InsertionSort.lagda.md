@@ -26,7 +26,7 @@ module Extrinsic where
   insert : A -> List A -> List A
   insert x [] = x :: []
   insert x (y :: ys) with ≼total x y
-  ... | left x≼y = x :: (y :: ys)
+  ... | left x≼y = x :: y :: ys
   ... | right y≼x = y :: insert x ys
 
   insert-sort : List A -> List A
@@ -36,7 +36,7 @@ module Extrinsic where
   all≼-insert : ∀{x y : A}{xs : List A} -> y ≼ x -> y ≼* xs -> y ≼* insert x xs
   all≼-insert {xs = []} y≼x y≼ = y≼x , <>
   all≼-insert {x} {_} {z :: xs} y≼x (y≼z , y≼) with ≼total x z
-  ... | left x≼z = y≼x , (y≼z , y≼)
+  ... | left x≼z = y≼x , y≼z , y≼
   ... | right z≼x = y≼z , all≼-insert y≼x y≼
 
   sorted-insert-sorted : (x : A) (xs : List A) -> sorted xs -> sorted (insert x xs)
