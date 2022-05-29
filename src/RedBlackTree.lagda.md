@@ -70,30 +70,25 @@ As it turns out, when we insert an element into a red black tree there can be a 
 
 ```agda
 data SomeTree : ℕ -> Set where
-  red   : {n : ℕ} -> RedTree n -> SomeTree n
-  black : {n : ℕ} -> BlackTree n -> SomeTree n
-  red-l : {n : ℕ} -> A -> RedTree n -> RedBlackTree n -> SomeTree n
-  red-r : {n : ℕ} -> A -> RedBlackTree n -> RedTree n -> SomeTree n
+  plain : {n : ℕ} -> RedBlackTree n -> SomeTree n
+  red-l : {n : ℕ} -> A -> RedTree n -> BlackTree n -> SomeTree n
+  red-r : {n : ℕ} -> A -> BlackTree n -> RedTree n -> SomeTree n
 ```
 
 ```agda
-balance-l :
-  {n : ℕ} -> A -> SomeTree n -> RedBlackTree n -> RedBlackTree (succ n)
-balance-l z (red t) r = black (node z (red t) r)
-balance-l z (black t) r = black (node z (black t) r)
+balance-l : {n : ℕ} -> A -> SomeTree n -> RedBlackTree n -> RedBlackTree (succ n)
+balance-l z (plain l) r = black (node z l r)
 balance-l z (red-l y (node x a b) c) d =
-  red (node y (node x (black a) (black b)) (node z c d))
+  red (node y (node x (black a) (black b)) (node z (black c) d))
 balance-l z (red-r y a (node x b c)) d =
-  red (node x (node y a (black b)) (node z (black c) d))
+  red (node x (node y (black a) (black b)) (node z (black c) d))
 
-balance-r :
-  {n : ℕ} -> A -> RedBlackTree n -> SomeTree n -> RedBlackTree (succ n)
-balance-r z a (red t) = black (node z a (red t))
-balance-r z a (black t) = black (node z a (black t))
+balance-r : {n : ℕ} -> A -> RedBlackTree n -> SomeTree n -> RedBlackTree (succ n)
+balance-r z a (plain b) = black (node z a b)
 balance-r z a (red-l y (node x b c) d) =
-  red (node x (node z a (black b)) (node y (black c) d))
+  red (node x (node z a (black b)) (node y (black c) (black d)))
 balance-r z a (red-r y b (node x c d)) =
-  red (node y (node z a b) (node x (black c) (black d)))
+  red (node y (node z a (black b)) (node x (black c) (black d)))
 
 into-red-black : {n : ℕ} -> A -> RedBlackTree n -> SomeTree n
 into-black     : {n : ℕ} -> A -> BlackTree n -> RedBlackTree n
@@ -106,24 +101,22 @@ into-black x (node y l r) with compare x y
 ... | GT = balance-r y l (into-red-black x r)
 
 into-red x (node y l r) with compare x y
-into-red x (node y l r) | EQ = red (node y l r)
+into-red x (node y l r) | EQ = plain (red (node y l r))
 into-red x (node y l r) | LT with into-black x l
-... | red t = red-l y t (black r)
-... | black t = black t
+... | red t = red-l y t r
+... | black t = plain (black t)
 into-red x (node y l r) | GT with into-black x r
-... | red t = red-r y (black l) t
-... | black t = black t
+... | red t = red-r y l t
+... | black t = plain (black t)
 
-into-red-black x (black t) with into-black x t
-... | red   t = red t
-... | black t = black t
+into-red-black x (black t) = plain (into-black x t)
 into-red-black x (red t) = into-red x t
 
 blacken : {n : ℕ} -> SomeTree n -> ∃[ m ] RedBlackTree m
-blacken (red (node x l r)) = _ , black (node x (black l) (black r))
-blacken (black t) = _ , black t
-blacken (red-l x l r) = _ , black (node x (red l) r)
-blacken (red-r x l r) = _ , black (node x l (red r))
+blacken (plain (red (node x l r))) = _ , black (node x (black l) (black r))
+blacken (plain (black t))          = _ , black t
+blacken (red-l x l r)              = _ , black (node x (red l) (black r))
+blacken (red-r x l r)              = _ , black (node x (black l) (red r))
 
 insert : {n : ℕ} -> A -> RedBlackTree n -> ∃[ m ] RedBlackTree m
 insert x t = blacken (into-red-black x t)
