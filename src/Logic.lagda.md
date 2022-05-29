@@ -3,39 +3,45 @@ title: Logic
 ---
 
 ```agda
-open import Unit
-open import Empty
-open import Product
-open import Sum
+  module Logic where
 
--- TODO: infix
+  open import Unit
+  open import Empty
+  open import Product
+  open import Sum
 
-infixr 2 _∨_ ∃-syntax
-infixr 3 _∧_
+  -- TODO: infix
 
-⊤ : Set
-⊤ = Unit
+  infixr 2 _∨_ ∃-syntax
+  infixr 3 _∧_
 
-⊥ : Set
-⊥ = Empty
+  ⊤ : Set
+  ⊤ = Unit
 
-_∧_ : Set -> Set -> Set
-_∧_ = _×_
+  ⊥ : Set
+  ⊥ = Empty
 
-_∨_ : Set -> Set -> Set
-_∨_ = _⊎_
+  _∧_ : Set -> Set -> Set
+  _∧_ = _×_
 
-¬ : Set -> Set
-¬ A = A -> ⊥
+  _∨_ : Set -> Set -> Set
+  _∨_ = _⊎_
 
-absurd : ∀{A : Set} -> ⊥ -> A
-absurd ()
+  ¬ : Set -> Set
+  ¬ A = A -> ⊥
 
-∃ : ∀{A : Set} -> (A -> Set) -> Set
-∃ = Σ _
+  data Decidable (A : Set) : Set where
+    yes :   A -> Decidable A
+    no  : ¬ A -> Decidable A
 
-∃-syntax : ∀{A : Set} -> (A -> Set) -> Set
-∃-syntax = ∃
+  absurd : ∀{A : Set} -> ⊥ -> A
+  absurd ()
 
-syntax ∃-syntax (λ x -> B) = ∃[ x ] B
+  ∃ : ∀{A : Set} -> (A -> Set) -> Set
+  ∃ = Σ _
+
+  ∃-syntax : ∀{A : Set} -> (A -> Set) -> Set
+  ∃-syntax = ∃
+
+  syntax ∃-syntax (λ x -> B) = ∃[ x ] B
 ```

@@ -22,7 +22,6 @@ import Logic
 import Unit
 import Empty
 import Bool
-import Char
 import Nat
 import Nat.Properties
 import Fin

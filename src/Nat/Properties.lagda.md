@@ -5,6 +5,7 @@
 module Nat.Properties where
 
   open import Nat
+  open import Logic
   open import Equality
   open import Equality.Reasoning
 
@@ -29,4 +30,14 @@ module Nat.Properties where
       succ (y + x) ==⟨ +-succ y x ⟩
       y + succ x
     end
+
+  _=?_ : (x y : ℕ) -> Decidable (x == y)
+  zero   =? zero   = yes refl
+  zero   =? succ y = no λ ()
+  succ x =? zero   = no (λ ())
+  succ x =? succ y with x =? y
+  ... | yes eq = yes (cong succ eq)
+  ... | no neq = no λ { refl -> neq refl }
+
+  infix 4 _=?_
 ```
