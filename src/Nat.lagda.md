@@ -19,10 +19,10 @@ _+_ : ℕ -> ℕ -> ℕ
 zero   + y = y
 succ x + y = succ (x + y)
 
-_∸_ : ℕ -> ℕ -> ℕ
-zero   ∸ _      = 0
-succ x ∸ zero   = succ x
-succ x ∸ succ y = x ∸ y
+_-_ : ℕ -> ℕ -> ℕ
+zero   - _      = 0
+succ x - zero   = succ x
+succ x - succ y = x - y
 
 _*_ : ℕ -> ℕ -> ℕ
 zero   * _ = 0
