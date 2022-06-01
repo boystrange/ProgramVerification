@@ -1,8 +1,8 @@
 ---
-title: Static Analysis and Program Verification
+title: Introduction to Program Verification
 ---
 
-## Lectures
+## Arguments
 
 1. Introduction
    * [A taste of Agda]({% link pages/Demo.md %})

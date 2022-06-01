@@ -1,0 +1,111 @@
+---
+---
+
+```agda
+module Chapter.Division where
+
+open import Nat
+open import Nat.Properties
+open import List
+open import Product
+open import Logic
+open import Equality
+open import Equality.Reasoning
+open import LessThan
+open import LessThan.Reasoning renaming (begin_ to <=begin_; _end to _<=end) hiding (_==⟨_⟩_)
+open import WellFounded
+
++-minus-assoc : (x y z : ℕ) -> z <= y -> x + (y - z) == (x + y) - z
++-minus-assoc x y 0 zero =
+  begin
+    x + (y - 0) ==⟨ cong (x +_) (minus-zero y) ⟩
+    x + y       ==⟨ symm (minus-zero (x + y)) ⟩
+    (x + y) - 0
+  end
++-minus-assoc x (succ y) (succ z) (succ le) =
+  begin
+    x + (succ y - succ z) ==⟨⟩
+    x + (y - z)           ==⟨ +-minus-assoc x y z le ⟩
+    (x + y) - z           ==⟨ refl ⟩
+    succ (x + y) - succ z ==⟨ refl ⟩
+    (succ x + y) - succ z ==⟨ cong (_- succ z) (+-succ x y) ⟩
+    (x + succ y) - succ z
+  end
+
+{-# TERMINATING #-}
+nt-division : (x y : ℕ) -> (0 < y) -> ∃[ q ] ∃[ r ] (r < y) ∧ (q * y + r == x)
+nt-division x y 0<y with x <? y
+... | yes lt = 0 , x , lt , refl
+... | no nlt with not-lt-ge nlt
+... | ge with nt-division (x - y) y 0<y
+... | q , r , r<y , qy=x = succ q , r , r<y , eq
+  where
+    eq : succ q * y + r == x
+    eq = begin
+           succ q * y + r  ==⟨⟩
+           y + q * y + r   ==⟨ symm (+-associative y (q * y) r) ⟩
+           y + (q * y + r) ==⟨ cong (y +_) qy=x ⟩
+           y + (x - y)     ==⟨ +-minus-assoc y x y ge ⟩
+           (y + x) - y     ==⟨ +-minus y x ⟩
+           x
+         end
+```
+
+```agda
+open import LessThan.Alternative
+
+accessible<' : (x y : ℕ) -> y <' x -> Accessible _<'_ y
+accessible<' (succ y) _ refl      = acc (accessible<' y)
+accessible<' (succ y) z (succ lt) = accessible<' y z lt
+
+well-founded-lt' : WellFounded _<'_
+well-founded-lt' x = acc (accessible<' x)
+
+_<'?_ : (x y : ℕ) -> Decidable (x <' y)
+x <'? y with x <? y
+... | yes x<y = yes (<=to<=' x<y)
+... | no ¬x<y = no λ x<y -> ¬x<y (<='to<= x<y)
+
+minus-succ : {x y : ℕ} -> (y < x) -> (x - succ y < x - y)
+minus-succ {succ x} {zero} p rewrite minus-zero x = le-refl
+minus-succ {succ x} {succ y} (succ p) = minus-succ p
+
+minus-le : (x y : ℕ) -> (x - y <= x)
+minus-le zero     _        = zero
+minus-le (succ _) zero     = le-refl
+minus-le (succ x) (succ y) = <=-succ (minus-le x y)
+
+minus-lt : {x y : ℕ} -> (0 < y) -> (y <= x) -> (x - y < x)
+minus-lt {x} {succ y} _ q =
+  <=begin
+    x - succ y <⟨ minus-succ q ⟩
+    x - y      <=⟨ minus-le x y ⟩
+    x
+  <=end
+
+minus-lt' : {x y : ℕ} -> (0 <' y) -> (y <=' x) -> (x - y <' x)
+minus-lt' p q = <=to<=' (minus-lt (<='to<= p) (<='to<= q))
+
+not-lt-ge' : {x y : ℕ} -> ¬ (x <' y) -> (y <=' x)
+not-lt-ge' p = <=to<=' (not-lt-ge λ q -> p (<=to<=' q))
+
+div-rem-aux : (x y : ℕ) -> 0 <' y -> Accessible _<'_ x -> ∃[ q ] ∃[ r ] r <' y ∧ q * y + r == x
+div-rem-aux x y p (acc f) with x <'? y
+... | yes lt = 0 , x , lt , refl
+... | no nlt with not-lt-ge' nlt
+... | ge with div-rem-aux (x - y) y p (f (x - y) (minus-lt' p ge))
+... | q , r , r<y , qy=x =
+  succ q , r , r<y , (
+    begin
+      succ q * y + r  ==⟨⟩
+      y + q * y + r   ==⟨ symm (+-associative y (q * y) r) ⟩
+      y + (q * y + r) ==⟨ cong (y +_) qy=x ⟩
+      y + (x - y)     ==⟨ +-minus-assoc y x y (<='to<= ge) ⟩
+      (y + x) - y     ==⟨ +-minus y x ⟩
+      x
+    end)
+
+division : (x y : ℕ) -> (0 < y)-> ∃[ q ] ∃[ r ] (r < y) ∧ (q * y + r == x)
+division x y 0<y with div-rem-aux x y (<=to<=' 0<y) (well-founded-lt' x)
+... | q , r , r<y , qy=x = q , r , <='to<= r<y , qy=x
+```
