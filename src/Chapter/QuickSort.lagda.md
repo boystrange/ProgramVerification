@@ -8,15 +8,16 @@ module Chapter.QuickSort (A : Set) (ord : TotalOrder.TotalOrder A) where
 
 open import Unit
 open import Nat
+open import Nat.Properties
 open import Product
 open import Sum
 open import Equality
-open import Equality.Reasoning
 open import List
 open import List.Sorted A ord
 open import List.Properties
 open import List.Permutation
 open import LessThan
+open import LessThan.Reasoning
 open import Logic
 open import Bool
 open import Logic
@@ -51,21 +52,43 @@ nt-quick-sort (x :: xs) with partition x xs
            #end in
   (ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs)
 
-lemma : {n : ℕ} {xs ys zs : List A} -> xs # ys ++ zs -> length xs <= n -> length ys <= n ∧ length zs <= n
-lemma {xs = xs} {ys} {zs} π bound = <=split+ (subst (λ x -> x <= _) eq bound)
-  where
-    eq : length xs == length ys + length zs
-    eq = begin
-           length xs         ==⟨ #length π ⟩
-           length (ys ++ zs) ==⟨ ++-length ys zs ⟩
-           length ys + length zs
-         end
+open import WellFounded
+open import LessThan.Alternative
 
-quick-sort : {n : ℕ} (xs : List A) -> length xs <= n -> ∃[ ys ] xs # ys ∧ sorted ys
-quick-sort [] _ = [] , #refl , <>
-quick-sort (x :: xs) (succ T) with partition x xs
-... | ys , zs , π , py , pz with lemma π T
-... | Ty , Tz with quick-sort ys Ty | quick-sort zs Tz
+accessible<' : (x y : ℕ) -> y <' x -> Accessible _<'_ y
+accessible<' (succ y) _ refl      = acc (accessible<' y)
+accessible<' (succ y) z (succ lt) = accessible<' y z lt
+
+well-founded-lt' : WellFounded _<'_
+well-founded-lt' x = acc (accessible<' x)
+
+infix 4 _⊑_ _⊏_
+
+_⊑_ : List A -> List A -> Set
+xs ⊑ ys = length xs <= length ys
+
+_⊏_ : List A -> List A -> Set
+xs ⊏ ys = length xs < length ys
+
+well-founded-⊏ : WellFounded _⊏_
+well-founded-⊏ = well-founded-m _⊏_ _<'_ length <=to<=' well-founded-lt'
+
+lemma-⊑ : (xs ys zs : List A) -> xs # ys ++ zs -> ys ⊑ xs
+lemma-⊑ xs ys zs π =
+  begin
+    length ys             <=⟨ le-plus (length ys) (length zs) ⟩
+    length ys + length zs ==⟨ symm (++-length ys zs) ⟩
+    length (ys ++ zs)     ==⟨ symm (#length π) ⟩
+    length xs
+  end
+
+quick-sort-aux : (xs : List A) -> Accessible _⊏_ xs -> ∃[ ys ] xs # ys ∧ sorted ys
+quick-sort-aux [] _ = [] , #refl , <>
+quick-sort-aux (x :: xs) (acc f) with partition x xs
+... | ys , zs , π , py , pz with lemma-⊑ xs ys zs π |
+                                 lemma-⊑ xs zs ys (#trans π (++-permutation ys zs))
+... | ys⊑xs | zs⊑xs with quick-sort-aux ys (f ys (succ ys⊑xs)) |
+                         quick-sort-aux zs (f zs (succ zs⊑xs))
 ... | ys' , πy , sys | zs' , πz , szs =
   let π' = #begin
              x :: xs         #⟨ #cong π ⟩
@@ -76,84 +99,6 @@ quick-sort (x :: xs) (succ T) with partition x xs
            #end in
   (ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs)
 
-open import WellFounded
-
-infix 4 _<='_ _<'_
-
-data _<='_ : ℕ -> ℕ -> Set where
-  refl : {n : ℕ}   -> n <=' n
-  succ : {m n : ℕ} -> m <=' n -> m <=' succ n
-
-_<'_ : ℕ -> ℕ -> Set
-x <' y = succ x <=' y
-
-zero<=' : {x : ℕ} -> 0 <=' x
-zero<=' {zero}   = refl
-zero<=' {succ x} = succ zero<='
-
-succ<=' : {x y : ℕ} -> x <=' y -> succ x <=' succ y
-succ<=' refl     = refl
-succ<=' (succ p) = succ (succ<=' p)
-
-<=to<=' : {x y : ℕ} -> x <= y -> x <=' y
-<=to<=' zero     = zero<='
-<=to<=' (succ p) = succ<=' (<=to<=' p)
-
-<='to<= : {x y : ℕ} -> x <=' y -> x <= y
-<='to<= refl = le-refl
-<='to<= (succ p) = <=-succ (<='to<= p)
-
-accessible<' : (x y : ℕ) -> y <' x -> Accessible _<'_ y
-accessible<' (succ y) _ refl      = acc (accessible<' y)
-accessible<' (succ y) z (succ lt) = accessible<' y z lt
-
-well-founded-lt' : WellFounded _<'_
-well-founded-lt' x = acc (accessible<' x)
-
-infix 4 _≺_
-
-measure : {A B : Set} (_<A_ : A -> A -> Set) (_<B_ : B -> B -> Set)
-          (f : A -> B) ->
-          ({x y : A} -> x <A y -> f x <B f y) ->
-          (x : A) -> Accessible _<B_ (f x) -> Accessible _<A_ x
-measure _<A_ _<B_ f m x (acc g) =
-  acc λ y lt -> measure _<A_ _<B_ f m y (g (f y) (m lt))
-
-well-founded-m : {A B : Set} (_<A_ : A -> A -> Set) (_<B_ : B -> B -> Set)
-                 (f : A -> B) ->
-               ({x y : A} -> x <A y -> f x <B f y) ->
-               WellFounded _<B_ -> WellFounded _<A_
-well-founded-m _<A_ _<B_ f m wf x = measure _<A_ _<B_ f m x (wf (f x))
-
-data _≺_ : List A -> List A -> Set where
-  ≺-nil  : {x : A} {xs : List A} -> [] ≺ (x :: xs)
-  ≺-cons : {x y : A} {xs ys : List A} -> xs ≺ ys -> (x :: xs) ≺ (y :: ys)
-
-lemman : {xs ys : List A} -> xs ≺ ys -> length xs < length ys
-lemman ≺-nil = succ zero
-lemman (≺-cons p) = succ (lemman p)
-
-lemman' : {xs ys : List A} -> xs ≺ ys -> length xs <' length ys
-lemman' p = <=to<=' (lemman p)
-
-lemmax : {xs ys : List A} {y : A} -> xs ≺ ys -> xs ≺ y :: ys
-lemmax {[]} p = ≺-nil
-lemmax {x :: xs} (≺-cons p) = ≺-cons (lemmax p)
-
-well-founded-≺ : WellFounded _≺_
-well-founded-≺ = well-founded-m _≺_ _<'_ length lemman' well-founded-lt'
-
-permutation≺ : {xs ys zs : List A} -> xs # ys -> xs ≺ zs -> ys ≺ zs
-permutation≺ #refl lt = lt
-permutation≺ #swap (≺-cons (≺-cons lt)) = ≺-cons (≺-cons lt)
-permutation≺ (#cong π) (≺-cons lt) = ≺-cons (permutation≺ π lt)
-permutation≺ (#trans π π₁) lt = permutation≺ π₁ (permutation≺ π lt)
-
-append≺ : {xs ys zs : List A} -> (xs ++ ys) ≺ zs -> (xs ≺ zs) ∧ (ys ≺ zs)
-append≺ {[]}      {[]}     {_ :: _} ≺-nil = ≺-nil , ≺-nil
-append≺ {[]}      {_ :: _} {_ :: _} (≺-cons p) = ≺-nil , ≺-cons p
-append≺ {x :: xs} {ys}     {_ :: _} (≺-cons p) with append≺ p
-... | px , py = ≺-cons px , lemmax py
-
-
+quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ sorted ys
+quick-sort xs = quick-sort-aux xs (well-founded-⊏ xs)
 ```

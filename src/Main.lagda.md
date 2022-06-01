@@ -30,9 +30,6 @@ import Chapter.Interactive
 -- insertion sort (intrinsic and extrinsic)
 import Chapter.InsertionSort
 
--- non-structural recursion using measures, intrinsic verification
-import Chapter.QuickSort
-
 -- Red black trees (embedding invariants in the definition of data structure,
 -- mutual induction and mutual recursion, <= reasoning)
 import Chapter.RedBlackTree
@@ -40,8 +37,11 @@ import Chapter.RedBlackTree
 -- Regular expression matching (inference systems)
 import Chapter.Regex
 
--- Euclidean division (termination, well founded recursion)
+-- Euclidean division (termination, well founded relations)
 import Chapter.Division
+
+-- non-structural recursion using measures
+import Chapter.QuickSort
 ```
 
 ## Library

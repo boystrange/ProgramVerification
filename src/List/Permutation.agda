@@ -43,16 +43,6 @@ _ #⟨⟩ ps = ps
 #symm (#cong ps) = #cong (#symm ps)
 #symm (#trans ps qs) = #trans (#symm qs) (#symm ps)
 
-#cong++r : ∀{A : Set} {xs ys zs : List A} -> xs # ys -> zs ++ xs # zs ++ ys
-#cong++r {zs = []} ps = ps
-#cong++r {zs = x :: zs} ps = #cong (#cong++r ps)
-
-#cong++l : ∀{A : Set} {xs ys zs : List A} -> xs # ys -> xs ++ zs # ys ++ zs
-#cong++l #refl = #refl
-#cong++l #swap = #swap
-#cong++l (#cong ps) = #cong (#cong++l ps)
-#cong++l (#trans ps qs) = #trans (#cong++l ps) (#cong++l qs)
-
 #push : ∀{A : Set} {x : A} {xs ys : List A} -> x :: xs ++ ys # xs ++ x :: ys
 #push {xs = []} = #refl
 #push {xs = _ :: _} = #trans #swap (#cong #push)
@@ -73,6 +63,19 @@ _ #⟨⟩ ps = ps
     (x :: ys) ++ xs #⟨⟩
     x :: ys ++ xs #⟨ #push ⟩
     ys ++ x :: xs
+  #end
+
+#cong++r : ∀{A : Set} {xs ys zs : List A} -> xs # ys -> zs ++ xs # zs ++ ys
+#cong++r {zs = []} ps = ps
+#cong++r {zs = x :: zs} ps = #cong (#cong++r ps)
+
+#cong++l : ∀{A : Set} {xs ys zs : List A} -> xs # ys -> xs ++ zs # ys ++ zs
+#cong++l {_} {xs} {ys} {zs} π =
+  #begin
+    xs ++ zs #⟨ ++-permutation xs zs ⟩
+    zs ++ xs #⟨ #cong++r π ⟩
+    zs ++ ys #⟨ ++-permutation zs ys ⟩
+    ys ++ zs
   #end
 
 reverse-permutation : ∀{A : Set} (xs : List A) -> reverse xs # xs

@@ -77,6 +77,10 @@ TotalOrder.≼antisymm le-total-order = le-antisymm
 TotalOrder.≼refl     le-total-order = le-refl
 TotalOrder.≼trans    le-total-order = le-trans
 
+le-plus : (x y : ℕ) -> x <= x + y
+le-plus zero y = zero
+le-plus (succ x) y = succ (le-plus x y)
+
 <=-cong-+ : ∀{x x' y y'} -> x <= x' -> y <= y' -> x + y <= x' + y'
 <=-cong-+ zero zero = zero
 <=-cong-+ {_} {x'} {_} {succ y'} zero (succ q) rewrite symm (+-succ x' y') =
