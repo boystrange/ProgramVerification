@@ -28,11 +28,28 @@ data Order : Set where
 postulate compare : A -> A -> Order
 ```
 
-We represent a red black tree using three distinct data types, `RedTree`, `BlackTree` and `RedBlackTree`. As suggested by their names, the root of a `RedTree` is certainly red, the root of a `BlackTree` is certainly black, whereas the root of a `RedBlackTree` can be either red or black. By devising distinct data types, we can enforce the property (1) of red black trees requiring that the children of a red-rooted tree must be black, as opposed to the children of a black-rooted tree that can be either red or black. In addition, we index these data types with a natural number called **black height**. Intuitively, the black height of a tree is the number of inner black nodes along the paths from the root to its leaves. By making sure that the children of a tree have the same black height, we enforce the property (2) of red black trees.
+We represent a red black tree using three distinct data types,
+`RedTree`, `BlackTree` and `RedBlackTree`. As suggested by their
+names, the root of a `RedTree` is certainly red, the root of a
+`BlackTree` is certainly black, whereas the root of a `RedBlackTree`
+can be either red or black. By devising distinct data types, we can
+enforce the property (1) of red black trees requiring that the
+children of a red-rooted tree must be black, as opposed to the
+children of a black-rooted tree that can be either red or black. In
+addition, we index these data types with a natural number called
+**black height**. Intuitively, the black height of a tree is the
+number of inner black nodes along the paths from the root to its
+leaves. By making sure that the children of a tree have the same
+black height, we enforce the property (2) of red black trees.
 
-Clearly, these data types are mutually dependent on each other. For this reason, we cannot simply define them one after the other in an Agda script. Rather, we must separate their *declaration* from their *definition* so that all of them have been declared by the time they are defined.
+Clearly, these data types are mutually dependent on each other. For
+this reason, we cannot simply define them one after the other in an
+Agda script. Rather, we must separate their *declaration* from their
+*definition* so that all of them have been declared by the time they
+are defined.
 
-A data type declaration starts like a data type definition, but the `where` keyword is omitted and no costructor is given:
+A data type declaration starts like a data type definition, but the
+`where` keyword is omitted and no costructor is given:
 
 ```agda
 data RedTree : ℕ -> Set
@@ -40,14 +57,25 @@ data BlackTree : ℕ -> Set
 data RedBlackTree : ℕ -> Set
 ```
 
-These statements make Agda aware of the fact that from now on we may refer to these data types, even though we haven't yet defined their constructors. To do so, we now provide further `data` definitions, this time omitting the type signature of the data type being defined but listing their constructors. In particular, a `RedTree` with black height `n` is necessarily an inner `node` (leaves are black by convention) and its children are necessarily black-rooted trees with black height `n`.
+These statements make Agda aware of the fact that from now on we may
+refer to these data types, even though we haven't yet defined their
+constructors. To do so, we now provide further `data` definitions,
+this time omitting the type signature of the data type being defined
+but listing their constructors. In particular, a `RedTree` with
+black height `n` is necessarily an inner `node` (leaves are black by
+convention) and its children are necessarily black-rooted trees with
+black height `n`.
 
 ```agda
 data RedTree where
   node : {n : ℕ} -> A -> BlackTree n -> BlackTree n -> RedTree n
 ```
 
-A `BlackTree` is either a `leaf` (which has black height 0) or an inner `node`, whose black height is one plus that of its two children. The children of a black node are red black trees, so their roots can be either red or black (and need not be of the same color).
+A `BlackTree` is either a `leaf` (which has black height 0) or an
+inner `node`, whose black height is one plus that of its two
+children. The children of a black node are red black trees, so their
+roots can be either red or black (and need not be of the same
+color).
 
 ```agda
 data BlackTree where
@@ -55,7 +83,8 @@ data BlackTree where
   node : {n : ℕ} -> A -> RedBlackTree n -> RedBlackTree n -> BlackTree (succ n)
 ```
 
-Finally, a `RedBlackTree` with black height `n` is either a red tree or a black tree with the same black height.
+Finally, a `RedBlackTree` with black height `n` is either a red tree
+or a black tree with the same black height.
 
 ```agda
 data RedBlackTree where
@@ -63,7 +92,14 @@ data RedBlackTree where
   black : {n : ℕ} -> BlackTree n -> RedBlackTree n
 ```
 
-When we insert an element into a red black tree there can be a moment in which the tree is temporarily unbalanced, in the sense that it violates condition (1) above. To accommodate the intermediate form we also introduce yet another data type, called `SomeTree`, which is either a plain red black tree or a red-rooted tree in which one of its children is black but the other is red Note that we distinguish between a "left" unbalanced tree (constructor `red-l`) from a "right" unbalanced tree (constructor `red-r`).
+When we insert an element into a red black tree there can be a
+moment in which the tree is temporarily unbalanced, in the sense
+that it violates condition (1) above. To accommodate the
+intermediate form we also introduce yet another data type, called
+`SomeTree`, which is either a plain red black tree or a red-rooted
+tree in which one of its children is black but the other is red Note
+that we distinguish between a "left" unbalanced tree (constructor
+`red-l`) from a "right" unbalanced tree (constructor `red-r`).
 
 ```agda
 data SomeTree : ℕ -> Set where
@@ -72,7 +108,16 @@ data SomeTree : ℕ -> Set where
   red-r : {n : ℕ} -> A -> BlackTree n -> RedTree n -> SomeTree n
 ```
 
-The next two functions implement a *balancing* operation. In particular, `balance-l x l r` balances a hypothetical black-rooted tree having `x` in its root, a possibly unbalanced left child `l` and a balanced right child `r`. The function `balance-r x l r` does the same for a tree in which the right child is possibly unbalanced. The balancing operation is achieved by performing a suitable rotation of the tree structure while preserving the ordering between the elements in the tree. The re-balanced tree turns out to have the same black height of the (hypothetical) unbalanced one.
+The next two functions implement a *balancing* operation. In
+particular, `balance-l x l r` balances a hypothetical black-rooted
+tree having `x` in its root, a possibly unbalanced left child `l`
+and a balanced right child `r`. The function `balance-r x l r` does
+the same for a tree in which the right child is possibly
+unbalanced. The balancing operation is achieved by performing a
+suitable rotation of the tree structure while preserving the
+ordering between the elements in the tree. The re-balanced tree
+turns out to have the same black height of the (hypothetical)
+unbalanced one.
 
 ```agda
 balance-l : {n : ℕ} -> A -> SomeTree n -> RedBlackTree n -> RedBlackTree (succ n)

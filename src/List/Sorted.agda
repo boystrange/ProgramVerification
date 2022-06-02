@@ -14,6 +14,6 @@ x ≼* xs = all (x ≼_) xs
 _*≼_ : List A -> A -> Set
 xs *≼ x = all (_≼ x) xs
 
-sorted : List A -> Set
-sorted [] = ⊤
-sorted (x :: xs) = x ≼* xs ∧ sorted xs
+Sorted : List A -> Set
+Sorted [] = ⊤
+Sorted (x :: xs) = x ≼* xs ∧ Sorted xs

@@ -28,17 +28,18 @@ partition : (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ ys *�
 partition x [] = [] , [] , #refl , <> , <>
 partition x (u :: xs) with ≼total x u | partition x xs
 ... | left  x≼u | ys , zs , π , py , pz =
-  ys , (u :: zs) , (#trans (#cong π) #push) , py , x≼u , pz
+  ys , u :: zs , #trans (#cong π) #push , py , x≼u , pz
 ... | right u≼x | ys , zs , π , py , pz =
   u :: ys , zs , #cong π , (u≼x , py) , pz
 
-sorted-++ : {z : A} {xs ys : List A} -> sorted xs -> xs *≼ z -> z ≼* ys -> sorted ys -> sorted (xs ++ z :: ys)
+sorted-++ : {z : A} {xs ys : List A} -> Sorted xs -> xs *≼ z -> z ≼* ys -> Sorted ys -> Sorted (xs ++ z :: ys)
 sorted-++ {xs = []} p xs≼z z≼ys q = z≼ys , q
 sorted-++ {z} {xs = x :: xs} (x≼xs , p) (x≼z , xs≼z) z≼ys q =
-  all-++ (x ≼_) x≼xs (x≼z , all-all (z ≼_) (x ≼_) (≼trans x≼z) z≼ys) , sorted-++ p xs≼z z≼ys q
+  all-++ (x ≼_) x≼xs (x≼z , all-all (z ≼_) (x ≼_) (≼trans x≼z) z≼ys) ,
+  sorted-++ p xs≼z z≼ys q
 
 {-# TERMINATING #-}
-nt-quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ sorted ys
+nt-quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ Sorted ys
 nt-quick-sort [] = [] , #refl , <>
 nt-quick-sort (x :: xs) with partition x xs
 ... | ys , zs , π , py , pz with nt-quick-sort ys | nt-quick-sort zs
@@ -50,7 +51,8 @@ nt-quick-sort (x :: xs) with partition x xs
              x :: ys' ++ zs' #⟨ #push ⟩
              ys' ++ x :: zs'
            #end in
-  (ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs)
+  ys' ++ x :: zs' , π' ,
+  sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs
 
 open import WellFounded
 open import LessThan.Alternative
@@ -82,7 +84,7 @@ lemma-⊑ xs ys zs π =
     length xs
   end
 
-quick-sort-aux : (xs : List A) -> Accessible _⊏_ xs -> ∃[ ys ] xs # ys ∧ sorted ys
+quick-sort-aux : (xs : List A) -> Accessible _⊏_ xs -> ∃[ ys ] xs # ys ∧ Sorted ys
 quick-sort-aux [] _ = [] , #refl , <>
 quick-sort-aux (x :: xs) (acc f) with partition x xs
 ... | ys , zs , π , py , pz with lemma-⊑ xs ys zs π |
@@ -97,8 +99,8 @@ quick-sort-aux (x :: xs) (acc f) with partition x xs
              x :: ys' ++ zs' #⟨ #push ⟩
              ys' ++ x :: zs'
            #end in
-  (ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs)
+  ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs
 
-quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ sorted ys
+quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ Sorted ys
 quick-sort xs = quick-sort-aux xs (well-founded-⊏ xs)
 ```
