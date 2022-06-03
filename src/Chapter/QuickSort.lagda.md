@@ -19,12 +19,11 @@ open import List.Permutation
 open import LessThan
 open import LessThan.Reasoning
 open import Logic
-open import Bool
-open import Logic
 
 open TotalOrder.TotalOrder ord
 
-partition : (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ ys *≼ x ∧ x ≼* zs
+partition :
+  (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ ys *≼ x ∧ x ≼* zs
 partition x [] = [] , [] , #refl , <> , <>
 partition x (u :: xs) with ≼total x u | partition x xs
 ... | left  x≼u | ys , zs , π , py , pz =
@@ -39,10 +38,10 @@ sorted-++ {z} {xs = x :: xs} (x≼xs , p) (x≼z , xs≼z) z≼ys q =
   sorted-++ p xs≼z z≼ys q
 
 {-# TERMINATING #-}
-nt-quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ Sorted ys
-nt-quick-sort [] = [] , #refl , <>
-nt-quick-sort (x :: xs) with partition x xs
-... | ys , zs , π , py , pz with nt-quick-sort ys | nt-quick-sort zs
+quick-sort-nt : (xs : List A) -> ∃[ ys ] xs # ys ∧ Sorted ys
+quick-sort-nt [] = [] , #refl , <>
+quick-sort-nt (x :: xs) with partition x xs
+... | ys , zs , π , py , pz with quick-sort-nt ys | quick-sort-nt zs
 ... | ys' , πy , sys | zs' , πz , szs =
   let π' = #begin
              x :: xs         #⟨ #cong π ⟩
@@ -84,13 +83,13 @@ lemma-⊑ xs ys zs π =
     length xs
   end
 
-quick-sort-aux : (xs : List A) -> Accessible _⊏_ xs -> ∃[ ys ] xs # ys ∧ Sorted ys
-quick-sort-aux [] _ = [] , #refl , <>
-quick-sort-aux (x :: xs) (acc f) with partition x xs
+quick-sort-acc : (xs : List A) -> Accessible _⊏_ xs -> ∃[ ys ] xs # ys ∧ Sorted ys
+quick-sort-acc [] _ = [] , #refl , <>
+quick-sort-acc (x :: xs) (acc f) with partition x xs
 ... | ys , zs , π , py , pz with lemma-⊑ xs ys zs π |
                                  lemma-⊑ xs zs ys (#trans π (++-permutation ys zs))
-... | ys⊑xs | zs⊑xs with quick-sort-aux ys (f ys (succ ys⊑xs)) |
-                         quick-sort-aux zs (f zs (succ zs⊑xs))
+... | ys⊑xs | zs⊑xs with quick-sort-acc ys (f ys (succ ys⊑xs)) |
+                         quick-sort-acc zs (f zs (succ zs⊑xs))
 ... | ys' , πy , sys | zs' , πz , szs =
   let π' = #begin
              x :: xs         #⟨ #cong π ⟩
@@ -102,5 +101,5 @@ quick-sort-aux (x :: xs) (acc f) with partition x xs
   ys' ++ x :: zs' , π' , sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs
 
 quick-sort : (xs : List A) -> ∃[ ys ] xs # ys ∧ Sorted ys
-quick-sort xs = quick-sort-aux xs (well-founded-⊏ xs)
+quick-sort xs = quick-sort-acc xs (well-founded-⊏ xs)
 ```

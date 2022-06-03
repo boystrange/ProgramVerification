@@ -1,5 +1,5 @@
 ---
-title: Introduction to Program Verification
+title: Introduction to Program Verification in Agda
 ---
 
 ## Arguments

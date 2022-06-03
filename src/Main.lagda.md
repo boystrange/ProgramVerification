@@ -70,9 +70,3 @@ import Unit
 import Vec
 import WellFounded
 ```
-
-## Test page
-
-```agda
-import Chapter.Test
-```
