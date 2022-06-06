@@ -2,15 +2,11 @@
 ---
 
 ```agda
-import TotalOrder
-
-module Chapter.InsertionSort (A : Set) (ord : TotalOrder.TotalOrder A) where
-
-module SortedLists where
+module Chapter.InsertionSort (A : Set) (_≼_ : A -> A -> Set) where
 
 open import Fun
 open import List
-open import List.Sorted A ord
+open import List.Sorted A _≼_
 open import List.Properties
 open import List.Permutation
 open import Equality
@@ -18,8 +14,7 @@ open import Unit
 open import Sum
 open import Product
 open import Logic
-
-open TotalOrder.TotalOrder ord
+open import TotalOrder A _≼_
 
 module Extrinsic where
 

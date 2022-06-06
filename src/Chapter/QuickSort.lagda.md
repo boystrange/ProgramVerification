@@ -2,9 +2,7 @@
 ---
 
 ```agda
-import TotalOrder
-
-module Chapter.QuickSort (A : Set) (ord : TotalOrder.TotalOrder A) where
+module Chapter.QuickSort (A : Set) (_≼_ : A -> A -> Set) where
 
 open import Unit
 open import Nat
@@ -13,14 +11,15 @@ open import Product
 open import Sum
 open import Equality
 open import List
-open import List.Sorted A ord
+open import List.Sorted A _≼_
+open import TotalOrder A _≼_
 open import List.Properties
 open import List.Permutation
 open import LessThan
 open import LessThan.Reasoning
+open import LessThan.Alternative
 open import Logic
-
-open TotalOrder.TotalOrder ord
+open import WellFounded
 
 partition :
   (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ ys *≼ x ∧ x ≼* zs
@@ -53,9 +52,6 @@ quick-sort-nt (x :: xs) with partition x xs
   ys' ++ x :: zs' , π' ,
   sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs
 
-open import WellFounded
-open import LessThan.Alternative
-
 accessible<' : (x y : ℕ) -> y <' x -> Accessible _<'_ y
 accessible<' (succ y) _ refl      = acc (accessible<' y)
 accessible<' (succ y) z (succ lt) = accessible<' y z lt
@@ -74,21 +70,43 @@ xs ⊏ ys = length xs < length ys
 well-founded-⊏ : WellFounded _⊏_
 well-founded-⊏ = well-founded-m _⊏_ _<'_ length <=to<=' well-founded-lt'
 
-lemma-⊑ : (xs ys zs : List A) -> xs # ys ++ zs -> ys ⊑ xs
-lemma-⊑ xs ys zs π =
+lemma-#-⊑ : {xs ys : List A} -> xs # ys -> ys ⊑ xs
+lemma-#-⊑ π = subst (_<= length _) (#length π) le-refl
+
+lemma-++-⊑-l : (xs ys : List A) -> xs ⊑ xs ++ ys
+lemma-++-⊑-l xs ys =
   begin
-    length ys             <=⟨ le-plus (length ys) (length zs) ⟩
-    length ys + length zs ==⟨ symm (++-length ys zs) ⟩
-    length (ys ++ zs)     ==⟨ symm (#length π) ⟩
-    length xs
+    length xs <=⟨ le-plus (length xs) (length ys) ⟩
+    length xs + length ys ==⟨ symm (++-length xs ys) ⟩
+    length (xs ++ ys)
   end
+
+lemma-++-⊑-r : (xs ys : List A) -> ys ⊑ xs ++ ys
+lemma-++-⊑-r xs ys =
+  begin
+    length ys <=⟨ le-plus (length ys) (length xs) ⟩
+    length ys + length xs ==⟨ +-commutative (length ys) (length xs) ⟩
+    length xs + length ys ==⟨ symm (++-length xs ys) ⟩
+    length (xs ++ ys)
+  end
+
+lemma-⊑ : (xs ys zs : List A) -> xs # ys ++ zs -> ys ⊑ xs ∧ zs ⊑ xs
+lemma-⊑ xs ys zs π = le-trans (lemma-++-⊑-l ys zs) (lemma-#-⊑ π) ,
+                     le-trans (lemma-++-⊑-r ys zs) (lemma-#-⊑ π)
+
+-- lemma-⊑ xs ys zs π =
+--   begin
+--     length ys             <=⟨ le-plus (length ys) (length zs) ⟩
+--     length ys + length zs ==⟨ symm (++-length ys zs) ⟩
+--     length (ys ++ zs)     ==⟨ symm (#length π) ⟩
+--     length xs
+--   end
 
 quick-sort-acc : (xs : List A) -> Accessible _⊏_ xs -> ∃[ ys ] xs # ys ∧ Sorted ys
 quick-sort-acc [] _ = [] , #refl , <>
 quick-sort-acc (x :: xs) (acc f) with partition x xs
-... | ys , zs , π , py , pz with lemma-⊑ xs ys zs π |
-                                 lemma-⊑ xs zs ys (#trans π (++-permutation ys zs))
-... | ys⊑xs | zs⊑xs with quick-sort-acc ys (f ys (succ ys⊑xs)) |
+... | ys , zs , π , py , pz with lemma-⊑ xs ys zs π
+... | ys⊑xs , zs⊑xs with quick-sort-acc ys (f ys (succ ys⊑xs)) |
                          quick-sort-acc zs (f zs (succ zs⊑xs))
 ... | ys' , πy , sys | zs' , πz , szs =
   let π' = #begin

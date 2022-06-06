@@ -1,10 +1,7 @@
-open import TotalOrder
-
-module List.Sorted (A : Set) (ord : TotalOrder A) where
+module List.Sorted (A : Set) (_≼_ : A -> A -> Set) where
 
 open import List
 open import Logic
-open TotalOrder.TotalOrder ord
 
 infix 4 _≼*_ _*≼_
 

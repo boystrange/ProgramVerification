@@ -5,7 +5,6 @@ open import Nat.Properties
 open import Logic
 open import Sum
 open import Product
-open import TotalOrder
 open import Equality
 
 infix 4 _<=_ _>=_ _<_ _>_
@@ -70,12 +69,12 @@ data Trichotomy (m n : ℕ) : Set where
 ... | EQ refl = EQ refl
 ... | GT gt   = GT (succ gt)
 
-le-total-order : TotalOrder ℕ
-TotalOrder._≼_       le-total-order = _<=_
-TotalOrder.≼total    le-total-order = le-total
-TotalOrder.≼antisymm le-total-order = le-antisymm
-TotalOrder.≼refl     le-total-order = le-refl
-TotalOrder.≼trans    le-total-order = le-trans
+-- le-total-order : TotalOrder ℕ
+-- TotalOrder._≼_       le-total-order = _<=_
+-- TotalOrder.≼total    le-total-order = le-total
+-- TotalOrder.≼antisymm le-total-order = le-antisymm
+-- TotalOrder.≼refl     le-total-order = le-refl
+-- TotalOrder.≼trans    le-total-order = le-trans
 
 le-plus : (x y : ℕ) -> x <= x + y
 le-plus zero y = zero
@@ -95,6 +94,11 @@ le-max : ∀{x y z} -> x <= z -> y <= z -> max x y <= z
 le-max zero q = q
 le-max (succ p) zero = succ p
 le-max (succ p) (succ q) = succ (le-max p q)
+
+le-ne-lt : {x y : ℕ} -> x <= y -> x != y -> x < y
+le-ne-lt {.0} {zero} zero ne = absurd (ne refl)
+le-ne-lt {.0} {succ y} zero ne = succ zero
+le-ne-lt {.(succ _)} {.(succ _)} (succ le) ne = succ (le-ne-lt le λ { refl → ne refl } )
 
 _<=?_ : (x y : ℕ) -> Decidable (x <= y)
 zero <=? y = yes zero

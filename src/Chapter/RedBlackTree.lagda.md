@@ -12,7 +12,7 @@ A red black tree is a binary search tree in which nodes are colored
 The combination of these properties makes sure that the depth of a red black tree cannot be more than twice the length of the shortest path from its root to one of its leaves. So, a red black tree is reasonably balanced.
 
 ```agda
-module Chapter.RedBlackTree (A : Set) where
+module Chapter.RedBlackTree (A : Set) (_≼_ : A -> A -> Set) where
 
 open import Nat
 open import Nat.Properties
@@ -58,13 +58,13 @@ data RedBlackTree : ℕ -> Set
 ```
 
 These statements make Agda aware of the fact that from now on we may
-refer to these data types, even though we haven't yet defined their
-constructors. To do so, we now provide further `data` definitions,
-this time omitting the type signature of the data type being defined
-but listing their constructors. In particular, a `RedTree` with
-black height `n` is necessarily an inner `node` (leaves are black by
-convention) and its children are necessarily black-rooted trees with
-black height `n`.
+refer to these data types, even though we haven't defined their
+constructors yet. To do so, we now provide further `data`
+definitions, this time omitting the type signature of the data type
+being defined but listing their constructors. In particular, a
+`RedTree` with black height `n` is necessarily an inner `node`
+(leaves are black by convention) and its children are necessarily
+black-rooted trees with black height `n`.
 
 ```agda
 data RedTree where

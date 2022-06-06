@@ -29,13 +29,17 @@ data Decidable (A : Set) : Set where
   yes :   A -> Decidable A
   no  : ¬ A -> Decidable A
 
-absurd : ∀{A : Set} -> ⊥ -> A
+absurd : {A : Set} -> ⊥ -> A
 absurd ()
 
-∃ : ∀{A : Set} -> (A -> Set) -> Set
+∃ : {A : Set} -> (A -> Set) -> Set
 ∃ = Σ _
 
-∃-syntax : ∀{A : Set} -> (A -> Set) -> Set
+∃-syntax : {A : Set} -> (A -> Set) -> Set
 ∃-syntax = ∃
 
 syntax ∃-syntax (λ x -> B) = ∃[ x ] B
+
+contrapositive : {A B : Set} -> (A -> B) -> ¬ B -> ¬ A
+contrapositive f p q = p (f q)
+
