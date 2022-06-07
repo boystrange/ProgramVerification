@@ -26,12 +26,6 @@ _∈_ i X = X i
 _∉_ : Var -> Domain -> Set
 _∉_ i X = ¬ (X i)
 
-_⊆_ : Domain -> Domain -> Set
-_⊆_ X Y = {i : Var} -> i ∈ X -> i ∈ Y
-
-⊆-trans : {X Y Z : Domain} -> X ⊆ Y -> Y ⊆ Z -> X ⊆ Z
-⊆-trans p q I = q (p I)
-
 _∪_ : Domain -> Domain -> Domain
 X ∪ Y = λ i -> i ∈ X ∨ i ∈ Y
 
@@ -41,6 +35,15 @@ X ∩ Y = λ i -> i ∈ X ∧ i ∈ Y
 _-_ : Domain -> Domain -> Domain
 X - Y = λ i -> i ∈ X ∧ i ∉ Y
 
+_⊆_ : Domain -> Domain -> Set
+_⊆_ X Y = {i : Var} -> i ∈ X -> i ∈ Y
+
+⊆-trans : {X Y Z : Domain} -> X ⊆ Y -> Y ⊆ Z -> X ⊆ Z
+⊆-trans p q I = q (p I)
+
+_⊊_ : Domain -> Domain -> Set
+X ⊊ Y = (X ⊆ Y) ∧ (∃[ i ] i ∈ (Y - X))
+
 complement : Domain -> Domain
 complement X i = i ∉ X
 
@@ -49,6 +52,12 @@ empty dom = (i : Var) -> i ∉ dom
 
 _#_ : Domain -> Domain -> Set
 X # Y = empty (X ∩ Y)
+
+union-⊆-l : {X Y : Domain} -> X ⊆ (X ∪ Y)
+union-⊆-l = left
+
+union-⊆-r : {X Y : Domain} -> Y ⊆ (X ∪ Y)
+union-⊆-r = right
 
 union-in : {i : Var} {X : Domain} -> [ i ] ⊆ X -> i ∈ X
 union-in inc = inc refl

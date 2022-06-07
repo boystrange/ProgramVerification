@@ -1,7 +1,9 @@
 module Chapter.Unification.Core where
 
+open import Nat
 open import Nat.Properties
 open import Equality
+open import Equality.Reasoning
 open import Logic
 open import List hiding ([_])
 
@@ -83,4 +85,17 @@ _|>c_ : Substitution -> Constraint -> Set
 
 _|>cs_ : Substitution -> Constraints -> Set
 σ |>cs cs = all (σ |>c_) cs
+
+very-stupid-lemma : (a b c d e : ℕ) -> (a + b + (c + d + e)) == (a + c + (b + d + e))
+very-stupid-lemma a b c d e =
+  begin
+    a + b + (c + d + e) ==⟨ +-associative (a + b) (c + d) e ⟩
+    a + b + (c + d) + e ==⟨ cong (_+ e) (symm (+-associative a b (c + d))) ⟩
+    a + (b + (c + d)) + e ==⟨ cong (λ x -> a + x + e) (+-associative b c d) ⟩
+    a + (b + c + d) + e ==⟨ cong (λ x -> a + (x + d) + e) (+-commutative b c) ⟩
+    a + (c + b + d) + e ==⟨ cong (λ x -> a + x + e) (symm (+-associative c b d)) ⟩
+    a + (c + (b + d)) + e ==⟨ cong (_+ e) (+-associative a c (b + d)) ⟩
+    a + c + (b + d) + e ==⟨ symm (+-associative (a + c) (b + d) e) ⟩
+    a + c + (b + d + e)
+  end
 
