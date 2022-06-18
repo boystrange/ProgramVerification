@@ -196,11 +196,11 @@ false`. We can provide this information by means of a *fixity
 declaration* of the form
 
 ```agda
-infixl 3 _&&_
+infixl 6 _&&_
 ```
 
 telling Agda that `&&` is meant to be interpreted as a
-*left-associative* operator with priority `2`. We would use `infixr`
+*left-associative* operator with priority `6`. We would use `infixr`
 for declaring *right-associative* operators and just `infix` for
 declaring operators that are neither left- nor right-associative
 (typically, these will be operators with one or more than two
@@ -234,7 +234,7 @@ _||_ true  _ = true
 _||_ false y = y
 
 -- EXERCISE 4
-infixl 2 _||_
+infixl 5 _||_
 
 -- the value of false && true || true can be either true or false
 -- depending on the priority given to && and ||. If && has greater

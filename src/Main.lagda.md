@@ -42,6 +42,7 @@ import Chapter.Lambda
 import Chapter.Interactive
 
 import Chapter.Bool
+import Chapter.BoolProperties
 
 -- Booleans, first theorems using equality
 
