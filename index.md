@@ -20,6 +20,19 @@ title: Introduction to Program Verification in Agda
 
 ## Fira Code Font
 
+## Emacs shortcuts
+
+| Command       | Action                                           |
+|---------------|--------------------------------------------------|
+| `C-c C-l`     | Load the current file                            |
+| `C-c C-d`     | Enter an expression and show its type            |
+| `C-c C-n`     | Enter an expression and normalize it             |
+| `C-c C-c`     | Enter an argument an perform case analysis on it |
+| `C-c C-,`     | Show goal and context                            |
+| `C-c C-f`     | Move forward to the next goal                    |
+| `C-c C-b`     | Move backward to the previous goal               |
+| `C-c C-SPACE` | Fill the hole with the provided expression       |
+
 ## Copyright
 
 The course material in this site has been posted for your personal

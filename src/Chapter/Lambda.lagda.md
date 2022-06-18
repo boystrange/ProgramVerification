@@ -174,22 +174,16 @@ While solving the following exercises, try to minimize the use of
 parentheses taking advantage of the established syntactic
 conventions.
 
-1. Implement the function `swap : A × B -> B × A`.
-2. Implement the function `flip : (A -> B -> C) -> B -> A -> C`.
-3. Implement the function `rotate : A × B × C -> C × A × B`.
-4. Implement the function `compose : (B -> C) -> (A -> B) -> A -> C`.
-5. Provide two syntactically different (but equivalent)
+1. Implement the function `flip : (A -> B -> C) -> B -> A -> C`.
+2. Implement the function `compose : (B -> C) -> (A -> B) -> A -> C`.
+3. Provide two syntactically different (but equivalent)
    implementations of the function `apply : (A -> B) -> A -> B`.
+4. Implement the function `swap : A × B -> B × A`.
+5. Implement the function `rotate : A × B × C -> C × A × B`.
 
 ```agda
-swap : A × B -> B × A
-swap p = snd p , fst p
-
 flip : (A -> B -> C) -> B -> A -> C
 flip = λ f x y -> f y x
-
-rotate : A × B × C -> C × A × B
-rotate = λ x -> snd (snd x) , fst x , fst (snd x)
 
 compose : (B -> C) -> (A -> B) -> A -> C
 compose f g = λ x -> f (g x)
@@ -199,6 +193,12 @@ apply₁ f x = f x
 
 apply₂ : (A -> B) -> A -> B
 apply₂ x = x
+
+swap : A × B -> B × A
+swap p = snd p , fst p
+
+rotate : A × B × C -> C × A × B
+rotate = λ x -> snd (snd x) , fst x , fst (snd x)
 ```
 {:.solution}
 
