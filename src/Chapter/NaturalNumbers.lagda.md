@@ -432,12 +432,15 @@ fact (succ x) = succ x * fact x
 *-succ zero y = refl
 *-succ (succ x) y =
   begin
-    succ x + (succ x * y) ==⟨ refl ⟩
-    succ x + (y + x * y)  ==⟨ cong (succ x +_) {!!} ⟩
-    succ x + (x * succ y) ==⟨ {!!} ⟩
-    succ (x + x * succ y) ==⟨ cong succ {!!} ⟩
-    succ (succ x * succ y) ==⟨ {!!} ⟩
-    {!!}
+    succ x + (succ x * y)  ==⟨ refl ⟩
+    succ x + (y + x * y)   ==⟨ refl ⟩
+    succ (x + (y + x * y)) ==⟨ cong succ (+-assoc x y (x * y)) ⟩
+    succ ((x + y) + x * y) ==⟨ cong (λ u -> succ (u + x * y)) (+-comm x y) ⟩
+    succ ((y + x) + x * y)   ⟨ cong succ (+-assoc y x (x * y)) ⟩==
+    succ (y + (x + x * y)) ==⟨ cong (λ u -> succ (y + u)) (*-succ x y) ⟩
+    succ (y + x * succ y)  ==⟨ refl ⟩
+    succ y + x * succ y    ==⟨ refl ⟩
+    succ x * succ y
   end
 
 *-comm : (x y : ℕ) -> x * y == y * x
@@ -445,8 +448,8 @@ fact (succ x) = succ x * fact x
 *-comm (succ x) y =
   begin
     succ x * y ==⟨ refl ⟩
-    y + x * y ==⟨ cong (y +_) (*-comm x y) ⟩
-    y + y * x ==⟨ *-succ y x ⟩
+    y + x * y  ==⟨ cong (y +_) (*-comm x y) ⟩
+    y + y * x  ==⟨ *-succ y x ⟩
     y * succ x
   end
 
