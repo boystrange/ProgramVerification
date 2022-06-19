@@ -1,3 +1,3 @@
 #!/bin/sh
-exec watchexec -c -d 100 make
+exec watchexec -c -d 500 make
 

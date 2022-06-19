@@ -1,6 +1,16 @@
 
-all: Main.lagda.md
-	agda --html-dir=../pages --html --html-highlight=auto $<
+NULL =
+
+ROOTS = \
+  Library.agda \
+  Chapters.agda \
+  Chapter/NaturalNumbers.lagda.md \
+  $(NULL)
+
+HTMLDIR = ../pages
+
+all: $(ROOTS)
+	for i in $^; do agda --html-dir=$(HTMLDIR) --html --html-highlight=auto $$i; done
 
 dependencies.dot: Main.lagda.md
 	agda --dependency-graph=$@ Main.lagda.md

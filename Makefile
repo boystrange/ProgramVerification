@@ -14,7 +14,7 @@ DEPS  = \
   $(NULL)
 
 serve:
-	bundle exec jekyll serve --incremental --live --unpublished
+	bundle exec jekyll serve --incremental --unpublished
 
 all: $(TARGETS:%=target/%.md)
 

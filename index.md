@@ -20,7 +20,7 @@ title: Introduction to Program Verification in Agda
 
 ## Fira Code Font
 
-## Emacs shortcuts
+## Summary of Emacs shortcuts
 
 | Command       | Action                                           |
 |---------------|--------------------------------------------------|
