@@ -484,4 +484,19 @@ x ^ succ n = x * x ^ n
     x * (x ^ m * x ^ n) ==⟨ cong (x *_) (^-prop-1 x m n) ⟩
     x * x ^ (m + n)
   end
+
+^-prop-2 : (x n : ℕ) -> (x * x) ^ n == x ^ n * x ^ n
+^-prop-2 x zero = refl
+^-prop-2 x (succ n) =
+  begin
+    (x * x) ^ succ n          ==⟨ refl ⟩
+    (x * x) * (x * x) ^ n     ==⟨ cong ((x * x) *_) (^-prop-2 x n) ⟩
+    (x * x) * (x ^ n * x ^ n) ==⟨ *-assoc (x * x) (x ^ n) (x ^ n) ⟩
+    ((x * x) * x ^ n) * x ^ n   ⟨ cong (_* x ^ n) (*-assoc x x (x ^ n)) ⟩==
+    (x * (x * x ^ n)) * x ^ n ==⟨ cong (λ u -> (x * u) * x ^ n) (*-comm x (x ^ n)) ⟩
+    (x * (x ^ n * x)) * x ^ n ==⟨ cong (_* x ^ n) (*-assoc x (x ^ n) x) ⟩
+    ((x * x ^ n) * x) * x ^ n   ⟨ *-assoc (x * x ^ n) x (x ^ n) ⟩==
+    (x * x ^ n) * (x * x ^ n) ==⟨ refl ⟩
+    x ^ succ n * x ^ succ n
+  end
 ```
