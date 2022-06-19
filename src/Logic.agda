@@ -5,8 +5,6 @@ open import Empty
 open import Product
 open import Sum
 
--- TODO: infix
-
 infixr 2 _∨_ ∃-syntax
 infixr 3 _∧_
 

@@ -35,7 +35,7 @@ _ #⟨⟩ ps = ps
 #length #refl = refl
 #length #swap = refl
 #length (#cong π) = cong succ (#length π)
-#length (#trans π π') = trans (#length π) (#length π')
+#length (#trans π π') = tran (#length π) (#length π')
 
 #symm : ∀{A : Set} {xs ys : List A} -> xs # ys -> ys # xs
 #symm #refl = #refl
