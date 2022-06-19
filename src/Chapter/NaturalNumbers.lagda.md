@@ -311,6 +311,10 @@ application has higher precedence than any other operator (including
 
 ## Some properties of `*`
 
+We conclude this chapter with the proof that multiplication is
+associative. To this aim, we first prove that `*` distributes over
+`+` on the right.
+
 ```agda
 *-dist-r : (x y z : ℕ) -> (x + y) * z == x * z + y * z
 *-dist-r zero y z = refl
@@ -323,7 +327,28 @@ application has higher precedence than any other operator (including
     (z + x * z) + y * z ==⟨ refl ⟩
     succ x * z + y * z
   end
+```
 
+The proof is ordinary except for a small technical detail in the
+application of congruence. In the third rewriting step we rewrite
+<!----> `z + (x + y) * z` into `z + (x * z + y * z)` using a
+recursive application of `*-dist-r`. However, the rewriting occurs
+in the right operand of the outermost `+`. In principle, we could
+justify this rewriting with the proof
+
+    cong (λ u -> z + u) (*-dist-r x y z)
+
+where the function `(λ u -> z + u)` describes the context in which
+the rewriting takes place. Instead of defining this lambda
+abstraction explicitly, we have written `(z +_)` which stands for
+the function that takes an argument (say `u`) and yields `z + u`. In
+this case, we have provided the infix operator `+` with just one of
+the operands, leaving an underscore on the side from which we
+abstract over the other one.
+
+We are now ready to prove the associativity of `*`.
+
+```agda
 *-assoc : (x y z : ℕ) -> x * (y * z) == (x * y) * z
 *-assoc zero y z = refl
 *-assoc (succ x) y z =
@@ -335,6 +360,20 @@ application has higher precedence than any other operator (including
     (succ x * y) * z
   end
 ```
+
+In the third step of equational reasoning block of this proof we see
+an example of reverse rewriting, whereby we aim at rewriting <!---->
+`y * z + (x * y) * z` into `(y + x * y) * z` using <!---->
+`*-dist-r`. The difficulty here is that `*-dist-r` proves the
+rewriting in the opposite direction. Of course, we could have
+defined `*-dist-r` in such a way that its conclusion matches the
+direction of the rewriting we want to perform in `*-assoc`, but in
+general it may happen that we want to perform the opposite of a
+rewriting we have already proved. In these cases, we can use the
+symmetry property of equality to perform the desired rewriting. In
+an equational reasoning block, we specify the use of symmetry by
+using the reverse rewriting operator `E ⟨ P ⟩== E'` instead of the
+usual `E ==⟨ P ⟩ E'`.
 
 ## Exercises
 
@@ -353,3 +392,93 @@ application has higher precedence than any other operator (including
    provide a fixity declaration so that it is left associative and
    has higher precedence than `*`.
 7. Prove that `x ^ m * x ^ n == x ^ (m + n)`. CONTROLLARE
+
+```agda
+-- EXERCISE 1
+
+_-_ : ℕ -> ℕ -> ℕ
+x      - zero   = x
+zero   - succ y = zero
+succ x - succ y = x - y
+
+-- EXERCISE 2
+
+fact : ℕ -> ℕ
+fact zero     = 1
+fact (succ x) = succ x * fact x
+
+*-zero-r : (x : ℕ) -> 0 == x * 0
+*-zero-r zero     = refl
+*-zero-r (succ x) = *-zero-r x
+
+-- EXERCISE 3
+
+*-unit-l : (x : ℕ) -> 1 * x == x
+*-unit-l x =
+  begin
+    1 * x     ==⟨ refl ⟩
+    x + 0 * x ==⟨ refl ⟩
+    x + 0       ⟨ +-unit-r x ⟩==
+    x
+  end
+
+*-unit-r : (x : ℕ) -> x * 1 == x
+*-unit-r zero     = refl
+*-unit-r (succ x) = cong succ (*-unit-r x)
+
+-- EXERCISE 4
+
+*-succ : (x y : ℕ) -> x + x * y == x * succ y
+*-succ zero y = refl
+*-succ (succ x) y =
+  begin
+    succ x + (succ x * y) ==⟨ refl ⟩
+    succ x + (y + x * y)  ==⟨ cong (succ x +_) {!!} ⟩
+    succ x + (x * succ y) ==⟨ {!!} ⟩
+    succ (x + x * succ y) ==⟨ cong succ {!!} ⟩
+    succ (succ x * succ y) ==⟨ {!!} ⟩
+    {!!}
+  end
+
+*-comm : (x y : ℕ) -> x * y == y * x
+*-comm zero y     = *-zero-r y
+*-comm (succ x) y =
+  begin
+    succ x * y ==⟨ refl ⟩
+    y + x * y ==⟨ cong (y +_) (*-comm x y) ⟩
+    y + y * x ==⟨ *-succ y x ⟩
+    y * succ x
+  end
+
+-- EXERCISE 5
+
+*-dist-l : (x y z : ℕ) -> x * (y + z) == x * y + x * z
+*-dist-l x y z =
+  begin
+    x * (y + z)   ==⟨ *-comm x (y + z) ⟩
+    (y + z) * x   ==⟨ *-dist-r y z x ⟩
+    y * x + z * x ==⟨ cong (_+ z * x) (*-comm y x) ⟩
+    x * y + z * x ==⟨ cong (x * y +_) (*-comm z x) ⟩
+    x * y + x * z
+  end
+
+-- EXERCISE 6
+
+infixl 8 _^_
+
+_^_ : ℕ -> ℕ -> ℕ
+x ^ zero = 1
+x ^ succ n = x * x ^ n
+
+-- EXERCISE 7
+
+^-prop-1 : (x m n : ℕ) -> x ^ m * x ^ n == x ^ (m + n)
+^-prop-1 x zero     n = *-unit-l (x ^ n)
+^-prop-1 x (succ m) n =
+  begin
+    x ^ succ m * x ^ n  ==⟨ refl ⟩
+    (x * x ^ m) * x ^ n   ⟨ *-assoc x (x ^ m) (x ^ n) ⟩==
+    x * (x ^ m * x ^ n) ==⟨ cong (x *_) (^-prop-1 x m n) ⟩
+    x * x ^ (m + n)
+  end
+```
