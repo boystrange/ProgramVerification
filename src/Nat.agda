@@ -14,6 +14,10 @@ _+_ : ℕ -> ℕ -> ℕ
 zero   + y = y
 succ x + y = succ (x + y)
 
+pred : ℕ -> ℕ
+pred zero = zero
+pred (succ x) = x
+
 _-_ : ℕ -> ℕ -> ℕ
 zero   - _      = 0
 succ x - zero   = succ x

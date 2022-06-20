@@ -1,21 +1,24 @@
 module Fun where
 
+-- CHECK IF NEEDED
 open import Product
 
-id : ∀{A : Set} -> A -> A
-id = λ x -> x
+id : {A : Set} -> A -> A
+id x = x
 
-const : ∀{A B : Set} -> A -> B -> A
-const x = λ _ -> x
+const : {A B : Set} -> A -> B -> A
+const x _ = x
 
-_∘_ : ∀{A B C : Set} -> (B -> C) -> (A -> B) -> A -> C
-f ∘ g = λ x -> f (g x)
+_∘_ : {A B C : Set} -> (B -> C) -> (A -> B) -> A -> C
+_∘_ f g x = f (g x)
 
-curry : ∀{A B C : Set} -> (A × B -> C) -> A -> B -> C
+flip : {A B C : Set} -> (A -> B -> C) -> B -> A -> C
+flip f x y = f y x
+
+-- CHECK IF NEEDED
+
+curry : {A B C : Set} -> (A × B -> C) -> A -> B -> C
 curry f x y = f (x , y)
 
-uncurry : ∀{A B C : Set} -> (A -> B -> C) -> A × B -> C
+uncurry : {A B C : Set} -> (A -> B -> C) -> A × B -> C
 uncurry f (x , y) = f x y
-
-flip : ∀{A B C : Set} -> (A -> B -> C) -> B -> A -> C
-flip f x y = f y x

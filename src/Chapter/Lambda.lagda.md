@@ -8,56 +8,43 @@ module Chapter.Lambda where
 ```
 -->
 
-## Sets and types
-
-* both sets and types are collections of elements, but in set theory
-* the same element can belong to different sets, whereas in type
-  theory every element inhabits exactly one type
-* typical operations on sets are support union, intersection,
-  cartesian product, arrow is function space
-* typical operations on types are cartesian product, disjoint union
-
-To try out the examples discussed in this section and to solve the
-proposed exercises it is necessary to include the `Product` module,
-which defines the cartesian product for types. We will understand
-its definition in a [later section](???).
+To try out the examples discussed in this chapter and to solve the
+proposed exercises it is necessary to include the `Nat` module,
+which defines the natural numbers and some basic operations on
+them. We will discuss natural numbers in a [later section]({% link
+pages/Chapter.NaturalNumbers.md %}). For the time being, we simply
+import the module and make its content accessible with the following
+`open import` clause.
 
 ```agda
+open import Nat
 open import Product
 ```
 
 ## Simple types
 
-We assume the existence of an infinite set of **type names** `{ α,
-β, γ, ... }`. The syntax of **types** in the simply typed λ calculus
-is defined by the following grammar
+Agda is a strongly typed programming language and every term of the
+language must be **well typed** in order to be considered by
+Agda. For the time being we only consider a small set of **simple
+types** defined by the following grammar
 
-```text
-  A, B ::= α | (A -> B) | (A × B)
-```
+    A, B ::= Bool | ℕ | (A -> B)
 
-where `(A -> B)` is called **arrow type** or **function type** and
-`(A × B)` is called **product type** or **pair type**. Intuitively,
-`(A -> B)` is the type of functions taking an argument of type `A`
-and producing a result of type `B`, whereas `(A × B)` is the type of
-pairs whose components have type `A` and `B` respectively.
-
-Hereafter, type names may stand for unknown types but also for basic
-or predefined types, such as the type `ℕ` of natural numbers, the
-type `Bool` of boolean values, the type `String` of strings, and so
-forth.
+where `Bool` is the type of **boolean values** `true` and `false`,
+`ℕ` is the type of **natural numbers**, which can be written `0`,
+`1`, `2`, ..., and `(A -> B)` is the type of **functions** that,
+when applied to an argument of type `A`, yield a result of type `B`.
 
 To limit the amount of parentheses we have to write in types, we
 adopt the following conventions:
 
 * We omit topmost parentheses, so that `A -> B` stands for `(A -> B)`
 
-* We assume that `×` has higher precedence than `->`, so that `A × B
-  -> A` stands for `(A × B) -> A` and not for `A × (B -> A)`
+-- * We assume that `×` has higher precedence than `->`, so that `A × B
+--   -> A` stands for `(A × B) -> A` and not for `A × (B -> A)`
 
-* We assume that `->` and `x` associate to the **right**, so that
-  e.g. `A -> B -> C` stands for `A -> (B -> C)` and not for `(A ->
-  B) -> C`. Similarly, `A × B × C` stands for `A × (B × C)`.
+* We assume that `->` associates to the **right**, so that e.g. `A
+  -> B -> C` stands for `A -> (B -> C)` and not for `(A -> B) -> C`.
 
 ## Terms
 
@@ -65,16 +52,15 @@ We assume the existence of an infinite set of **term variables** `{
 x, y, z, ... }` often called simply variables. The syntax of
 **terms** is defined by the following grammar
 
-```text
-  M, N ::= x | (λ (x : A) -> M) | (M N) | (M , N) | fst | snd
-```
+    M, N ::= 0 | 1 | ... | x | (λ (x : A) -> M) | (M N)
 
 where:
 
 * a term of the form `(λ (x : A) -> M)` is called **abstraction**
-  representing a function that produces `M` when applied to `x`. We
+  and represents a function that produces `M` when applied to `x`. We
   say that `x` is the **argument** of the function and that `M` is
-  its **body**;
+  its **body**. In most cases, the argument `x` occurs within the
+  body `M`.
 * a term of the form `(M N)` is called **application** and
   represents the application of (the function) `M` to (the argument)
   `N`. It is useful to think of function application as of an

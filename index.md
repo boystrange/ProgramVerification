@@ -33,6 +33,10 @@ title: Introduction to Program Verification in Agda
 | `C-c C-b`     | Move backward to the previous goal               |
 | `C-c C-SPACE` | Fill the hole with the provided expression       |
 
+## Mini Agda Library
+
+[library]({% link pages/Library.html %})
+
 ## Copyright
 
 The course material in this site has been posted for your personal
