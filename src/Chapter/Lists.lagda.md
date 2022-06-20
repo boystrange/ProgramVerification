@@ -235,9 +235,3 @@ foldl-reverse xs =
     reverse xs
   end
 ```
-
-```
-prop : {A B : Set} (f : A -> B -> A) (a : A) (xs : List B) -> foldl f a xs == foldr (flip f) a (reverse xs)
-prop f a [] = refl
-prop f a (x :: xs) = {!!}
-```
