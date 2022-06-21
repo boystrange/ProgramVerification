@@ -28,7 +28,7 @@ shown below. Note that the program makes use of natural numbers,
 which must be suitably defined and imported for this program to
 correctly type check and compile.
 
-```agda
+```
 fibo : ℕ -> ℕ
 fibo 0               = 0
 fibo 1               = 1
@@ -46,30 +46,30 @@ albeit slightly more complex function that computes the k-th
 Fibonacci number in linear time, as follows.
 
 ```agda
-fibo-gen : ℕ -> ℕ -> ℕ -> ℕ
-fibo-gen m n 0               = m
-fibo-gen m n 1               = n
-fibo-gen m n (succ (succ k)) = fibo-gen n (m + n) (succ k)
+fibo-from : ℕ -> ℕ -> ℕ -> ℕ
+fibo-from m n 0               = m
+fibo-from m n 1               = n
+fibo-from m n (succ (succ k)) = fibo-from n (m + n) (succ k)
 
 fast-fibo : ℕ -> ℕ
-fast-fibo = fibo-gen 0 1
+fast-fibo = fibo-from 0 1
 ```
 
 The `fast-fibo` function is just a wrapper for the auxiliary
-`fibo-gen` function, which takes three arguments: `m` and `n`, which
+`fibo-from` function, which takes three arguments: `m` and `n`, which
 are supposed to be two subsequent numbers in the Fibonacci sequence,
 and then an index `k` which represents the number of steps to make
 in the sequence, starting from `m` and `n`, in order to reach the
 desired number. When `k` is 0, the desired number is just `m`. When
 `k` is 1, the desired number is just `n`.  When `k` is greater than
-one, we recursively apply `fibo-gen` so that `m` becomes `n`, `n`
+one, we recursively apply `fibo-from` so that `m` becomes `n`, `n`
 becomes the sum of the (old) `m` and of the (old) `n`, and `k` is
-decreased by one. That is, `fibo-gen` is basically a functional
+decreased by one. That is, `fibo-from` is basically a functional
 implementation of the classical loop that finds the desired number
 in the Fibonacci sequence by using (and updating) two auxiliary
 variables `m` and `n` initialized with 0 and 1.
 
-Now, since `fast-fibo` (and particularly `fibo-gen` on which it
+Now, since `fast-fibo` (and particularly `fibo-from` on which it
 relies) is substantially more complex than `fibo`, we may wonder
 whether `fast-fibo` is in fact equivalent to `fibo`. We may perform
 a few test asking Agda to evaluate `fast-fibo`, but these tests are
@@ -101,13 +101,13 @@ from the application `fast-fibo k` is the same value resulting from
 the application `fibo k`.
 
 ```agda
-lemma : ∀(k i : ℕ) -> fibo-gen (fibo k) (fibo (succ k)) i == fibo (i + k)
+lemma : ∀(k i : ℕ) -> fibo-from (fibo k) (fibo (succ k)) i == fibo (i + k)
 lemma k 0 = refl
 lemma k 1 = refl
 lemma k (succ (succ i)) =
   begin
-    fibo-gen (fibo (succ k)) (fibo k + fibo (succ k)) (succ i) ==⟨⟩
-    fibo-gen (fibo (succ k)) (fibo (succ (succ k))) (succ i)
+    fibo-from (fibo (succ k)) (fibo k + fibo (succ k)) (succ i) ==⟨⟩
+    fibo-from (fibo (succ k)) (fibo (succ (succ k))) (succ i)
       ==⟨ lemma (succ k) (succ i) ⟩
     fibo (succ i + succ k) ==⟨⟩
     fibo (succ (i + succ k))
@@ -121,9 +121,9 @@ lemma k (succ (succ i)) =
 theorem : ∀(k : ℕ) -> fast-fibo k == fibo k
 theorem k =
   begin
-    fast-fibo k    ==⟨⟩
-    fibo-gen 0 1 k ==⟨ lemma 0 k ⟩
-    fibo (k + 0)   ==⟨ cong fibo (symm (+-zero k)) ⟩
+    fast-fibo k     ==⟨⟩
+    fibo-from 0 1 k ==⟨ lemma 0 k ⟩
+    fibo (k + 0)      ⟨ cong fibo (+-zero k) ⟩==
     fibo k
   end
 ```
@@ -146,15 +146,15 @@ performance is more important.
      F_{i+2} = F_i + F_{i+1}
    $$
 
-   Using pencil and paper, prove that `fibo-gen` $F_i$ $F_{i+1}$ $k$
+   Using pencil and paper, prove that `fibo-from` $F_i$ $F_{i+1}$ $k$
    = $F_{i+k}$ by induction on $k$.
 
    > By induction on $k$. There are two base cases: when $k = 0$,
-   > then `fibo-gen` $F_i$ $F_{i+1}$ $0$ = $F_i$ = $F_{i+k}$; when
-   > $k = 1$, then `fibo-gen` $F_i$ $F_{i+1}$ $1$ = $F_{i+1}$ =
+   > then `fibo-from` $F_i$ $F_{i+1}$ $0$ = $F_i$ = $F_{i+k}$; when
+   > $k = 1$, then `fibo-from` $F_i$ $F_{i+1}$ $1$ = $F_{i+1}$ =
    > $F_{i+k}$. In the inductive case we have $k > 1$. By definition
-   > of `fibo-gen` we have `fibo-gen` $F_i$ $F_{i+1}$ $k$ =
-   > `fibo-gen` $F_{i+1}$ $F_{i+2}$ $(k-1)$. Using the induction
-   > hypothesis we conclude `fibo-gen` $F_{i+1}$ $F_{i+2}$ $(k-1)$ =
+   > of `fibo-from` we have `fibo-from` $F_i$ $F_{i+1}$ $k$ =
+   > `fibo-from` $F_{i+1}$ $F_{i+2}$ $(k-1)$. Using the induction
+   > hypothesis we conclude `fibo-from` $F_{i+1}$ $F_{i+2}$ $(k-1)$ =
    > $F_{i+k}$.
    {:.solution}

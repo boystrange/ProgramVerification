@@ -2,12 +2,18 @@
 title: Introduction to Program Verification in Agda
 ---
 
-## Arguments
+## Chapters
 
-1. Introduction
-   * [A taste of Agda]({% link pages/Demo.md %})
-   * [Installation and setup]({% link pages/Setup.md %})
-   * [First steps in Agda]({% link pages/Lambda.md %})
+* [A taste of Agda]({% link pages/Chapter.Demo.md %})
+* [Installation and setup]({% link pages/Chapter.Setup.md %})
+* [First steps in Agda]({% link pages/Chapter.Lambda.md %})
+* [Inductive data types: the booleans]({% link pages/Chapter.Bool.md %})
+* [Natural numbers]({% link pages/Chapter.NaturalNumbers.md %})
+* [Polymorphism and implicit arguments]({% link pages/Chapter.Polymorphism.md %})
+* [Programming with lists]({% link pages/Chapter.Lists.md %})
+* [Logical constants and connectives]()
+* [Negation]()
+* [Quantifiers]()
 
 ## References
 

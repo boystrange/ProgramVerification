@@ -13,12 +13,11 @@ proposed exercises it is necessary to include the `Nat` module,
 which defines the natural numbers and some basic operations on
 them. We will discuss natural numbers in a [later section]({% link
 pages/Chapter.NaturalNumbers.md %}). For the time being, we simply
-import the module and make its content accessible with the following
-`open import` clause.
+import the module and make its content accessible by means of the
+following clause.
 
-```agda
+```
 open import Nat
-open import Product
 ```
 
 ## Simple types
@@ -26,174 +25,134 @@ open import Product
 Agda is a strongly typed programming language and every term of the
 language must be **well typed** in order to be considered by
 Agda. For the time being we only consider a small set of **simple
-types** defined by the following grammar
+types**:
 
-    A, B ::= Bool | ℕ | (A -> B)
+* `ℕ` is the type of **natural numbers**;
+* if `A` and `B` are types, then `(A -> B)` is the type of
+  **functions** that, when applied to an argument of type `A`, yield a
+  *result of type `B`.
 
-where `Bool` is the type of **boolean values** `true` and `false`,
-`ℕ` is the type of **natural numbers**, which can be written `0`,
-`1`, `2`, ..., and `(A -> B)` is the type of **functions** that,
-when applied to an argument of type `A`, yield a result of type `B`.
-
-To limit the amount of parentheses we have to write in types, we
-adopt the following conventions:
+To limit the amount of parentheses we have to write in types and
+improve readability, we adopt the following conventions:
 
 * We omit topmost parentheses, so that `A -> B` stands for `(A -> B)`
-
--- * We assume that `×` has higher precedence than `->`, so that `A × B
---   -> A` stands for `(A × B) -> A` and not for `A × (B -> A)`
-
 * We assume that `->` associates to the **right**, so that e.g. `A
   -> B -> C` stands for `A -> (B -> C)` and not for `(A -> B) -> C`.
 
 ## Terms
 
 We assume the existence of an infinite set of **term variables** `{
-x, y, z, ... }` often called simply variables. The syntax of
-**terms** is defined by the following grammar
+x, y, z, ... }` often called simply variables. Agda is a strongly
+typed language, in the sense that it only considers (and evaluates)
+terms that are **well typed** according to a specific set of
+**typing rules**. In describing the syntax of terms, we also
+informally describe the typing rules that they must obey and how
+their type is determined.
 
-    M, N ::= 0 | 1 | ... | x | (λ (x : A) -> M) | (M N)
-
-where:
-
-* a term of the form `(λ (x : A) -> M)` is called **abstraction**
-  and represents a function that produces `M` when applied to `x`. We
-  say that `x` is the **argument** of the function and that `M` is
-  its **body**. In most cases, the argument `x` occurs within the
-  body `M`.
-* a term of the form `(M N)` is called **application** and
+* A variable of type `A` is also a term of type `A`.
+* If `x` is a variable, `A` is a type and `M` is a term of type `B`
+  assuming that `x` has type `A`, then `(λ (x : A) -> M)` is a term
+  of type `A -> B` called **abstraction** and represents a function
+  that produces `M` when applied to `x`. We say that `x` is the
+  **argument** of the function and that `M` is its **body**. In most
+  cases, the argument `x` occurs within the body `M`.
+* If `M` is a term of type `A -> B` and `N` is a term of type `A`,
+  then `(M N)` is a term of type `B` called **application** and
   represents the application of (the function) `M` to (the argument)
   `N`. It is useful to think of function application as of an
-  invisible operator placed in between `M` and `N`;
-* a term of the form `(M , N)` is called **pair** and represents a
-  pair whose components are `M` and `N`;
-* the terms `fst` and `snd` are called **pair projections** and
-  denote the functions that respectively return the first and second
-  component of their argument.
+  invisible operator placed in between `M` and `N`.
 
-As for types, we adopt some syntactic conventions to improve the
-readability of terms. In particular:
+We will introduce new forms in the following chapters. As for types,
+we adopt some syntactic conventions to improve the readability of
+terms. In particular:
 
 * We omit topmost parentheses, so that e.g. `M N` stands for `(M
-  N)`;
+  N)`.
 * We omit the type of an argument when it is unimportant or clear
   from the context. For example, we may write `λ x -> x` instead of
-  `λ (x : A) -> x`;
-* We collapse subsequent abstractions into one, so that e.g. `λ x y
-  z -> M` stands for `λ x -> λ y -> λ z -> M`;
-* We assume that the body of a lambda abstraction extends as much as
-  possibly to the right. For example, `λ x y -> x y` stands for `λ x
-  y -> (x y)` and not for `(λ x y -> x) y`;
+  `λ (x : A) -> x`.
+* We often collapse nested abstractions into one, so that e.g. `λ x
+  y z -> M` stands for `λ x -> λ y -> λ z -> M`.
+* We assume that the body of an abstraction extends as much as
+  possible to the right. For example, `λ x y -> x y` stands for `λ x
+  y -> (x y)` and not for `(λ x y -> x) y`.
 * We assume that application is **left associative**, so that `M₁ M₂
-  M₃` stands for `(M₁ M₂) M₃` and not for `M₁ (M₂ M₃)`;
-* We assume that application has **higher precedence** than `,` and
-  of any other operator that will be introduced later. For example,
-  `M N₁ , N₂` stands for `(M N₁) , N₂` and not for `M (N₁ ,
-  N₂)`. This convention applies also to the projections `fst` and
-  `snd` (which, as we will see, are just special instances of
-  function applications);
-* We assume that pair formation is **right associative**, so that
-  e.g. `M₁ , M₂ , M₃` stands for `M₁ , (M₂ , M₃)` and not for `(M₁ ,
-  M₂) , M₃`;
-
-## Currying
-
-## Well-typed terms
-
-```text
-
-  [VAR]  -----------------
-         Γ, x : A |- x : A
-```
-
-```text
-             Γ, x : A |- M : B
-  [LAM]  ---------------------------
-         Γ |- λ(x : A) -> M : A -> B
-```
-
-```text
-         Γ |- M : A -> B    Γ |- N : A
-  [APP]  -----------------------------
-                 Γ |- M N : B
-```
-
-```text
-  [PAIR]                      [FST]             [SND]
-  Γ |- M : A    Γ |- N : B    Γ |- M : A × B    Γ |- M : A × B
-  ------------------------    --------------    --------------
-    Γ |- (M , N) : A × B      Γ |- fst M : A    Γ |- snd M : B
-```
+  M₃` stands for `(M₁ M₂) M₃` and not for `M₁ (M₂ M₃)`.
 
 ## Definitions
 
-Define a few types and terms
-
-
-```agda
-postulate A B C : Set
-
-id : A -> A
-id = λ(x : A) -> x
-
-id₂ : A -> A
-id₂ = λ x -> x
-
-id₃ : A -> A
-id₃ x = x
-```
-
-```agda
-
--- esercizio
-curry : (A × B -> C) -> A -> B -> C
-curry f x y = f (x , y)
-
-uncurry : (A -> B -> C) -> A × B -> C
-uncurry f p = f (fst p) (snd p)
+An Agda program consists mainly of **definitions** with which we
+give names to terms and we specify their type. For example, the
+following two lines specify that `f` is a function of type `ℕ -> ℕ`
+that maps $x$ to $x^2 + 1$:
 
 ```
-
-## Homework
-
-While solving the following exercises, try to minimize the use of
-parentheses taking advantage of the established syntactic
-conventions.
-
-1. Implement the function `flip : (A -> B -> C) -> B -> A -> C`.
-2. Implement the function `compose : (B -> C) -> (A -> B) -> A -> C`.
-3. Provide two syntactically different (but equivalent)
-   implementations of the function `apply : (A -> B) -> A -> B`.
-4. Implement the function `swap : A × B -> B × A`.
-5. Implement the function `rotate : A × B × C -> C × A × B`.
-
-```agda
-flip : (A -> B -> C) -> B -> A -> C
-flip = λ f x y -> f y x
-
-compose : (B -> C) -> (A -> B) -> A -> C
-compose f g = λ x -> f (g x)
-
-apply₁ : (A -> B) -> A -> B
-apply₁ f x = f x
-
-apply₂ : (A -> B) -> A -> B
-apply₂ x = x
-
-swap : A × B -> B × A
-swap p = snd p , fst p
-
-rotate : A × B × C -> C × A × B
-rotate = λ x -> snd (snd x) , fst x , fst (snd x)
+f : ℕ -> ℕ
+f = λ x -> x ^ 2 + 1
 ```
-{:.solution}
 
-Which of the following terms are well typed? Verify your answer
-using Agda and come up with justifications for the ill-typed terms.
+The first line provides the **signature** of `f`. Top-level
+definitions like this one must always be accompanied by a
+signature. The second line provides the **definition** of `f`.  By
+loading the program using `C-c C-l`, Agda verifies that `f` is well
+typed and that its type is consistent with the one provided in its
+signature.  We can try the definition of `f` by applying it to some
+natural number. For example, if we hit `C-c C-n` and enter `f 2` we
+obtain `5` as result. The command `C-c C-n` asks Agda to *evaluate*
+(technically, to *normalize*), the provided expression.
 
-1. `λ (x : A) -> (x , x)`
-2. `λ (f : A -> A) (x : B) -> f x`
-3. `λ (x : A -> A) -> x x`
-4. `(fst , snd)`
-5. `fst λ (x : A) -> x`
-6. `snd (λ (x : A) -> x , fst)`
+When defining abstractions, Agda provides an alternative, more
+convenient notation in which the argument is moved to the left of
+`=`. For example, an equivalent way of defining `f` is
+
+```
+f₁ : ℕ -> ℕ
+f₁ x = x ^ 2 + 1
+```
+
+which can be read as "`f₁` applied to `x` is `x ^ 2 + 1`". Note that
+we have called this alternative definition of the function `f₁` and
+not `f`. There cannot be two definitions with the same name in the
+same Agda file. Here and in the following chapters, we will use
+indices when providing multiple versions of the same definition.
+
+## Multi-argument and higher-order functions
+
+Strictly speaking, all Agda functions have exactly one argument. The
+usual way of representing multi-argument functions in a functional
+language is by means of functions that yield other functions as
+result. For example, `g` below is defined as a function that maps
+$x$ to a function that maps $y$ to $x^2 + 2xy + 1$.
+
+```
+g : ℕ -> ℕ -> ℕ
+g = λ x -> λ y -> x ^ 2 + 2 * x * y + 1
+```
+
+Equivalently, `g` can be written as follows:
+
+```
+g₁ : ℕ -> ℕ -> ℕ
+g₁ x y = x ^ 2 +  2 * x * y + 1
+```
+
+We can use `C-c C-n` to verify that `g 2 3` evaluates to `17`. Since
+application is left associative, `g 2 3` is the same as `(g 2)
+3`. That is, we first apply `g` to `2` to obtain the function
+
+    λ y -> 2 ^ 2 + 2 * 2 * y + 1
+
+and then we apply this function to `3`, to obtain
+`2 ^ 2 + 2 * 2 * 3 + 1` that is `17`.
+
+As in most functional programming languages, functions are
+first-class entities that can be provided as arguments and returned
+as results of other functions. For example, the function
+
+```
+twice : (ℕ -> ℕ) -> ℕ -> ℕ
+twice f x = f (f x)
+```
+
+applied to a function `f` and an argument `x` applies `f` to `x`
+twice so that evaluating `twice f 2` yields `26`.

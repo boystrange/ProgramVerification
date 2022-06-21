@@ -102,7 +102,7 @@ cases:
 
 ```agda
 not₂ : Bool -> Bool
-not₂ true = {!!}
+not₂ true  = {!!}
 not₂ false = {!!}
 ```
 
@@ -173,12 +173,11 @@ underscores. For example, the following is an alternative, but fully
 equivalent definition of `and` as the binary operator `&&` as found
 in other programming languages.
 
-```agda
+```
 _&&_ : Bool -> Bool -> Bool
 true  && y = y
 false && _ = false
 ```
-
 
 With this definition in place, we can write e.g. `true && (true &&
 false)` instead of `and true (and true false)`. The two underscores
