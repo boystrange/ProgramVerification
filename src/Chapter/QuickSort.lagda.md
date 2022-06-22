@@ -4,11 +4,8 @@
 ```agda
 module Chapter.QuickSort (A : Set) (_≼_ : A -> A -> Set) where
 
-open import Unit
 open import Nat
 open import Nat.Properties
-open import Product
-open import Sum
 open import Equality
 open import List
 open import List.Sorted A _≼_
@@ -25,9 +22,9 @@ partition :
   (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ ys *≼ x ∧ x ≼* zs
 partition x [] = [] , [] , #refl , <> , <>
 partition x (u :: xs) with ≼total x u | partition x xs
-... | left  x≼u | ys , zs , π , py , pz =
+... | inl x≼u | ys , zs , π , py , pz =
   ys , u :: zs , #trans (#cong π) #push , py , x≼u , pz
-... | right u≼x | ys , zs , π , py , pz =
+... | inr u≼x | ys , zs , π , py , pz =
   u :: ys , zs , #cong π , (u≼x , py) , pz
 
 sorted-++ : {z : A} {xs ys : List A} -> Sorted xs -> xs *≼ z -> z ≼* ys -> Sorted ys -> Sorted (xs ++ z :: ys)

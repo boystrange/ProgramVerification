@@ -2,7 +2,6 @@ module List where
 
 open import Nat
 open import Logic
-open import Product
 
 data List (A : Set) : Set where
   []   : List A
@@ -21,15 +20,15 @@ map : ∀{A B : Set} -> (A -> B) -> List A -> List B
 map f []        = []
 map f (x :: xs) = f x :: map f xs
 
-zip : ∀{A B : Set} -> List A -> List B -> List (A × B)
-zip [] ys = []
-zip (x :: xs) [] = []
-zip (x :: xs) (y :: ys) = (x , y) :: zip xs ys
+-- zip : ∀{A B : Set} -> List A -> List B -> List (A × B)
+-- zip [] ys = []
+-- zip (x :: xs) [] = []
+-- zip (x :: xs) (y :: ys) = (x , y) :: zip xs ys
 
-unzip : {A B : Set} -> List (A × B) -> List A × List B
-unzip [] = [] , []
-unzip ((x , y) :: xs) with unzip xs
-... | xs , ys = x :: xs , y :: ys
+-- unzip : {A B : Set} -> List (A × B) -> List A × List B
+-- unzip [] = [] , []
+-- unzip ((x , y) :: xs) with unzip xs
+-- ... | xs , ys = x :: xs , y :: ys
 
 reverse : ∀{A : Set} -> List A -> List A
 reverse [] = []

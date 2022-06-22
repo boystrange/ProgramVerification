@@ -1,7 +1,6 @@
 module List.Permutation where
 
 open import Nat
-open import Product
 open import List
 open import List.Properties
 open import Logic

@@ -36,11 +36,11 @@ minus-zero (succ _) = refl
 +-minus (succ x) y = +-minus x y
 
 _=?_ : (x y : ℕ) -> Decidable (x == y)
-zero   =? zero   = yes refl
-zero   =? succ y = no λ ()
-succ x =? zero   = no (λ ())
+zero   =? zero   = inr refl
+zero   =? succ y = inl λ ()
+succ x =? zero   = inl (λ ())
 succ x =? succ y with x =? y
-... | yes eq = yes (cong succ eq)
-... | no neq = no λ { refl -> neq refl }
+... | inr eq = inr (cong succ eq)
+... | inl ne = inl λ { refl -> ne refl }
 
 infix 4 _=?_

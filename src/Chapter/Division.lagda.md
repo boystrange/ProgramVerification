@@ -7,7 +7,6 @@ module Chapter.Division where
 open import Nat
 open import Nat.Properties
 open import List
-open import Product
 open import Logic
 open import Equality
 open import Equality.Reasoning
@@ -35,8 +34,8 @@ open import WellFounded
 {-# TERMINATING #-}
 nt-division : (x y : ℕ) -> (0 < y) -> ∃[ q ] ∃[ r ] (r < y) ∧ (q * y + r == x)
 nt-division x y 0<y with x <? y
-... | yes lt = 0 , x , lt , refl
-... | no nlt with not-lt-ge nlt
+... | inr lt = 0 , x , lt , refl
+... | inl nlt with not-lt-ge nlt
 ... | ge with nt-division (x - y) y 0<y
 ... | q , r , r<y , qy=x = succ q , r , r<y , eq
   where
@@ -63,8 +62,8 @@ well-founded-lt' x = acc (accessible<' x)
 
 _<'?_ : (x y : ℕ) -> Decidable (x <' y)
 x <'? y with x <? y
-... | yes x<y = yes (<=to<=' x<y)
-... | no ¬x<y = no λ x<y -> ¬x<y (<='to<= x<y)
+... | inr x<y = inr (<=to<=' x<y)
+... | inl ¬x<y = inl λ x<y -> ¬x<y (<='to<= x<y)
 
 minus-succ : {x y : ℕ} -> (y < x) -> (x - succ y < x - y)
 minus-succ {succ x} {zero} p rewrite minus-zero x = le-refl
@@ -91,8 +90,8 @@ not-lt-ge' p = <=to<=' (not-lt-ge λ q -> p (<=to<=' q))
 
 div-rem-aux : (x y : ℕ) -> 0 <' y -> Accessible _<'_ x -> ∃[ q ] ∃[ r ] r <' y ∧ q * y + r == x
 div-rem-aux x y p (acc f) with x <'? y
-... | yes lt = 0 , x , lt , refl
-... | no nlt with not-lt-ge' nlt
+... | inr lt = 0 , x , lt , refl
+... | inl nlt with not-lt-ge' nlt
 ... | ge with div-rem-aux (x - y) y p (f (x - y) (minus-lt' p ge))
 ... | q , r , r<y , qy=x =
   succ q , r , r<y , (

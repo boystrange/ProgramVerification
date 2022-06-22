@@ -17,7 +17,6 @@ module Chapter.RedBlackTree (A : Set) (_≼_ : A -> A -> Set) where
 open import Nat
 open import Nat.Properties
 open import Logic
-open import Product
 open import LessThan
 open import LessThan.Reasoning
 open import Equality

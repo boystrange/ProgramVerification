@@ -53,8 +53,8 @@ eps (_ *) = ε
 δ ∅ c = ∅
 δ ε c = ∅
 δ (sym y) x with x =? y
-... | no _ = ∅
-... | yes refl = ε
+... | inl _ = ∅
+... | inr refl = ε
 δ (e · f) c = δ e c · f + eps e · δ f c
 δ (e + f) c = δ e c + δ f c
 δ (e *) c   = δ e c · (e *)
@@ -86,7 +86,7 @@ eps-complete ([star] p)   = [eps]
 
 δ-sound : {x : Symbol} {xs : Word} {e : Regex} -> xs ∈ δ e x -> (x :: xs) ∈ e
 δ-sound {x} {e = sym y} p with x =? y
-δ-sound {x} {_} {sym x} [eps] | yes refl = [sym] x
+δ-sound {x} {_} {sym x} [eps] | inr refl = [sym] x
 δ-sound {e = e · f} ([plus-l] ([seq] p q app)) =
   [seq] (δ-sound p) q (append-:: app)
 δ-sound {e = e · f} ([plus-r] ([seq] p q app)) with eps-[] p
@@ -99,8 +99,8 @@ eps-complete ([star] p)   = [eps]
 
 δ-complete : {x : Symbol} {xs : Word} {e : Regex} -> (x :: xs) ∈ e -> xs ∈ δ e x
 δ-complete ([sym] x) with x =? x
-... | no x!=x = absurd (x!=x refl)
-... | yes refl = [eps]
+... | inl x!=x = absurd (x!=x refl)
+... | inr refl = [eps]
 δ-complete ([seq] p q append-[]) =
   [plus-r] ([seq] (eps-complete p) (δ-complete q) append-[])
 δ-complete ([seq] p q (append-:: app)) =
@@ -113,25 +113,25 @@ eps-complete ([star] p)   = [eps]
 δ-complete ([star] p) | [plus-r] ([seq] q r append-[]) | refl = r
 
 eps-decidable : (e : Regex) -> Decidable ([] ∈ e)
-eps-decidable ∅ = no (λ ())
-eps-decidable ε = yes [eps]
-eps-decidable (sym x) = no (λ ())
+eps-decidable ∅ = inl λ ()
+eps-decidable ε = inr [eps]
+eps-decidable (sym x) = inl λ ()
 eps-decidable (e · f) with eps-decidable e | eps-decidable f
-... | yes p | yes q = yes ([seq] p q append-[])
-... | yes _ | no  q = no λ { ([seq] _ r append-[]) → q r }
-... | no  p | _     = no λ { ([seq] r _ append-[]) → p r }
+... | inr p | inr q = inr ([seq] p q append-[])
+... | inr _ | inl q = inl λ { ([seq] _ r append-[]) → q r }
+... | inl p | _     = inl λ { ([seq] r _ append-[]) → p r }
 eps-decidable (e + f) with eps-decidable e | eps-decidable f
-... | yes p | _ = yes ([plus-l] p)
-... | no  _ | yes p = yes ([plus-r] p)
-... | no  p | no  q = no λ { ([plus-l] r) → p r
+... | inr p | _ = inr ([plus-l] p)
+... | inl _ | inr p = inr ([plus-r] p)
+... | inl p | inl q = inl λ { ([plus-l] r) → p r
                             ; ([plus-r] r) → q r }
-eps-decidable (e *) = yes [star-eps]
+eps-decidable (e *) = inr [star-eps]
 
 match : (xs : Word) (e : Regex) -> Decidable (xs ∈ e)
 match [] e = eps-decidable e
 match (x :: xs) e with match xs (δ e x)
-... | yes p = yes (δ-sound p)
-... | no  q = no λ r -> q (δ-complete r)
+... | inr p = inr (δ-sound p)
+... | inl q = inl λ r -> q (δ-complete r)
 ```
 
 Simple test

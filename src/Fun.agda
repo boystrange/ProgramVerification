@@ -1,7 +1,6 @@
 module Fun where
 
 -- CHECK IF NEEDED
-open import Product
 
 id : {A : Set} -> A -> A
 id x = x
@@ -17,8 +16,8 @@ flip f x y = f y x
 
 -- CHECK IF NEEDED
 
-curry : {A B C : Set} -> (A × B -> C) -> A -> B -> C
-curry f x y = f (x , y)
+-- curry : {A B C : Set} -> (A × B -> C) -> A -> B -> C
+-- curry f x y = f (x , y)
 
-uncurry : {A B C : Set} -> (A -> B -> C) -> A × B -> C
-uncurry f (x , y) = f x y
+-- uncurry : {A B C : Set} -> (A -> B -> C) -> A × B -> C
+-- uncurry f (x , y) = f x y

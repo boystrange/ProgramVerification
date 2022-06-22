@@ -1,13 +1,11 @@
 module List.Properties where
 
-open import Unit
 open import Fun
 open import Nat
 open import List
 open import Equality
 open import Equality.Reasoning
 open import Logic
-open import Product
 
 ::-injective : ∀{A : Set} {x y : A} {xs ys : List A} -> x :: xs == y :: ys -> x == y ∧ xs == ys
 ::-injective refl = refl , refl

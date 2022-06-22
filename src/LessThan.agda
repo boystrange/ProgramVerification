@@ -3,8 +3,6 @@ module LessThan where
 open import Nat
 open import Nat.Properties
 open import Logic
-open import Sum
-open import Product
 open import Equality
 
 infix 4 _<=_ _>=_ _<_ _>_
@@ -37,11 +35,11 @@ not-lt-ge {succ _} {succ _} p = succ (not-lt-ge λ q -> p (succ q))
 ... | x<=z , y<=z = succ x<=z , <=-succ y<=z
 
 le-total : (m n : ℕ) -> m <= n ∨ n <= m
-le-total zero n = left zero
-le-total (succ m) zero = right zero
+le-total zero n = inl zero
+le-total (succ m) zero = inr zero
 le-total (succ m) (succ n) with le-total m n
-... | left  le = left (succ le)
-... | right ge = right (succ ge)
+... | inl le = inl (succ le)
+... | inr ge = inr (succ ge)
 
 le-antisymm : {m n : ℕ} -> m <= n -> n <= m -> m == n
 le-antisymm zero     zero     = refl
@@ -101,11 +99,11 @@ le-ne-lt {.0} {succ y} zero ne = succ zero
 le-ne-lt {.(succ _)} {.(succ _)} (succ le) ne = succ (le-ne-lt le λ { refl → ne refl } )
 
 _<=?_ : (x y : ℕ) -> Decidable (x <= y)
-zero <=? y = yes zero
-succ x <=? zero = no (λ ())
+zero <=? y = inr zero
+succ x <=? zero = inl λ ()
 succ x <=? succ y with x <=? y
-... | yes le = yes (succ le)
-... | no nle = no λ { (succ p) -> nle p }
+... | inr le = inr (succ le)
+... | inl gt = inl λ { (succ p) -> gt p }
 
 _<?_ : (x y : ℕ) -> Decidable (x < y)
 x <? y = succ x <=? y
