@@ -1,5 +1,6 @@
 module Logic where
 
+infixr 1 _=>_ _<=>_
 infix  2 _∨_ Σ-syntax ∃-syntax
 infixr 3 _∧_
 infixr 4 _,_
@@ -46,17 +47,23 @@ data _∨_ (A B : Set) : Set where
 
 -- NEGATION
 
-¬ : Set -> Set
-¬ A = A -> ⊥
-
 absurd : {A : Set} -> ⊥ -> A
 absurd ()
 
-contrapositive : {A B : Set} -> (A -> B) -> ¬ B -> ¬ A
-contrapositive f p q = p (f q)
+¬_ : Set -> Set
+¬_ A = A -> ⊥
 
 -- DECIDABILITY
 
 Decidable : Set -> Set
 Decidable A = ¬ A ∨ A
 
+-- IMPLICATION
+
+_=>_ : Set -> Set -> Set
+A => B = A -> B
+
+-- DOUBLE IMPLICATION
+
+_<=>_ : Set -> Set -> Set
+A <=> B = (A => B) ∧ (B => A)

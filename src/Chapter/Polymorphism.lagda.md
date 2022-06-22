@@ -106,11 +106,11 @@ required to systematically provide an argument that Agda can infer
 by itself. In the end, the programmer will typically apply `id₄` to
 an underscore followed by the actual argument. We can spare this
 burden to the programmer by declaring that the first argument of
-`id₄` is an **implicit argument**. As the name suggests, implicit
-arguments can be omitted in the program since they are supposed to
-be inferred automatically. An implicit argument is declared by using
-braces `{...}` instead of parentheses `(...)`. So, the final version
-of the polymorphic identity function with implicit arguments is the
+`id₄` is **implicit**. As the name suggests, implicit arguments can
+be omitted in the program since they are supposed to be inferred
+automatically. An implicit argument is declared using braces `{...}`
+instead of parentheses `(...)`. So, the final version of the
+polymorphic identity function with implicit arguments is the
 following.
 
 ```
@@ -130,9 +130,9 @@ _ : ℕ
 _ = id 42
 ```
 
-There are cases in which Agda is not able to automatically infer a
-given implicit argument. In these cases, we can still explicitly
-supply it, by placing the implicit argument within braces.
+There are cases in which Agda is not able to automatically infer an
+implicit. In these cases, we can supply it explicitly, by placing
+the implicit argument within braces.
 
 ```
 _ : Bool
