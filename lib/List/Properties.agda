@@ -81,10 +81,14 @@ map-compose f g (x :: xs) =
     map (f ∘ g) (x :: xs)
   end
 
-all-++ : ∀{A : Set} {xs ys : List A} (P : A -> Set) -> all P xs -> all P ys -> all P (xs ++ ys)
+all-++ : ∀{A : Set} {xs ys : List A} (P : A -> Set) -> All P xs -> All P ys -> All P (xs ++ ys)
 all-++ {xs = []} P ps qs = qs
 all-++ {xs = x :: xs} P (px , ps) qs = px , all-++ P ps qs
 
-all-all : ∀{A : Set} {xs : List A} (P Q : A -> Set) -> (∀{x : A} -> P x -> Q x) -> all P xs -> all Q xs
-all-all {xs = []} P Q imp ps = <>
-all-all {xs = x :: xs} P Q imp (px , ps) = imp px , all-all P Q imp ps
+implies-all : {A : Set} {P Q : A -> Set} -> ({x : A} -> P x -> Q x) -> {xs : List A} -> All P xs -> All Q xs
+implies-all imp {[]} <> = <>
+implies-all imp {_ :: _} (p , ps) = imp p , implies-all imp ps
+
+-- all-all : ∀{A : Set} {xs : List A} (P Q : A -> Set) -> (∀{x : A} -> P x -> Q x) -> All P xs -> All Q xs
+-- all-all {xs = []} P Q imp ps = <>
+-- all-all {xs = x :: xs} P Q imp (px , ps) = imp px , all-all P Q imp ps

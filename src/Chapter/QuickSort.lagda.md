@@ -2,14 +2,10 @@
 ---
 
 ```agda
-module Chapter.QuickSort (A : Set) (_≼_ : A -> A -> Set) where
-
 open import Nat
 open import Nat.Properties
 open import Equality
 open import List
-open import List.Sorted A _≼_
-open import TotalOrder A _≼_
 open import List.Properties
 open import List.Permutation
 open import LessThan
@@ -18,19 +14,28 @@ open import LessThan.Alternative
 open import Logic
 open import WellFounded
 
+module Chapter.QuickSort
+  (A : Set)
+  (_≼_ : A -> A -> Set)
+  (≼-trans : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z)
+  (≼-total : (x y : A) -> x ≼ y ∨ y ≼ x)
+  where
+
+open import List.Sorted A _≼_
+
 partition :
-  (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ ys *≼ x ∧ x ≼* zs
+  (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ All (_≼ x) ys ∧ All (x ≼_) zs
 partition x [] = [] , [] , #refl , <> , <>
-partition x (u :: xs) with ≼total x u | partition x xs
+partition x (u :: xs) with ≼-total x u | partition x xs
 ... | inl x≼u | ys , zs , π , py , pz =
   ys , u :: zs , #trans (#cong π) #push , py , x≼u , pz
 ... | inr u≼x | ys , zs , π , py , pz =
   u :: ys , zs , #cong π , (u≼x , py) , pz
 
-sorted-++ : {z : A} {xs ys : List A} -> Sorted xs -> xs *≼ z -> z ≼* ys -> Sorted ys -> Sorted (xs ++ z :: ys)
+sorted-++ : {z : A} {xs ys : List A} -> Sorted xs -> All (_≼ z) xs -> All (z ≼_) ys -> Sorted ys -> Sorted (xs ++ z :: ys)
 sorted-++ {xs = []} p xs≼z z≼ys q = z≼ys , q
 sorted-++ {z} {xs = x :: xs} (x≼xs , p) (x≼z , xs≼z) z≼ys q =
-  all-++ (x ≼_) x≼xs (x≼z , all-all (z ≼_) (x ≼_) (≼trans x≼z) z≼ys) ,
+  all-++ (x ≼_) x≼xs (x≼z , implies-all (≼-trans x≼z) z≼ys) ,
   sorted-++ p xs≼z z≼ys q
 
 {-# TERMINATING #-}

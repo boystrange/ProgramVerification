@@ -46,7 +46,7 @@ _ #⟨⟩ ps = ps
 #push {xs = []} = #refl
 #push {xs = _ :: _} = #trans #swap (#cong #push)
 
-#all : ∀{A : Set} {xs ys : List A} (P : A -> Set) -> xs # ys -> all P xs -> all P ys
+#all : ∀{A : Set} {xs ys : List A} (P : A -> Set) -> xs # ys -> All P xs -> All P ys
 #all P #refl ps = ps
 #all P #swap (px , py , ps) = py , px , ps
 #all P (#cong π) (px , ps) = px , #all P π ps

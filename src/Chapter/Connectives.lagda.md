@@ -223,7 +223,13 @@ double-negation x p = p x
    -> A ∨ ⊥ <=> A`.
 7. Prove that `⊥` absorbs conjunctions, namely the theorems `∧-⊥-l :
    {A : Set} -> ⊥ ∧ A <=> ⊥` and `∧-⊥-r : {A : Set} -> A ∧ ⊥ <=> ⊥`.
-8. Prove the De Morgan law
+8. Which of the following De Morgan's laws can be proved?
+   ```text
+   ¬ A ∨ ¬ B -> ¬ (A ∧ B)
+   ¬ A ∧ ¬ B -> ¬ (A ∨ B)
+   ¬ (A ∨ B) -> ¬ A ∧ ¬ B
+   ¬ (A ∧ B) -> ¬ A ∨ ¬ B
+   ```
 
 ```
 -- EXERCISE 1
@@ -271,14 +277,13 @@ double-negation x p = p x
 ∧-⊥-r : {A : Set} -> A ∧ ⊥ <=> ⊥
 ∧-⊥-r = snd , absurd
 
--- EXERCISE 8
-de-morgan-∧ : {A B : Set} -> ¬ (A ∧ B) -> ¬ A ∨ ¬ B
-de-morgan-∧ p = {!!}
+-- EXERCISE 8: all laws but the last one can be proved.
+de-morgan-1 : {A B : Set} -> ¬ A ∨ ¬ B -> ¬ (A ∧ B)
+de-morgan-1 = ∨-elim (contrapositive fst) (contrapositive snd)
 
-prop : {A B : Set} -> ¬ A ∨ ¬ B -> ¬ (A ∧ B)
-prop = ∨-elim (contrapositive fst) (contrapositive snd)
-
-de-morgan-∨ : {A B : Set} -> ¬ (A ∨ B) -> ¬ A ∧ ¬ B
-de-morgan-∨ p = (p ∘ inl) , (p ∘ inr)
+de-morgan-2 : {A B : Set} -> ¬ (A ∨ B) <=> ¬ A ∧ ¬ B
+de-morgan-2 =
+  (λ p -> (p ∘ inl) , (p ∘ inr)) ,
+  (λ p -> ∨-elim (fst p) (snd p))
 ```
 
