@@ -53,6 +53,9 @@ absurd ()
 ¬_ : Set -> Set
 ¬_ A = A -> ⊥
 
+contraposition : {A B : Set} -> (A -> B) -> ¬ B -> ¬ A
+contraposition f nb a = nb (f a)
+
 -- DECIDABILITY
 
 Decidable : Set -> Set

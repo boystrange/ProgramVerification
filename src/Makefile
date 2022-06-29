@@ -2,6 +2,7 @@
 NULL =
 
 ROOTS = \
+  Main.lagda.md \
   Chapters.lagda.md \
   Chapter/NaturalNumbers.lagda.md \
   $(NULL)

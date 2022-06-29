@@ -14,13 +14,13 @@ import Chapter.BoolProperties
 -- import Chapter.NaturalNumbers -- do not import this
 -- INDUCTIVE TYPES WITH PARAMETERS
 import Chapter.Polymorphism
-import Chapter.Connectives
+import Chapter.Connectives -- also negation
 import Chapter.Lists
 -- list reverse
 
--- INDUCTIVE PREDICATES
+-- DEFINING PREDICATES
 
--- even
+import Chapter.Even
 
 -- ==
 

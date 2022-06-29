@@ -14,6 +14,7 @@ title: Introduction to Program Verification in Agda
 * [Logical constants and connectives]()
 * [Negation]()
 * [Quantifiers]()
+* [Defining predicates]({% link pages/Chapter.Even.md %})
 
 ## References
 

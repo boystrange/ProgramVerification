@@ -15,16 +15,16 @@ open import Nat
 
 Lists are a fundamental data structure for the representation of
 **finite sequences** of elements. It is easy to define an Agda data
-type of lists, considering that every list of elements of type `A`
-can be either
+type of lists, observing that every list of elements of type `A` can
+be either
 
 * the **empty list**, or
 * a non empty list with a **head** of type `A` (the first element of
   the list) and a **tail** which is itself a list of elements of
   type `A`.
 
-Nonetheless, we would like to define the list data type once and for
-all, independently of the type `A` of its elements. For this, we
+We would like to define the list data type once and for all,
+independently of the type `A` of its elements. For this, we
 introduce a **parameter** into the data type.
 
 ```
@@ -34,16 +34,15 @@ data List (A : Set) : Set where
 ```
 
 According to this definition, `List` by itself is not a
-type. Rather, it is a function that, applied to an arbitrary type
-`A`, yields the type of lists with elements of type `A`. Notice that
-the paramtere `A` is declared type right after the name of the data
-type and its scope covers all the constructors of the data type. In
-line with the syntax adopted in many functional languages, we have
-chosen to write `[]` for the empty list and `x :: xs` for the list
-with head `x` and tail `xs`.
-
-We declare `::` as a right associative operator so as to make it
-easy to write lists by repeated applications of `::`.
+type. Rather, it is a function that, when applied to an arbitrary
+type `A`, yields the type of lists with elements of type `A`. Notice
+that the parameter `A` is declared type right after the name of the
+data type and its scope covers all the constructors of the data
+type, in which it becomes an implicit argument. In line with the
+syntax adopted in many functional languages, we have chosen to write
+`[]` for the empty list and `x :: xs` for the list with head `x` and
+tail `xs`. We declare `::` as a right associative operator so as to
+make it easy to write lists by repeated applications of `::`.
 
 ```
 infixr 5 _::_
