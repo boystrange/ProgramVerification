@@ -20,10 +20,10 @@ techniques, consider the following function which computes the
 (truncated) half of a natural number:
 
 ```
-_/2 : ℕ -> ℕ
-_/2 zero            = zero
-_/2 (succ zero)     = zero
-_/2 (succ (succ x)) = succ (x /2)
+half : ℕ -> ℕ
+half zero            = zero
+half (succ zero)     = zero
+half (succ (succ x)) = succ (half x)
 ```
 
 We would like to prove a theorem asserting that, by doubling the
@@ -54,7 +54,7 @@ use `Even-p` as a predicate, we have to compare the result of
 theorem as follows.
 
 ```
-theorem-p : {x : ℕ} (ev : Even-p x == true) -> x == x /2 * 2
+theorem-p : {x : ℕ} (ev : Even-p x == true) -> x == half x * 2
 theorem-p {zero} refl = refl
 theorem-p {succ (succ x)} ev = cong (succ ∘ succ) (theorem-p ev)
 ```
@@ -108,10 +108,10 @@ yields `y`. For this, we need to prove an auxiliary lemma, which we
 locally define within `theorem-m` after the keyword `where`.
 
 ```
-theorem-m : {x : ℕ} (ev : Even-m x) -> x == x /2 * 2
+theorem-m : {x : ℕ} (ev : Even-m x) -> x == half x * 2
 theorem-m (y , refl) = cong (_* 2) (lem y)
   where
-    lem : (x : ℕ) -> x == (x * 2) /2
+    lem : (x : ℕ) -> x == half (x * 2)
     lem zero     = refl
     lem (succ x) = cong succ (lem x)
 ```
@@ -143,7 +143,7 @@ reveal anything useful about `x` and we are forced to perform case
 analysis on `x` to complete our theorem.
 
 ```
-theorem-r : {x : ℕ} (ev : Even-r x) -> x == x /2 * 2
+theorem-r : {x : ℕ} (ev : Even-r x) -> x == half x * 2
 theorem-r {zero} <>          = refl
 theorem-r {succ (succ x)} ev = cong (succ ∘ succ) (theorem-r ev)
 ```
@@ -221,7 +221,7 @@ perform a case analysis directly on `Even-i x`, which contains all
 the structure we need.
 
 ```
-theorem-i : {x : ℕ} (ev : Even-i x) -> x == x /2 * 2
+theorem-i : {x : ℕ} (ev : Even-i x) -> x == half x * 2
 theorem-i even-zero      = refl
 theorem-i (even-succ ev) = cong (succ ∘ succ) (theorem-i ev)
 ```
@@ -267,7 +267,7 @@ m=>p (y , refl) = lem y
 
 -- EXERCISE 2
 
-not-even : (x : ℕ) -> ¬ Even-i x -> x == 1 + x /2 * 2
+not-even : (x : ℕ) -> ¬ Even-i x -> x == 1 + half x * 2
 not-even zero nev = absurd (nev even-zero)
 not-even (succ zero) nev = refl
 not-even (succ (succ x)) nev = cong (succ ∘ succ) (not-even x (lem x nev))
@@ -303,6 +303,6 @@ even-and-odd (succ (succ x)) (even-succ ev , odd-succ od) = even-and-odd x (ev ,
 
 -- EXERCISE 5
 
-odd : {x : ℕ} -> Odd-i x -> x == 1 + x /2 * 2
+odd : {x : ℕ} -> Odd-i x -> x == 1 + half x * 2
 odd {x} od = not-even x (contraposition (_, od) (even-and-odd x))
 ```
