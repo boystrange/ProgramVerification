@@ -21,8 +21,7 @@ import Chapter.Lists
 -- DEFINING PREDICATES
 
 import Chapter.Even
-
--- ==
+import Chapter.Equality
 
 -- <=
 

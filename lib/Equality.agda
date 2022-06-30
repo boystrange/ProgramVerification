@@ -2,7 +2,7 @@ module Equality where
 
 open import Logic
 
-infix  4 _==_ _!=_
+infix 4 _==_ _!=_
 
 data _==_ {A : Set} (x : A) : A -> Set where
   refl : x == x
