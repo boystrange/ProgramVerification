@@ -23,14 +23,15 @@
 7. Polymorphic inductive types (lists, concatenation and `reverse`,
    fast reverse and proof of equivalence with `reverse`).
 8. Propositional logic (connectives and constants of propositional
-   logic, if and only if, negation)
-9. Existential quantification
-10. Defining predicates, type-level computations, inductive families
+   logic, if and only if)
+9. Negation and decidability (== is decidable for Bool, Nat, lists, etc.)
+10. Existential quantification
+11. Defining predicates, type-level computations, inductive families
    (evenness predicate, equality, less-than, list permutations)
-11. Extrinsic vs intrinsic verification (insertion sort)
-12. Mutually recursive data types with invariants (red black trees)
-13. Well-founded relations and termination (euclidean division)
-14. Non-structural recursion with measures (quick sort)
+12. Extrinsic vs intrinsic verification (insertion sort)
+13. Mutually recursive data types with invariants (red black trees)
+14. Well-founded relations and termination (euclidean division)
+15. Non-structural recursion with measures (quick sort)
 
 ## Bootstrap
 
