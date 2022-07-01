@@ -32,8 +32,6 @@ title: Introduction to Program Verification in Agda
 
 ## Mini Agda Library
 
-[library]({% link pages/Library.html %})
-
 ## Copyright
 
 The course material in this site has been posted for your personal
@@ -46,3 +44,4 @@ please contact the instructor.
 
 [Go to the Main module]({% link pages/Main.md %}).
 
+bundle config set --local path 'vendor/bundle'
