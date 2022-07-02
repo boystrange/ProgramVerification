@@ -35,11 +35,11 @@ infix 4 _<=_
 
 data _<=_ : ℕ -> ℕ -> Set where
   le-zero : {x : ℕ} -> 0 <= x
-  le-succ : {x y : ℕ} -> x <= y -> 1 + x <= 1 + y
+  le-succ : {x y : ℕ} -> x <= y -> succ x <= succ y
 ```
 
 The axiom `le-zero` proves that `0` is the least element, whereas
-the rule `le-succ` builds a proof of `1 + x <= 1 + y` from a proof
+the rule `le-succ` builds a proof of `succ x <= succ y` from a proof
 of `x <= y`. As an example, we can derive `2 <= 3` with two
 applications of `le-succ` and one application of `le-zero`. In
 general, there are as many applications of `le-succ` as the value of
