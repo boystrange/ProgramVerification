@@ -175,34 +175,6 @@ right hand side* (note that there is no equal sign): as there is no
 proof of `⊥`, we are not obliged to provide a proof of `A` as
 required by the codomain of `absurd`.
 
-In constructive logic, the `⊥` data type has a fundamental role
-since it allows us to define negation. In particular, the negation
-of a proposition `A` is a function that, given a proof of `A`,
-provides a proof of `⊥`.
-
-```
-¬_ : Set -> Set
-¬_ A = A -> ⊥
-```
-
-We will make a rather extensive use of negation in the following
-chapters. For the time being, we prove two laws related to
-negation. The first one is the **law of contraposition**, asserting
-that if `A` implies `B`, then `¬ B` implies `¬ A`.
-
-```
-contrapositive : {A B : Set} -> (A -> B) -> ¬ B -> ¬ A
-contrapositive f p q = p (f q)
-```
-
-The second law is **double negation**, asserting that if `A` is
-true, then it is not true that the negation of `A` is true.
-
-```
-double-negation : {A : Set} -> A -> ¬ ¬ A
-double-negation x p = p x
-```
-
 ## Exercises
 
 1. Prove that conjunction is commutative, namely the theorem
@@ -223,13 +195,6 @@ double-negation x p = p x
    -> A ∨ ⊥ <=> A`.
 7. Prove that `⊥` absorbs conjunctions, namely the theorems `∧-⊥-l :
    {A : Set} -> ⊥ ∧ A <=> ⊥` and `∧-⊥-r : {A : Set} -> A ∧ ⊥ <=> ⊥`.
-8. Which of the following De Morgan's laws can be proved?
-   ```text
-   ¬ A ∨ ¬ B -> ¬ (A ∧ B)
-   ¬ A ∧ ¬ B -> ¬ (A ∨ B)
-   ¬ (A ∨ B) -> ¬ A ∧ ¬ B
-   ¬ (A ∧ B) -> ¬ A ∨ ¬ B
-   ```
 
 ```
 -- EXERCISE 1
@@ -276,14 +241,5 @@ double-negation x p = p x
 
 ∧-⊥-r : {A : Set} -> A ∧ ⊥ <=> ⊥
 ∧-⊥-r = snd , absurd
-
--- EXERCISE 8: all laws but the last one can be proved.
-de-morgan-1 : {A B : Set} -> ¬ A ∨ ¬ B -> ¬ (A ∧ B)
-de-morgan-1 = ∨-elim (contrapositive fst) (contrapositive snd)
-
-de-morgan-2 : {A B : Set} -> ¬ (A ∨ B) <=> ¬ A ∧ ¬ B
-de-morgan-2 =
-  (λ p -> (p ∘ inl) , (p ∘ inr)) ,
-  (λ p -> ∨-elim (fst p) (snd p))
 ```
 

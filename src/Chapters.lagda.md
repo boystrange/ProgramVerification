@@ -20,7 +20,8 @@ import Chapter.BoolProperties
 -- import Chapter.NaturalNumbers -- do not import this
 import Chapter.Polymorphism
 import Chapter.Connectives
--- import Chapter.NegationDecidability
+import Chapter.Negation
+-- existential quantification (example of divisibility?)
 import Chapter.Lists
 import Chapter.Even
 import Chapter.Equality
