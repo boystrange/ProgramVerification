@@ -6,24 +6,24 @@ open import LessThan
 infix 4 _<='_ _<'_
 
 data _<='_ : ℕ -> ℕ -> Set where
-  refl : {n : ℕ}   -> n <=' n
-  succ : {m n : ℕ} -> m <=' n -> m <=' succ n
+  le-refl' : {n : ℕ}   -> n <=' n
+  le-succ' : {m n : ℕ} -> m <=' n -> m <=' succ n
 
 _<'_ : ℕ -> ℕ -> Set
 x <' y = succ x <=' y
 
 zero<=' : {x : ℕ} -> 0 <=' x
-zero<=' {zero}   = refl
-zero<=' {succ x} = succ zero<='
+zero<=' {zero}   = le-refl'
+zero<=' {succ x} = le-succ' zero<='
 
 succ<=' : {x y : ℕ} -> x <=' y -> succ x <=' succ y
-succ<=' refl     = refl
-succ<=' (succ p) = succ (succ<=' p)
+succ<=' le-refl'     = le-refl'
+succ<=' (le-succ' p) = le-succ' (succ<=' p)
 
 <=to<=' : {x y : ℕ} -> x <= y -> x <=' y
-<=to<=' zero     = zero<='
-<=to<=' (succ p) = succ<=' (<=to<=' p)
+<=to<=' le-zero     = zero<='
+<=to<=' (le-succ p) = succ<=' (<=to<=' p)
 
 <='to<= : {x y : ℕ} -> x <=' y -> x <= y
-<='to<= refl = le-refl
-<='to<= (succ p) = <=-succ (<='to<= p)
+<='to<= le-refl' = le-refl
+<='to<= (le-succ' p) = le-succ-r (<='to<= p)

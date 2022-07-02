@@ -55,8 +55,8 @@ quick-sort-nt (x :: xs) with partition x xs
   sorted-++ sys (#all (_≼ x) πy py) (#all (x ≼_) πz pz) szs
 
 accessible<' : (x y : ℕ) -> y <' x -> Accessible _<'_ y
-accessible<' (succ y) _ refl      = acc (accessible<' y)
-accessible<' (succ y) z (succ lt) = accessible<' y z lt
+accessible<' (succ y) _ le-refl'      = acc (accessible<' y)
+accessible<' (succ y) z (le-succ' lt) = accessible<' y z lt
 
 well-founded-lt' : WellFounded _<'_
 well-founded-lt' x = acc (accessible<' x)
@@ -108,8 +108,8 @@ quick-sort-acc : (xs : List A) -> Accessible _⊏_ xs -> ∃[ ys ] xs # ys ∧ S
 quick-sort-acc [] _ = [] , #refl , <>
 quick-sort-acc (x :: xs) (acc f) with partition x xs
 ... | ys , zs , π , py , pz with lemma-⊑ xs ys zs π
-... | ys⊑xs , zs⊑xs with quick-sort-acc ys (f ys (succ ys⊑xs)) |
-                         quick-sort-acc zs (f zs (succ zs⊑xs))
+... | ys⊑xs , zs⊑xs with quick-sort-acc ys (f ys (le-succ ys⊑xs)) |
+                         quick-sort-acc zs (f zs (le-succ zs⊑xs))
 ... | ys' , πy , sys | zs' , πz , szs =
   let π' = #begin
              x :: xs         #⟨ #cong π ⟩

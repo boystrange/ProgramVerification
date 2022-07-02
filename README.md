@@ -35,7 +35,7 @@
 
 ## Bootstrap
 
-1. `bundle vendor...` something like that
+1. `bundle config set --local path 'vendor/bundle'`
 2. `bundle install`
 
 ## Running

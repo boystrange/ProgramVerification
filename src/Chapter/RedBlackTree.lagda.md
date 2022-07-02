@@ -186,22 +186,22 @@ sizeB (node _ l r) = succ (size* l + size* r)
 ⌊sizeR⌋ : {n : ℕ} (t : RedTree n)      -> 2 ^ n <= sizeR t
 ⌊sizeB⌋ : {n : ℕ} (t : BlackTree n)    -> 2 ^ n <= succ (sizeB t)
 
-⌊size*⌋ (red   t) = <=-succ (⌊sizeR⌋ t)
+⌊size*⌋ (red   t) = le-succ-r (⌊sizeR⌋ t)
 ⌊size*⌋ (black t) = ⌊sizeB⌋ t
 
 ⌊sizeR⌋ {n} (node _ l r) =
   begin
     2 ^ n                    ==⟨ +-zero (2 ^ n) ⟩
-    2 ^ n + 0                <=⟨ <=-cong-+ le-refl zero ⟩
-    2 ^ n + sizeB r          <=⟨ <=-cong-+ (⌊sizeB⌋ l) le-refl ⟩
+    2 ^ n + 0                <=⟨ le-cong-+ le-refl le-zero ⟩
+    2 ^ n + sizeB r          <=⟨ le-cong-+ (⌊sizeB⌋ l) le-refl ⟩
     succ (sizeB l) + sizeB r
   end
 
-⌊sizeB⌋ leaf = succ zero
+⌊sizeB⌋ leaf = le-succ le-zero
 ⌊sizeB⌋ {succ n} (node _ l r) =
   begin
     2 ^ n + (2 ^ n + 0)             ==⟨ symm (cong (2 ^ n +_) (+-zero (2 ^ n))) ⟩
-    2 ^ n + 2 ^ n                   <=⟨ <=-cong-+ (⌊size*⌋ l) (⌊size*⌋ r) ⟩
+    2 ^ n + 2 ^ n                   <=⟨ le-cong-+ (⌊size*⌋ l) (⌊size*⌋ r) ⟩
     succ (size* l) + succ (size* r) ==⟨ symm (+-succ (succ (size* l)) (size* r)) ⟩
     succ (succ (size* l + size* r))
   end
@@ -225,15 +225,15 @@ depthB (node _ l r) = succ (max (depth* l) (depth* r))
 ⌈depthB⌉ : {n : ℕ} (t : BlackTree n) -> depthB t <= 2 * n
 
 ⌈depth*⌉ (red t) = ⌈depthR⌉ t
-⌈depth*⌉ (black t) = <=-succ (⌈depthB⌉ t)
+⌈depth*⌉ (black t) = le-succ-r (⌈depthB⌉ t)
 
 ⌈depthR⌉ {n} (node _ l r) =
-  succ (le-max (⌈depthB⌉ l) (⌈depthB⌉ r))
+  le-succ (le-max (⌈depthB⌉ l) (⌈depthB⌉ r))
 
-⌈depthB⌉ leaf = zero
+⌈depthB⌉ leaf = le-zero
 ⌈depthB⌉ {succ n} (node _ l r) =
   begin
-    succ (max (depth* l) (depth* r)) <=⟨ succ (le-max (⌈depth*⌉ l) (⌈depth*⌉ r)) ⟩
+    succ (max (depth* l) (depth* r)) <=⟨ le-succ (le-max (⌈depth*⌉ l) (⌈depth*⌉ r)) ⟩
     succ (succ (2 * n))              ==⟨ refl ⟩
     succ (succ (n + (n + 0)))        ==⟨ cong succ (+-succ n (n + 0)) ⟩
     succ (n + succ (n + 0))

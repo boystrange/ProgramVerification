@@ -15,13 +15,13 @@ open import LessThan.Reasoning renaming (begin_ to <=begin_; _end to _<=end) hid
 open import WellFounded
 
 +-minus-assoc : (x y z : ℕ) -> z <= y -> x + (y - z) == (x + y) - z
-+-minus-assoc x y 0 zero =
++-minus-assoc x y 0 le-zero =
   begin
     x + (y - 0) ==⟨ cong (x +_) (minus-zero y) ⟩
     x + y       ==⟨ symm (minus-zero (x + y)) ⟩
     (x + y) - 0
   end
-+-minus-assoc x (succ y) (succ z) (succ le) =
++-minus-assoc x (succ y) (succ z) (le-succ le) =
   begin
     x + (succ y - succ z) ==⟨⟩
     x + (y - z)           ==⟨ +-minus-assoc x y z le ⟩
@@ -54,8 +54,8 @@ nt-division x y 0<y with x <? y
 open import LessThan.Alternative
 
 accessible<' : (x y : ℕ) -> y <' x -> Accessible _<'_ y
-accessible<' (succ y) _ refl      = acc (accessible<' y)
-accessible<' (succ y) z (succ lt) = accessible<' y z lt
+accessible<' (succ y) _ le-refl'      = acc (accessible<' y)
+accessible<' (succ y) z (le-succ' lt) = accessible<' y z lt
 
 well-founded-lt' : WellFounded _<'_
 well-founded-lt' x = acc (accessible<' x)
@@ -67,12 +67,12 @@ x <'? y with x <? y
 
 minus-succ : {x y : ℕ} -> (y < x) -> (x - succ y < x - y)
 minus-succ {succ x} {zero} p rewrite minus-zero x = le-refl
-minus-succ {succ x} {succ y} (succ p) = minus-succ p
+minus-succ {succ x} {succ y} (le-succ p) = minus-succ p
 
 minus-le : (x y : ℕ) -> (x - y <= x)
-minus-le zero     _        = zero
+minus-le zero     _        = le-zero
 minus-le (succ _) zero     = le-refl
-minus-le (succ x) (succ y) = <=-succ (minus-le x y)
+minus-le (succ x) (succ y) = le-succ-r (minus-le x y)
 
 minus-lt : {x y : ℕ} -> (0 < y) -> (y <= x) -> (x - y < x)
 minus-lt {x} {succ y} _ q =

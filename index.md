@@ -44,4 +44,3 @@ please contact the instructor.
 
 [Go to the Main module]({% link pages/Main.md %}).
 
-bundle config set --local path 'vendor/bundle'

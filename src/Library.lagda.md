@@ -1,3 +1,8 @@
+---
+title: Library
+---
+
+```
 module Library where
 
 import Bool
@@ -15,3 +20,4 @@ import Logic
 import Nat
 import Nat.Properties
 import WellFounded
+```
