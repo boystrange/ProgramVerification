@@ -4,6 +4,7 @@ title: Existential quantification
 
 <!--
 ```
+open import Fun
 open import Bool
 open import Nat
 open import Nat.Properties
@@ -252,16 +253,47 @@ left.
 ## Exercises
 
 1. Define the type `ℕ₂` of natural numbers greater that `1`. Show
-   that `2` (along with a suitable proof) is an element of `ℕ₂`.
+   that `2` (along with a suitable proof) is an element of `ℕ₂`. Then define
+   the succesor on `ℕ₂`, namely the function `succ₂ : ℕ₂ -> ℕ₂`.
+2. Prove that if `x` divides both `y` and `z`, then `x` divides
+   `y + z` as well.
+3. Prove the theorem `last-view : {A : Set} (xs : List A) -> xs !=
+   [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]`.
+4. Prove the theorem `half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z
+   ∧ (z == 0 ∨ z == 1)`.
+
 
 ```
+-- EXERCISE 1
+
 ℕ₂ : Set
 ℕ₂ = Σ ℕ λ x -> x != 0 ∧ x != 1
 
 _ : ℕ₂
 _ = 2 , (λ ()) , (λ ())
 
-Prime : ℕ -> Set
-Prime x = x != 0 ∧ x != 1 ∧ ((y : ℕ) -> y ∣ x -> y == 1 ∨ y == x)
+succ₂ : ℕ₂ -> ℕ₂
+succ₂ (x , nzero , none) = succ x , (λ ()) , λ { refl -> nzero refl }
+
+-- EXERCISE 2
+
+∣-plus : {x y z : ℕ} -> x ∣ y -> x ∣ z -> x ∣ (y + z)
+∣-plus {x} (u , refl) (v , refl) = u + v , *-dist-r u v x
+
+-- EXERCISE 3
+
+last-view : {A : Set} (xs : List A) -> xs != [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]
+last-view []             nempty = absurd (nempty refl)
+last-view (x :: [])      nempty = [] , x , refl
+last-view (x :: z :: xs) nempty with last-view (z :: xs) (λ ())
+... | ys , y , eq = x :: ys , y , cong (x ::_) eq
+
+-- EXERCISE 4
+
+half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z ∧ (z == 0 ∨ z == 1)
+half zero            = zero , zero , refl , inl refl
+half (succ zero)     = zero , 1 , refl , inr refl
+half (succ (succ x)) with half x
+... | y , z , eq , zr = succ y , z , cong (succ ∘ succ) eq , zr
 ```
 
