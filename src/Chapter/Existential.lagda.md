@@ -21,9 +21,9 @@ module Chapter.Existential where
 In constructive logic the proof of a predicate of the form $∃x\in
 A.P(x)$ is a **pair** consisting of a particular element $x$ of $A$
 along with a proof that $x$ satisfies the predicate $P$. This is an
-example of **dependent pair** whose first component has type $A$ and
-where the type of the second component depends on the value $x$ of
-the first component. The data type that we use to represent
+example of **dependent pair** in which the first component has type
+$A$ and where the type of the second component depends on the value
+$x$ of the first one. The data type that we use to represent
 dependent pairs is traditionally called "sigma type" and is a
 refinement of the type `_∧_` we have defined in the [previous
 chapter]({% link pages/Chapter.Connectives.md#conjunction %}).
@@ -90,12 +90,12 @@ respectively return the head and the tail of a non-empty list.
 
 ```
 head : {A : Set} -> List⁺ A -> A
-head ([]     , p) = absurd (p refl)
-head (x :: _ , _) = x
+head ([]     , nempty) = absurd (nempty refl)
+head (x :: _ , _     ) = x
 
 tail : {A : Set} -> List⁺ A -> List A
-tail ([]      , p) = absurd (p refl)
-tail (_ :: xs , _) = xs
+tail ([]      , nempty) = absurd (nempty refl)
+tail (_ :: xs , _     ) = xs
 ```
 
 In the definition of `head` and `tail` we perform case analysis on
@@ -121,9 +121,20 @@ function could return any number, not necessarily the desired
 one. Alternatively, we could implement `pred` so that it returns a
 natural number along with a proof that its successor is the number
 passed to the function. But this is just what a sigma type allows us
-to do. Here is the Agda code.
+to do. To make the syntax evocative of the fact that we are
+describing the existence of a term with a certain property the Agda
+library defines
 
-SUGAR for ∃
+    ∃[ x ] A
+
+as syntactic sugar for
+
+    Σ _ λ x -> A
+
+where `x` typically occurs in `A` and the underscore is a
+placeholder for the type of the first component of the dependent
+pair, which can be automatically inferred by Agda in many
+cases. With the help of this syntax we define `pred` thus.
 
 ```
 pred : (p : ℕ⁺) -> ∃[ x ] fst p == succ x
@@ -138,25 +149,25 @@ pair. Once we have established that this must have the form `succ
 x`, we return `x` along with the proof that this is the correct
 result.
 
-this is an instance of so-called *intrinsic verification* that we
-will cover in more depth (and on more substantial examples) in later
-chapters.
+The definition of functions whose type specifies their behavior in
+detail is called *intrinsic verification*. We will see more
+substantial examples of this technique in later chapters.
 
 ## Defining predicates
 
 As final use case for existential quantification we consider the
 definition of a binary predicate `x ∣ y` indicating that `x` divides
-`y`. This relation among `x` and `y` can be expressed as the fact
-that there exists some natural number `z` such that `z` times `x`
-results into `y`.
+`y`. This relation among `x` and `y` can be expressed as the
+existence of some natural number `z` such that `z` times `x` results
+into `y`.
 
 ```
 _∣_ : ℕ -> ℕ -> Set
 x ∣ y = ∃[ z ] z * x == y
 ```
 
-For example, the type `2 ∣ 64` is inhabited by a witness `32` along
-with a proof that `32 * 2` is equal to `64`.
+For example, the type `2 ∣ 64` is inhabited by the witness `32`
+along with a proof that `32 * 2` is equal to `64`.
 
 ```
 _ : 2 ∣ 64
@@ -169,10 +180,10 @@ is the Unicode character obtained by the combination `\|`
 which is one of the few symbols that have a special meaning and are
 reserved by Agda.
 
-We can prove that `∣` is a total order on natural number by showing
-that it is reflexive, antisymmetric and transitive. Reflexivity is
-shown by taking `1` as witness along with the proof that `1` is the
-left unit of multiplication.
+We can prove that `∣` is a partial order on natural number by
+showing that it is reflexive, antisymmetric and
+transitive. Reflexivity is shown by taking `1` as witness along with
+the proof that `1` is the left unit of multiplication.
 
 ```
 ∣-refl : {x : ℕ} -> x ∣ x
@@ -257,9 +268,10 @@ left.
    the succesor on `ℕ₂`, namely the function `succ₂ : ℕ₂ -> ℕ₂`.
 2. Prove that if `x` divides both `y` and `z`, then `x` divides
    `y + z` as well.
-3. Prove the theorem `last-view : {A : Set} (xs : List A) -> xs !=
+3. Prove the theorem `∣-not-total : ∃[ x ] ∃[ y ] ¬ (x ∣ y) ∧ ¬ (y ∣ x)`.
+4. Prove the theorem `last-view : {A : Set} (xs : List A) -> xs !=
    [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]`.
-4. Prove the theorem `half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z
+5. Prove the theorem `half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z
    ∧ (z == 0 ∨ z == 1)`.
 
 
@@ -282,13 +294,26 @@ succ₂ (x , nzero , none) = succ x , (λ ()) , λ { refl -> nzero refl }
 
 -- EXERCISE 3
 
+∣-not-total : ∃[ x ] ∃[ y ] ¬ (x ∣ y) ∧ ¬ (y ∣ x)
+∣-not-total = 2 , 3 , f , g
+  where
+    f : ¬ (2 ∣ 3)
+    f (succ zero     , ())
+    f (succ (succ _) , ())
+
+    g : ¬ (3 ∣ 2)
+    g (zero   , ())
+    g (succ _ , ())
+
+-- EXERCISE 4
+
 last-view : {A : Set} (xs : List A) -> xs != [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]
 last-view []             nempty = absurd (nempty refl)
 last-view (x :: [])      nempty = [] , x , refl
 last-view (x :: z :: xs) nempty with last-view (z :: xs) (λ ())
 ... | ys , y , eq = x :: ys , y , cong (x ::_) eq
 
--- EXERCISE 4
+-- EXERCISE 5
 
 half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z ∧ (z == 0 ∨ z == 1)
 half zero            = zero , zero , refl , inl refl
