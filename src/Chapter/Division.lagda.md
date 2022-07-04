@@ -42,7 +42,7 @@ nt-division x y 0<y with x <? y
     eq : succ q * y + r == x
     eq = begin
            succ q * y + r  ==⟨⟩
-           y + q * y + r   ==⟨ symm (+-associative y (q * y) r) ⟩
+           y + q * y + r   ==⟨ symm (+-assoc y (q * y) r) ⟩
            y + (q * y + r) ==⟨ cong (y +_) qy=x ⟩
            y + (x - y)     ==⟨ +-minus-assoc y x y ge ⟩
            (y + x) - y     ==⟨ +-minus y x ⟩
@@ -97,7 +97,7 @@ div-rem-aux x y p (acc f) with x <'? y
   succ q , r , r<y , (
     begin
       succ q * y + r  ==⟨⟩
-      y + q * y + r   ==⟨ symm (+-associative y (q * y) r) ⟩
+      y + q * y + r   ==⟨ symm (+-assoc y (q * y) r) ⟩
       y + (q * y + r) ==⟨ cong (y +_) qy=x ⟩
       y + (x - y)     ==⟨ +-minus-assoc y x y (<='to<= ge) ⟩
       (y + x) - y     ==⟨ +-minus y x ⟩

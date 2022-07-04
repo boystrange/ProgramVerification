@@ -1,0 +1,267 @@
+---
+title: Existential quantification
+---
+
+<!--
+```
+open import Bool
+open import Nat
+open import Nat.Properties
+open import List
+open import Equality
+open import Logic hiding (fst; snd)
+
+module Chapter.Existential where
+```
+-->
+
+## Defining the existential quantifier
+
+In constructive logic the proof of a predicate of the form $∃x\in
+A.P(x)$ is a **pair** consisting of a particular element $x$ of $A$
+along with a proof that $x$ satisfies the predicate $P$. This is an
+example of **dependent pair** whose first component has type $A$ and
+where the type of the second component depends on the value $x$ of
+the first component. The data type that we use to represent
+dependent pairs is traditionally called "sigma type" and is a
+refinement of the type `_∧_` we have defined in the [previous
+chapter]({% link pages/Chapter.Connectives.md#conjunction %}).
+
+    data Σ (A : Set) (B : A -> Set) : Set where
+      _,_ : (x : A) -> B x -> Σ A B
+
+The *non-dependent* pair type can be defined as an instance of a
+sigma type where the type of the second component does *not* depend
+on the value of the first one.
+
+```
+_×_ : Set -> Set -> Set
+A × B = Σ A λ _ -> B
+```
+
+The two projections `fst` and `snd` for sigma types are the same we
+have already defined for `_∧_`, except for their type. In
+particular, the type of `snd` refers to the first component of a
+dependent pair by means of `fst`.
+
+```
+fst : {A : Set} {B : A -> Set} -> Σ A B -> A
+fst (x , _) = x
+
+snd : {A : Set} {B : A -> Set} (p : Σ A B) -> B (fst p)
+snd (_ , y) = y
+```
+
+## Refined types
+
+We can use sigma types to *refine* an existing type to some elements
+that have a certain property. For example, we can define the type of
+non-null natural numbers as follows.
+
+```
+ℕ⁺ : Set
+ℕ⁺ = Σ ℕ (_!= 0)
+```
+
+A non-null natural number, that is an element of the type `ℕ⁺`, is a
+pair consisting of some natural number `x` and a proof that `x` is
+different from `0`. For example, `1` is an element of `ℕ⁺`.
+
+```
+_ : ℕ⁺
+_ = 1 , λ ()
+```
+
+Analogously, we can define the type of non-empty lists as follows.
+
+```
+List⁺ : Set -> Set
+List⁺ A = Σ (List A) (_!= [])
+```
+
+## Partial functions
+
+Type refinements may be useful for the implementation of *partial
+function* that are only defined for a subset of their
+domain. Typical examples are division, which is defined only for
+non-null divisors, and the functions `head` and `tail` that
+respectively return the head and the tail of a non-empty list.
+
+```
+head : {A : Set} -> List⁺ A -> A
+head ([]     , p) = absurd (p refl)
+head (x :: _ , _) = x
+
+tail : {A : Set} -> List⁺ A -> List A
+tail ([]      , p) = absurd (p refl)
+tail (_ :: xs , _) = xs
+```
+
+In the definition of `head` and `tail` we perform case analysis on
+an element of type `List⁺ A`, which is a pair consisting of a list
+and a proof that the list is not empty. We further analyze the
+structure of the list. Agda is not able to automatically rule out
+the case in which the list is `[]`. However, this case is made
+impossible by the proof `p` that the list is not empty, hence we can
+honor our obligation to yield a result of the desired type by
+invoking `absurd`. When the list is not empty, we simply return the
+desired component.
+
+## Intrinsic verification
+
+Another typical use case of sigma types is in providing type-rich
+information about the result returned by a function. For example,
+suppose we wish to implement a function `pred` that, applied to a
+natural number different from `0` (that is, an element of `ℕ⁺`),
+returns its predecessor. We could implement `pred` simply as a
+function of type `ℕ⁺ -> ℕ`, however this type would not provide any
+information about the property of the returned result. In fact, such
+function could return any number, not necessarily the desired
+one. Alternatively, we could implement `pred` so that it returns a
+natural number along with a proof that its successor is the number
+passed to the function. But this is just what a sigma type allows us
+to do. Here is the Agda code.
+
+SUGAR for ∃
+
+```
+pred : (p : ℕ⁺) -> ∃[ x ] fst p == succ x
+pred (zero   , nzero) = absurd (nzero refl)
+pred (succ x , _    ) = x , refl
+```
+
+Note the use of `fst` in the type of `pred` to refer to the first
+component of the pair `p`. As usual, we perform case analysis on the
+argument of type `ℕ⁺`, further analyzing the witness in the
+pair. Once we have established that this must have the form `succ
+x`, we return `x` along with the proof that this is the correct
+result.
+
+this is an instance of so-called *intrinsic verification* that we
+will cover in more depth (and on more substantial examples) in later
+chapters.
+
+## Defining predicates
+
+As final use case for existential quantification we consider the
+definition of a binary predicate `x ∣ y` indicating that `x` divides
+`y`. This relation among `x` and `y` can be expressed as the fact
+that there exists some natural number `z` such that `z` times `x`
+results into `y`.
+
+```
+_∣_ : ℕ -> ℕ -> Set
+x ∣ y = ∃[ z ] z * x == y
+```
+
+For example, the type `2 ∣ 64` is inhabited by a witness `32` along
+with a proof that `32 * 2` is equal to `64`.
+
+```
+_ : 2 ∣ 64
+_ = 32 , refl
+```
+
+Beware that the symbol `∣` used here and in the rest of this chapter
+is the Unicode character obtained by the combination `\|`
+(backslash-bar) and is different from the mere vertical bar `|`,
+which is one of the few symbols that have a special meaning and are
+reserved by Agda.
+
+We can prove that `∣` is a total order on natural number by showing
+that it is reflexive, antisymmetric and transitive. Reflexivity is
+shown by taking `1` as witness along with the proof that `1` is the
+left unit of multiplication.
+
+```
+∣-refl : {x : ℕ} -> x ∣ x
+∣-refl {x} = 1 , *-unit-l x
+```
+
+Concerning transitivity, by pattern matching on the proofs of `x ∣
+y` and `y ∣ z` we find out two witnesses `u` and `v` such that `u *
+x == y` and `v * (u * x) == z`. The witness proving that `x` divides
+`z` is `v * u`, but we have to reassociate the product `v * (u * x)`
+into `(v * u) * x` in order to show that it serves the desired
+purpose.
+
+```
+∣-trans : {x y z : ℕ} -> x ∣ y -> y ∣ z -> x ∣ z
+∣-trans (u , refl) (v , refl) = v * u , symm (*-assoc v u _)
+```
+
+Proving that `∣` is antisymmetric requires some more work, including
+some tedious properties of addition and multiplication. We start by
+showing that adding a non-null number `succ y` to `x` cannot yield
+`x` and multiplying zero to `x` cannot yield `1`.
+
+```
++-succ-neq : {x y : ℕ} -> x + succ y != x
++-succ-neq {succ x} eq = +-succ-neq (succ-injective eq)
+
+*-zero-neq-one : (x : ℕ) -> x * 0 != 1
+*-zero-neq-one (succ x) eq = *-zero-neq-one x eq
+```
+
+Next we show that if the product of two numbers yields `1`, then
+both numbers must be `1`.
+
+```
+*-one : (x y : ℕ) -> x * y == 1 -> x == 1 ∧ y == 1
+*-one (succ x)        zero            eq = absurd (*-zero-neq-one x eq)
+*-one (succ zero)     (succ zero)     eq = refl , refl
+*-one (succ (succ x)) (succ zero)     ()
+*-one (succ (succ x)) (succ (succ y)) ()
+```
+
+Then we prove that if the product of `x` and `y` yields `y`, then
+either `x` is `1` or `y` is `0`.
+
+```
+*-same : (x y : ℕ) -> x * y == y -> x == 1 ∨ y == 0
+*-same x               zero     eq = inr refl
+*-same (succ zero)     (succ y) eq = inl refl
+*-same (succ (succ x)) (succ y) eq = absurd (+-succ-neq (succ-injective eq))
+```
+
+We combine these results to prove that `∣` is antisymmetric.
+
+```
+∣-antisymm : {x y : ℕ} -> x ∣ y -> y ∣ x -> x == y
+∣-antisymm {x} (u , refl) (v , q) with *-same (v * u) x (subst (_== x) (*-assoc v u x) q)
+... | inr refl = *-zero-r u
+... | inl eq with *-one v u eq
+... | refl , refl = symm (*-unit-l x)
+```
+
+By pattern matching on the proof of `x ∣ y` we find out a `u` such
+that `u * x == y`. When we pattern match on the proof of `y ∣ x` we
+also find the witness `v` such that `v * y == x`. However, we are
+unable to also perform case analysis on the proof of this equality
+since the `y` has been unified with `u * x` and `q` is actually a
+proof of `v * (u * x) == x` (the unification fails in this case
+because `x` occurs on both sides of the equality). We use `subst` to
+obtain from `q` a proof of the equality `(v * u) * x == x` and now
+we use `*-same` to deduce that either `v * u` is `1` or `x` is
+`0`. In the latter case we conclude using the property that `0`
+absorbs multiplication on the right. In the former case, we use
+`*-one` to deduce that both `u` and `v` must be `1` and we conclude
+using the property that `1` is the unit of multiplication on the
+left.
+
+## Exercises
+
+1. Define the type `ℕ₂` of natural numbers greater that `1`. Show
+   that `2` (along with a suitable proof) is an element of `ℕ₂`.
+
+```
+ℕ₂ : Set
+ℕ₂ = Σ ℕ λ x -> x != 0 ∧ x != 1
+
+_ : ℕ₂
+_ = 2 , (λ ()) , (λ ())
+
+Prime : ℕ -> Set
+Prime x = x != 0 ∧ x != 1 ∧ ((y : ℕ) -> y ∣ x -> y == 1 ∨ y == x)
+```
+

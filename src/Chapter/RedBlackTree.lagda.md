@@ -191,7 +191,7 @@ sizeB (node _ l r) = succ (size* l + size* r)
 
 ⌊sizeR⌋ {n} (node _ l r) =
   begin
-    2 ^ n                    ==⟨ +-zero (2 ^ n) ⟩
+    2 ^ n                    ==⟨ symm (+-unit-r (2 ^ n)) ⟩
     2 ^ n + 0                <=⟨ le-cong-+ le-refl le-zero ⟩
     2 ^ n + sizeB r          <=⟨ le-cong-+ (⌊sizeB⌋ l) le-refl ⟩
     succ (sizeB l) + sizeB r
@@ -200,7 +200,7 @@ sizeB (node _ l r) = succ (size* l + size* r)
 ⌊sizeB⌋ leaf = le-succ le-zero
 ⌊sizeB⌋ {succ n} (node _ l r) =
   begin
-    2 ^ n + (2 ^ n + 0)             ==⟨ symm (cong (2 ^ n +_) (+-zero (2 ^ n))) ⟩
+    2 ^ n + (2 ^ n + 0)             ==⟨ symm (cong (2 ^ n +_) (symm (+-unit-r (2 ^ n)))) ⟩
     2 ^ n + 2 ^ n                   <=⟨ le-cong-+ (⌊size*⌋ l) (⌊size*⌋ r) ⟩
     succ (size* l) + succ (size* r) ==⟨ symm (+-succ (succ (size* l)) (size* r)) ⟩
     succ (succ (size* l + size* r))

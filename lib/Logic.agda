@@ -24,6 +24,12 @@ data Σ (A : Set) (P : A -> Set) : Set where
 
 syntax Σ-syntax A (λ x -> P) = Σ[ x ∈ A ] P
 
+fst : {A : Set} {P : A -> Set} -> Σ A P -> A
+fst (x , _) = x
+
+snd : {A : Set} {P : A -> Set} (p : Σ A P) -> P (fst p)
+snd (_ , y) = y
+
 -- EXISTENTIAL
 
 ∃ : {A : Set} -> (A -> Set) -> Set

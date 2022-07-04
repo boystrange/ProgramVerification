@@ -197,7 +197,7 @@ that will come handy in due time. The first property asserts that
 `zero` is a right unit for `+`.
 
 ```agda
-+-unit-r : (x : ℕ) -> x == x + zero
++-unit-r : (x : ℕ) -> x == x + 0
 +-unit-r zero     = refl
 +-unit-r (succ x) = cong succ (+-unit-r x)
 ```
@@ -207,7 +207,7 @@ the very definition of `+` since `zero + x` is definitionally equal
 to `x`.
 
 ```agda
-+-unit-l : (x : ℕ) -> x == zero + x
++-unit-l : (x : ℕ) -> x == 0 + x
 +-unit-l x = refl
 ```
 
@@ -216,7 +216,7 @@ in a sum can be shifted from one operand to the other without
 affecting the result.
 
 ```agda
-+-succ : (x y : ℕ) -> (succ x) + y == x + (succ y)
++-succ : (x y : ℕ) -> succ x + y == x + succ y
 +-succ zero     y = refl
 +-succ (succ x) y = cong succ (+-succ x y)
 ```

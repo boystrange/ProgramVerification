@@ -87,7 +87,7 @@ lemma-++-⊑-r : (xs ys : List A) -> ys ⊑ xs ++ ys
 lemma-++-⊑-r xs ys =
   begin
     length ys <=⟨ le-plus (length ys) (length xs) ⟩
-    length ys + length xs ==⟨ +-commutative (length ys) (length xs) ⟩
+    length ys + length xs ==⟨ +-comm (length ys) (length xs) ⟩
     length xs + length ys ==⟨ symm (++-length xs ys) ⟩
     length (xs ++ ys)
   end

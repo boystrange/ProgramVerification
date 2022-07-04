@@ -111,10 +111,10 @@ lemma k (succ (succ i)) =
       ==⟨ lemma (succ k) (succ i) ⟩
     fibo (succ i + succ k) ==⟨⟩
     fibo (succ (i + succ k))
-      ==⟨ cong (λ x -> fibo (succ x)) (+-commutative i (succ k)) ⟩
+      ==⟨ cong (λ x -> fibo (succ x)) (+-comm i (succ k)) ⟩
     fibo (succ (succ k + i)) ==⟨⟩
     fibo (succ (succ (k + i)))
-      ==⟨ cong (λ x -> fibo (succ (succ x))) (+-commutative k i) ⟩
+      ==⟨ cong (λ x -> fibo (succ (succ x))) (+-comm k i) ⟩
     fibo (succ (succ (i + k)))
   end
 
@@ -123,7 +123,7 @@ theorem k =
   begin
     fast-fibo k     ==⟨⟩
     fibo-from 0 1 k ==⟨ lemma 0 k ⟩
-    fibo (k + 0)      ⟨ cong fibo (+-zero k) ⟩==
+    fibo (k + 0)    ==⟨ cong fibo (+-unit-r k) ⟩
     fibo k
   end
 ```
