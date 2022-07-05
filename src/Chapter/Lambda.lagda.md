@@ -1,5 +1,5 @@
 ---
-title: First steps with Agda
+title: Types and functions
 ---
 
 <!--
@@ -11,10 +11,10 @@ module Chapter.Lambda where
 To try out the examples discussed in this chapter and to solve the
 proposed exercises it is necessary to include the `Nat` module,
 which defines the natural numbers and some basic operations on
-them. We will discuss natural numbers in a [later section]({% link
-pages/Chapter.NaturalNumbers.md %}). For the time being, we simply
-import the module and make its content accessible by means of the
-following clause.
+them. We will discuss natural numbers in a [dedicated chapter]({%
+link pages/Chapter.NaturalNumbers.md %}). For the time being, we
+simply import the module and make its content accessible by means of
+the following clause.
 
 ```
 open import Nat
@@ -24,19 +24,18 @@ open import Nat
 
 Agda is a strongly typed programming language and every term of the
 language must be **well typed** in order to be considered by
-Agda. For the time being we only consider a small set of **simple
-types**:
+Agda. For now we only consider a small set of **simple types**:
 
-* `ℕ` is the type of **natural numbers**;
+* `ℕ` stands for the type of **natural numbers**;
 * if `A` and `B` are types, then `(A -> B)` is the type of
   **functions** that, when applied to an argument of type `A`, yield a
   *result of type `B`.
 
-To limit the amount of parentheses we have to write in types and
+To limit the amount of parentheses we have to write in types and to
 improve readability, we adopt the following conventions:
 
-* We omit topmost parentheses, so that `A -> B` stands for `(A -> B)`
-* We assume that `->` associates to the **right**, so that e.g. `A
+* we omit topmost parentheses, so that `A -> B` stands for `(A -> B)`;
+* we assume that `->` associates to the **right**, so that e.g. `A
   -> B -> C` stands for `A -> (B -> C)` and not for `(A -> B) -> C`.
 
 ## Terms
@@ -54,17 +53,24 @@ their type is determined.
   assuming that `x` has type `A`, then `(λ (x : A) -> M)` is a term
   of type `A -> B` called **abstraction** and represents a function
   that produces `M` when applied to `x`. We say that `x` is the
-  **argument** of the function and that `M` is its **body**. In most
-  cases, the argument `x` occurs within the body `M`.
+  **argument** of the function and that `M` is its **body**.
 * If `M` is a term of type `A -> B` and `N` is a term of type `A`,
   then `(M N)` is a term of type `B` called **application** and
   represents the application of (the function) `M` to (the argument)
   `N`. It is useful to think of function application as of an
   invisible operator placed in between `M` and `N`.
 
-We will introduce new forms in the following chapters. As for types,
-we adopt some syntactic conventions to improve the readability of
-terms. In particular:
+We will introduce new terms in the following chapters. For the time
+being, since we have imported the `Nat` module from the library, a
+number of terms defined therein are also available. In particular,
+`zero` represents zero and `succ` is a function that, applied to a
+natural number, yields its successor. The usual decimal notation for
+natural numbers is available, so that `0` can be used as
+abbreviation for `zero`, `2` can be used for abbreviation for `succ
+(succ zero)` and `42` can be used for abbreviation for 42
+applications of `succ` to `zero`. As for types, we adopt some
+syntactic conventions to improve the readability of terms. In
+particular:
 
 * We omit topmost parentheses, so that e.g. `M N` stands for `(M
   N)`.
@@ -93,13 +99,19 @@ f = λ x -> x ^ 2 + 1
 
 The first line provides the **signature** of `f`. Top-level
 definitions like this one must always be accompanied by a
-signature. The second line provides the **definition** of `f`.  By
-loading the program using `C-c C-l`, Agda verifies that `f` is well
-typed and that its type is consistent with the one provided in its
-signature.  We can try the definition of `f` by applying it to some
-natural number. For example, if we hit `C-c C-n` and enter `f 2` we
-obtain `5` as result. The command `C-c C-n` asks Agda to *evaluate*
-(technically, to *normalize*), the provided expression.
+signature. The second line provides the **definition** of `f` with
+which we establish that `f` is **definitionally** the same as the
+abstraction `λ x - x ^ 2 + 1`. Note that we omit the type of the
+argument `x` for this abstraction: Agda may figure out that `x` has
+type `ℕ` from both the signature of `f` and the fact that the
+operators `^` and `+` concern natural numbers.
+
+By loading the program using `C-c C-l`, Agda verifies that `f` is
+well typed and that its type is consistent with the one provided in
+its signature.  We can try the definition of `f` by applying it to
+some natural number. For example, if we hit `C-c C-n` and enter `f
+2` we obtain `5` as result. The command `C-c C-n` asks Agda to
+*evaluate* (technically, to *normalize*), the provided expression.
 
 When defining abstractions, Agda provides an alternative, more
 convenient notation in which the argument is moved to the left of
@@ -110,11 +122,12 @@ f₁ : ℕ -> ℕ
 f₁ x = x ^ 2 + 1
 ```
 
-which can be read as "`f₁` applied to `x` is `x ^ 2 + 1`". Note that
-we have called this alternative definition of the function `f₁` and
-not `f`. There cannot be two definitions with the same name in the
-same Agda file. Here and in the following chapters, we will use
-indices when providing multiple versions of the same definition.
+which can be read as "`f₁` applied to `x` is definitionally the same
+as `x ^ 2 + 1`". We have named this alternative definition of the
+function `f₁` and not `f`, since there cannot be two definitions
+with the same name in the same Agda file. Here and in the following
+chapters we will use indices when providing multiple versions of the
+same definition.
 
 ## Multi-argument and higher-order functions
 
@@ -133,12 +146,12 @@ Equivalently, `g` can be written as follows:
 
 ```
 g₁ : ℕ -> ℕ -> ℕ
-g₁ x y = x ^ 2 +  2 * x * y + 1
+g₁ x y = x ^ 2 + 2 * x * y + 1
 ```
 
 We can use `C-c C-n` to verify that `g 2 3` evaluates to `17`. Since
-application is left associative, `g 2 3` is the same as `(g 2)
-3`. That is, we first apply `g` to `2` to obtain the function
+function application is left associative, `g 2 3` is the same as `(g
+2) 3`. That is, we first apply `g` to `2` to obtain the function
 
     λ y -> 2 ^ 2 + 2 * 2 * y + 1
 
@@ -156,3 +169,37 @@ twice f x = f (f x)
 
 applied to a function `f` and an argument `x` applies `f` to `x`
 twice so that evaluating `twice f 2` yields `26`.
+
+## Exercises
+
+1. Define at least six different versions of the function that
+   computes the successor of a natural number.
+2. Which of the following terms are well typed? Use Agda to check
+   your answers.
+   * `λ x y -> x y`
+   * `λ x y -> (x x) y`
+   * `λ x y -> (x y) x`
+   * `λ x y -> x (x + y)`
+
+```
+-- EXERCISE 1
+
+succ₁ : ℕ -> ℕ
+succ₁ = succ
+
+succ₂ : ℕ -> ℕ
+succ₂ x = succ x
+
+succ₃ : ℕ -> ℕ
+succ₃ = λ x -> x + 1
+
+succ₄ : ℕ -> ℕ
+succ₄ = λ x -> 1 + x
+
+succ₅ : ℕ -> ℕ
+succ₅ x = x + 1
+
+succ₆ : ℕ -> ℕ
+succ₆ x = 1 + x
+
+```

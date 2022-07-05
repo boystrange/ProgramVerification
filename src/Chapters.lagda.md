@@ -8,22 +8,26 @@ module Chapters where
 ```
 -->
 
-## Basics
+## Preamble
 
 ```
 import Chapter.Demo
 import Chapter.Setup
+```
+
+## Basics
+
+```
 import Chapter.Lambda
-import Chapter.Interactive
 import Chapter.Bool
 import Chapter.BoolProperties
 -- import Chapter.NaturalNumbers -- do not import this
 import Chapter.Polymorphism
 import Chapter.Connectives
 import Chapter.Negation
--- existential quantification (example of divisibility?)
+import Chapter.Existential
 import Chapter.Lists
-import Chapter.Even
+import Chapter.Predicates
 import Chapter.Equality
 import Chapter.LessThan
 -- import Chapter.Permutations
@@ -41,3 +45,7 @@ import Chapter.QuickSort
 ```
 
 Fin and Vec?
+
+## Verification of imperative programs
+
+## Verification of concurrent programs
