@@ -62,15 +62,19 @@ their type is determined.
 
 We will introduce new terms in the following chapters. For the time
 being, since we have imported the `Nat` module from the library, a
-number of terms defined therein are also available. In particular,
-`zero` represents zero and `succ` is a function that, applied to a
-natural number, yields its successor. The usual decimal notation for
-natural numbers is available, so that `0` can be used as
-abbreviation for `zero`, `2` can be used for abbreviation for `succ
-(succ zero)` and `42` can be used for abbreviation for 42
-applications of `succ` to `zero`. As for types, we adopt some
-syntactic conventions to improve the readability of terms. In
-particular:
+number of terms defined therein are also available. In particular:
+
+* `zero` of type `ℕ` represents the natural number zero;
+* `succ` of type `ℕ -> ℕ` is a function that, applied to a natural
+  number, yields its successor.
+
+The usual decimal notation for natural numbers is also available, so
+that `0` can be used as abbreviation for `zero`, `2` can be used for
+abbreviation for `succ (succ zero)` and `42` can be used for
+abbreviation for 42 applications of `succ` to `zero`.
+
+As for types, also for terms we adopt some syntactic conventions to
+improve readability.
 
 * We omit topmost parentheses, so that e.g. `M N` stands for `(M
   N)`.

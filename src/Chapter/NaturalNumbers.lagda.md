@@ -8,6 +8,7 @@ title: Natural numbers
 
 module Chapter.NaturalNumbers where
 
+open import Nat using (ℕ; zero; succ)
 open import Equality
 open import Equality.Reasoning
 ```
@@ -29,11 +30,9 @@ natural numbers as the smallest set of terms that have either the
 form `zero` or `succ x` where `x` is a natural number. The
 corresponding data type is the following.
 
-```agda
-data ℕ : Set where
-  zero : ℕ
-  succ : ℕ -> ℕ
-```
+    data ℕ : Set where
+      zero : ℕ
+      succ : ℕ -> ℕ
 
 According to this definition, `zero` is a natural number by itself,
 whereas `succ` is a function that yields a natural number when it is
@@ -54,9 +53,7 @@ define functions by case analysis on arguments that have type
 standard positional notation using sequences of digits. We can do so
 by means of the following directive
 
-```agda
-{-# BUILTIN NATURAL ℕ #-}
-```
+    {-# BUILTIN NATURAL ℕ #-}
 
 telling Agda that any sequence of decimal digits such as `1234`
 should be expanded into 1234 subsequent applications of `succ` to
