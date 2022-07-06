@@ -11,7 +11,7 @@ module Chapter.Bool where
 -->
 
 In this section we start looking at the constructs for defining and
-using new data types in Agda. As
+using new data types in Agda.
 
 ## Defining simple data types
 

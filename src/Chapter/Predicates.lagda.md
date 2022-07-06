@@ -55,8 +55,8 @@ theorem as follows.
 
 ```
 theorem-p : {x : ℕ} (ev : Even-p x == true) -> x == half x * 2
-theorem-p {zero} refl = refl
-theorem-p {succ (succ x)} ev = cong (succ ∘ succ) (theorem-p ev)
+theorem-p {zero}          refl = refl
+theorem-p {succ (succ x)} ev   = cong (succ ∘ succ) (theorem-p ev)
 ```
 
 We are forced to perform case analysis on the (implicit) argument
@@ -144,7 +144,7 @@ analysis on `x` to complete our theorem.
 
 ```
 theorem-r : {x : ℕ} (ev : Even-r x) -> x == half x * 2
-theorem-r {zero} <>          = refl
+theorem-r {zero}          <> = refl
 theorem-r {succ (succ x)} ev = cong (succ ∘ succ) (theorem-r ev)
 ```
 
@@ -216,9 +216,9 @@ _ : ¬ Even-i 1
 _ = λ ()
 ```
 
-When we prove our theorem using `Even-i` we can forget about `x` and
-perform a case analysis directly on `Even-i x`, which contains all
-the structure we need.
+When we prove our theorem using `Even-i` we can perform a case
+analysis directly on `Even-i x`, which contains all the structure we
+need.
 
 ```
 theorem-i : {x : ℕ} (ev : Even-i x) -> x == half x * 2
@@ -268,8 +268,8 @@ m=>p (y , refl) = lem y
 -- EXERCISE 2
 
 not-even : (x : ℕ) -> ¬ Even-i x -> x == 1 + half x * 2
-not-even zero nev = absurd (nev even-zero)
-not-even (succ zero) nev = refl
+not-even zero            nev = absurd (nev even-zero)
+not-even (succ zero)     nev = refl
 not-even (succ (succ x)) nev = cong (succ ∘ succ) (not-even x (lem x nev))
   where
     lem : (x : ℕ) -> ¬ Even-i (2 + x) -> ¬ Even-i x
@@ -290,15 +290,15 @@ _ = λ { (odd-succ ()) }
 -- EXERCISE 4
 
 even-or-odd : (x : ℕ) -> Even-i x ∨ Odd-i x
-even-or-odd zero = inl even-zero
-even-or-odd (succ zero) = inr odd-one
+even-or-odd zero            = inl even-zero
+even-or-odd (succ zero)     = inr odd-one
 even-or-odd (succ (succ x)) with even-or-odd x
 ... | inl ev = inl (even-succ ev)
 ... | inr od = inr (odd-succ od)
 
 even-and-odd : (x : ℕ) -> ¬ (Even-i x ∧ Odd-i x)
-even-and-odd zero            (_ , ())
-even-and-odd (succ zero)     (() , _)
+even-and-odd zero            (_  , ())
+even-and-odd (succ zero)     (() , _ )
 even-and-odd (succ (succ x)) (even-succ ev , odd-succ od) = even-and-odd x (ev , od)
 
 -- EXERCISE 5

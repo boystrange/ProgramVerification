@@ -174,12 +174,13 @@ twice so that evaluating `twice f 2` yields `26`.
 
 1. Define at least six different versions of the function that
    computes the successor of a natural number.
-2. Which of the following terms are well typed? Use Agda to check
+2. Which of the following terms are well typed? Use Agda to verify
    your answers.
-   * `λ x y -> x y`
-   * `λ x y -> (x x) y`
-   * `λ x y -> (x y) x`
-   * `λ x y -> x (x + y)`
+   * `λ (x : ℕ -> ℕ -> ℕ) (y : ℕ -> ℕ) -> x y`
+   * `λ (x : (ℕ -> ℕ) -> ℕ) (y : ℕ) -> x y`
+   * `λ (x : ℕ -> ℕ -> ℕ) (y : ℕ) -> x x y`
+   * `λ (x : ℕ -> ℕ -> ℕ) (y : ℕ) -> x (x y)`
+   * `λ (x : ℕ -> ℕ -> ℕ) (y : ℕ) -> x y y`
 
 ```
 -- EXERCISE 1
