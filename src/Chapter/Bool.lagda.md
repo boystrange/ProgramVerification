@@ -3,19 +3,19 @@ title: "Inductive data types: the Booleans"
 ---
 
 <!--
-```agda
+```
 {-# OPTIONS --allow-unsolved-metas #-}
 
 module Chapter.Bool where
 ```
 -->
 
-In this section we start looking at the constructs for defining and
+In this chapter we start looking at the constructs for defining and
 using new data types in Agda.
 
 ## Defining simple data types
 
-```agda
+```
 data Bool : Set where
   true  : Bool
   false : Bool
@@ -29,7 +29,7 @@ define. In later sections we will define increasingly more complex
 data types having more sophisticated signatures.
 
 After the signature is the keyword `where` followed by a list of
-data type **constructors**. For a simple data type like `Bool`, the
+**constructors**. For a simple data type like `Bool`, the
 constructors effectively enumerate all the possible values of that
 type. In this case, the only values of type `Bool` are `true` and
 `false`.
@@ -49,13 +49,13 @@ value that is either `true` or `false`.
 Let us now define the function that *negates* a boolean value. Its
 type is
 
-```agda
+```
 not : Bool -> Bool
 ```
 
 and its definition is given by cases on all the boolean values:
 
-```agda
+```
 not true  = false
 not false = true
 ```
@@ -63,10 +63,14 @@ not false = true
 Note that we are providing several *equations* for `not`, one for
 each possible constructor for `Bool`, along with a corresponding
 expression (on the right hand side of the `=` sign) showing what the
-function yields when applied to a particular boolean value.
+function yields when applied to a particular boolean value. As
+always when we use the symbol `=`, we are telling Agda that `not
+true` is definitionally equal to `false` and that `not false` is
+definitionally equal to `true`. These terms are interchangeable and
+one may be used where the other is expected.
 
-We can now ask Agda to *infer* the type of an application such as
-`not true` or `not false` by hitting `C-c C-d`. In both cases Agda
+We can ask Agda to *infer* the type of an application such as `not
+true` or `not false` by hitting `C-c C-d`. In both cases Agda
 answers `Bool`, meaning that both `not true` and `not false` are
 expressions of type `Bool`, namely expressions that, once evaluated,
 yield either `true` or `false`. In fact, we can also ask Agda to
@@ -76,31 +80,39 @@ technical term to indicate the evaluation process). We see that `not
 true` evaluates to `false` and `not false` evaluates to `true`, in
 accordance with the definition of `not`.
 
-We will extensively use this style of defining functions by cases on
-the shape of their argument. In fact, Agda provides a convenient
+We will extensively use this style of defining functions by case
+analysis on their arguments. In fact, Agda provides a convenient
 facility for generating all the cases we have to consider in an
 interactive way by starting from an *incomplete* definition of `not`
-(hereafter we use pedices such as ₁ and ₂ to distinguish multiple
+(as usual, we use indices such as ₁ and ₂ to distinguish multiple
 definitions of the same function so that they are not in conflict
-with each other):
+with each other).
 
-```agda
+   not₁ : Bool -> Bool
+   not₁ x = ?
+
+We can place the question mark `?` anywhere an expression is
+expected and we do not know yet which expression it should be. Once
+we have done that, by loading the file with `C-c C-l` the question
+mark turns into a **hole**.
+
+```
 not₁ : Bool -> Bool
 not₁ x = {!!}
 ```
 
-After placing the cursor in the hole we can hit `C-c C-,` to ask
+By placing the cursor in the hole and hitting `C-c C-,` we can ask
 Agda for help on how to proceed. Agda will tell us that we are
 supposed to fill the hole with an expression of type `Bool` and also
 that, in order to do so, we have at our disposal a value `x`, the
 argument of `not₁`, which is also of type `Bool`. Since the result
 of `not₁` *depends* on `x`, we have to perform a case analysis on it
-by hitting `C-c C-c` and entering `x`. Since Agda knows that `x` is
-of type `Bool` and that the only values of that type are `true` and
-`false`, Agda will create two equations corresponding to the two
-cases:
+by hitting `C-c C-c` and entering `x`. Agda knows that `x` is of
+type `Bool` and that the only values of that type are `true` and
+`false`, so Agda will create two equations corresponding to the two
+cases we have to handle.
 
-```agda
+```
 not₂ : Bool -> Bool
 not₂ true  = {!!}
 not₂ false = {!!}
@@ -109,15 +121,15 @@ not₂ false = {!!}
 We now have two holes to fill with expressions of type `Bool`. When
 there is more than one hole, we can use `C-c C-f` and `C-c C-b` to
 move forward and backward from one hole to the next or to the
-previous one. By placing the curson in the first hole we can enter
+previous one. By placing the cursor in the first hole we can enter
 `false` followed by `C-c C-SPACE` to fill the hole with the provided
 expression. Once we've also filled the second hole with `true` we
 have completed the definition of `not₂`.
 
 As an example of boolean function on two arguments, let us now
-define the boolean conjunction:
+define the boolean conjunction.
 
-```agda
+```
 and : Bool -> Bool -> Bool
 and true  y = y
 and false _ = false
@@ -125,24 +137,25 @@ and false _ = false
 
 Since `true` is the unit of boolean conjunction, when the first
 argument of `and` is `true` the result is just the second
-argument. Since `false` is the aborbing element of the boolean
+argument. Since `false` is the absorbing element of the boolean
 conjunction, when the first argument of `and` is `false` the result
-is `false` regardless of the second argument. Since the second
-argument is not used in the second equation, we replace it with an
-undeerscore `_`. It is not necessary to do so, but using underscores
-on the left hand side of equations sometimes helps us keeping the
-code clean and easier to read, highlighting the fact that some
-arguments are not used in some cases.
+is simply `false` regardless of the second argument. Since the
+second argument is not used in the second equation, we replace it
+with an undeerscore `_`. It is not necessary to do so, but using
+underscores on the left hand side of equations sometimes helps us
+keeping the code clean and easier to read, highlighting the fact
+that some arguments are not used in some cases.
 
 We can ask Agda to evaluate `and` applied to some inputs to convince
 ourseleves that the function behaves as expected. For example, `and
-true true` yields `true`, whereas `and false true` yields `false`.
+true true` evaluates to `true`, whereas `and false true` evaluates
+to `false`.
 
 Note that the above definition of `and` is not the only way to
 define boolean conjunction. In fact, we could as well provide four
 equations, one for each combination of inputs:
 
-```agda
+```
 and₁ : Bool -> Bool -> Bool
 and₁ true  true  = true
 and₁ true  false = false
@@ -161,14 +174,14 @@ Agda applications can be arbitrarily nested. For example, we can
 express the conjunction of `true` with the result of the conjunction
 of `true` and `false` by means of the expression `and true (and true
 false)` which evaluates to `false`. This notation, in which a
-function always *preceeds* its arguments, is sometimes called
-**prefix** notation and is commonly found in many programming
-languages. However, it is occasionally desirable to introduce a more
-lightweight and possibly more familiar notation for function
-applications whereby a function with two arguments is placed *in
-between* its arguments. Agda provides a sophisticated mechanism to
-define such notation, in which the programmer specifies the
-syntactic location of the arguments of a function by means of
+function application is denoted by the function *followed by* its
+arguments, is sometimes called **prefix** notation and is widespread
+in most programming languages. However, it is occasionally desirable
+to introduce a more lightweight and possibly more familiar notation
+for function applications whereby a function with two arguments is
+placed *in between* its arguments. Agda provides a sophisticated
+mechanism to define such notation, in which the programmer specifies
+the syntactic location of the arguments of a function by means of
 underscores. For example, the following is an alternative, but fully
 equivalent definition of `and` as the binary operator `&&` as found
 in other programming languages.
@@ -194,7 +207,7 @@ interpreted as `true && (true && false)` or as `(true && true) &&
 false`. We can provide this information by means of a *fixity
 declaration* of the form
 
-```agda
+```
 infixl 6 _&&_
 ```
 
@@ -221,7 +234,7 @@ operands).
    the exclusive or of two boolean values. Is it possible to define
    `xor` using just two equations?
 
-```agda
+```
 -- EXERCISE 1
 and₂ : Bool -> Bool -> Bool
 and₂ x true  = x

@@ -3,7 +3,7 @@ title: A taste of Agda
 ---
 
 <!--
-```agda
+```
 module Chapter.Demo where
 
 open import Equality
@@ -45,7 +45,7 @@ number is exponential in k. We can propose a more efficient,
 albeit slightly more complex function that computes the k-th
 Fibonacci number in linear time, as follows.
 
-```agda
+```
 fibo-from : ℕ -> ℕ -> ℕ -> ℕ
 fibo-from m n 0               = m
 fibo-from m n 1               = n
@@ -100,7 +100,7 @@ specifies that, for every natural number `k`, the value resulting
 from the application `fast-fibo k` is the same value resulting from
 the application `fibo k`.
 
-```agda
+```
 lemma : ∀(k i : ℕ) -> fibo-from (fibo k) (fibo (succ k)) i == fibo (i + k)
 lemma k 0 = refl
 lemma k 1 = refl

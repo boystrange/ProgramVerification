@@ -3,7 +3,7 @@ title: Types and functions
 ---
 
 <!--
-```agda
+```
 module Chapter.Lambda where
 ```
 -->
@@ -105,10 +105,12 @@ The first line provides the **signature** of `f`. Top-level
 definitions like this one must always be accompanied by a
 signature. The second line provides the **definition** of `f` with
 which we establish that `f` is **definitionally** the same as the
-abstraction `λ x - x ^ 2 + 1`. Note that we omit the type of the
-argument `x` for this abstraction: Agda may figure out that `x` has
-type `ℕ` from both the signature of `f` and the fact that the
-operators `^` and `+` concern natural numbers.
+abstraction `λ x - x ^ 2 + 1`. That is, for Agda the name `f` and
+the term `λ x -> x ^ 2 + 1` are definitionally the same thing. Note
+that we omit the type of the argument `x` for this abstraction: Agda
+is able to figure out that `x` has type `ℕ` from both the signature
+of `f` and the fact that the operators `^` and `+` concern natural
+numbers.
 
 By loading the program using `C-c C-l`, Agda verifies that `f` is
 well typed and that its type is consistent with the one provided in
@@ -119,7 +121,7 @@ some natural number. For example, if we hit `C-c C-n` and enter `f
 
 When defining abstractions, Agda provides an alternative, more
 convenient notation in which the argument is moved to the left of
-`=`. For example, an equivalent way of defining `f` is
+the symbol `=`. For example, an equivalent way of defining `f` is
 
 ```
 f₁ : ℕ -> ℕ
@@ -128,18 +130,18 @@ f₁ x = x ^ 2 + 1
 
 which can be read as "`f₁` applied to `x` is definitionally the same
 as `x ^ 2 + 1`". We have named this alternative definition of the
-function `f₁` and not `f`, since there cannot be two definitions
-with the same name in the same Agda file. Here and in the following
-chapters we will use indices when providing multiple versions of the
-same definition.
+function `f₁` instead of `f` to avoid a *name clash*: there cannot
+be two definitions with the same name in the same Agda file. Here
+and in the following chapters we will use indices when providing
+multiple versions of the same definition.
 
 ## Multi-argument and higher-order functions
 
 Strictly speaking, all Agda functions have exactly one argument. The
 usual way of representing multi-argument functions in a functional
-language is by means of functions that yield other functions as
-result. For example, `g` below is defined as a function that maps
-$x$ to a function that maps $y$ to $x^2 + 2xy + 1$.
+language like Agda is by means of functions that yield other
+functions as result. For example, `g` below is defined as a function
+that maps $x$ to a function that maps $y$ to $x^2 + 2xy + 1$.
 
 ```
 g : ℕ -> ℕ -> ℕ
@@ -179,7 +181,7 @@ twice so that evaluating `twice f 2` yields `26`.
 1. Define at least six different versions of the function that
    computes the successor of a natural number.
 2. Which of the following terms are well typed? Use Agda to verify
-   your answers.
+   whether your answers are correct.
    * `λ (x : ℕ -> ℕ -> ℕ) (y : ℕ -> ℕ) -> x y`
    * `λ (x : (ℕ -> ℕ) -> ℕ) (y : ℕ) -> x y`
    * `λ (x : ℕ -> ℕ -> ℕ) (y : ℕ) -> x x y`

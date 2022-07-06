@@ -3,7 +3,7 @@ title: Natural numbers
 ---
 
 <!--
-```agda
+```
 {-# OPTIONS --allow-unsolved-metas #-}
 
 module Chapter.NaturalNumbers where
@@ -14,15 +14,15 @@ open import Equality.Reasoning
 ```
 -->
 
-In this section we define the data type of natural numbers and some
+In this chapter we define the data type of natural numbers and some
 operations on them. We then prove some fundamental properties of
 these operations.
 
 The main challenge we have to face in defining the data type of
 natural numbers is that there are infinitely many of them. So, we
 cannot just enumerate all the natural numbers as we have done for
-the values `true` and `false` of type `Bool`. However, we can
-provide a finite number of constructors with which we can build
+the values `true` and `false` of type `Bool`. Nonetheless, we can
+provide a finite number of **constructors** with which we can build
 increasingly large natural numbers by recalling that any natural
 number other than 0 is the successor of another (smaller) natural
 number, its predecessor. This intuition leads to the definition of
@@ -60,7 +60,7 @@ should be expanded into 1234 subsequent applications of `succ` to
 `zero`. We can verify this property (on reasonably small numbers) by
 writing theorems like the following one:
 
-```agda
+```
 three-eq : 3 == succ (succ (succ zero))
 three-eq = refl
 ```
@@ -69,7 +69,7 @@ three-eq = refl
 
 Let us now define the addition on natural numbers.
 
-```agda
+```
 _+_ : ℕ -> ℕ -> ℕ
 zero   + y = y
 succ x + y = succ (x + y)
@@ -83,14 +83,14 @@ then the result is the successor of the recursive application of
 either by normalizing some expressions such as `1 + 2` using `C-c
 C-n` or by proving some theorem such as the following:
 
-```agda
+```
 one-plus-two : 1 + 2 == 3
 one-plus-two = refl
 ```
 
 We can define multiplication in terms of addition, thus:
 
-```agda
+```
 _*_ : ℕ -> ℕ -> ℕ
 zero   * y = zero
 succ x * y = y + (x * y)
@@ -98,7 +98,7 @@ succ x * y = y + (x * y)
 
 For example, we have:
 
-```agda
+```
 two-times-three : 2 * 3 == 6
 two-times-three = refl
 ```
@@ -106,7 +106,7 @@ two-times-three = refl
 Let us provide two fixity declarations for `+` and `*` so that they
 are left associative and `*` has precedence over `+`.
 
-```agda
+```
 infixl 6 _+_
 infixl 7 _*_
 ```
@@ -114,7 +114,7 @@ infixl 7 _*_
 We can now verify that Agda applies the correct precedence by
 proving that the value of `1 + 2 * 3` is `7` and not `9`:
 
-```agda
+```
 one-plus-two-times-three : 1 + 2 * 3 == 7
 one-plus-two-times-three = refl
 ```
@@ -127,7 +127,7 @@ that an expression such as `1 + 2 + 3` is to be interpreted as `(1 +
 *prove* that `+` is indeed associative by defining the following
 function:
 
-```agda
+```
 +-assoc : (x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc x y z = {!!}
 ```
@@ -139,7 +139,7 @@ usually need to perform case analysis on one or more arguments in
 order to prove a property like `+-assoc`. However, it may not be
 obvious to decide *on which* argument we should do case analysis
 on. A general rule of thumb that works in many cases is to look at
-the goal that we want to prove, `x + (y + z) == (x + y) + z` and to
+the goal that we want to prove, `x + (y + z) == (x + y) + z`, and to
 rank the variables according to the number of times case analysis is
 performed on them by the operators that occur therein. We know that
 `+` performs case analysis on its left operand, so in the above type
@@ -149,7 +149,7 @@ analysis on `y` is performed only once, on the left hand side of
 `==`) and the variable `z` is ranked 0 (case analysis on `z` is
 never performed). By doing case analysis on `x` we obtain:
 
-```agda
+```
 +-assoc₁ : (x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc₁ zero     y z = {!!}
 +-assoc₁ (succ x) y z = {!!}
@@ -157,9 +157,9 @@ never performed). By doing case analysis on `x` we obtain:
 
 The type of the first hole is `y + z == y + z`, which results from
 normalizing `x + (y + z) == (x + y) + z` when `x` is replaced by
-`zero`. So, it can be filled with `refl`.
+`zero`. So, this hole can be filled with `refl`.
 
-```agda
+```
 +-assoc₂ : (x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc₂ zero     y z = refl
 +-assoc₂ (succ x) y z = {!!}
@@ -180,7 +180,7 @@ provided by the `cong` function in the `Equality` module: if `x` and
 == f y`. Using `cong` we can complete the proof that `+` is
 associative, thus:
 
-```agda
+```
 +-assoc₃ : (x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc₃ zero     y z = refl
 +-assoc₃ (succ x) y z = cong succ (+-assoc₃ x y z)
@@ -193,7 +193,7 @@ it turns out it is useful to first prove two auxiliary properties
 that will come handy in due time. The first property asserts that
 `zero` is a right unit for `+`.
 
-```agda
+```
 +-unit-r : (x : ℕ) -> x == x + 0
 +-unit-r zero     = refl
 +-unit-r (succ x) = cong succ (+-unit-r x)
@@ -203,7 +203,7 @@ Note that the fact that `zero` is a left unit for `+` follows from
 the very definition of `+` since `zero + x` is definitionally equal
 to `x`.
 
-```agda
+```
 +-unit-l : (x : ℕ) -> x == 0 + x
 +-unit-l x = refl
 ```
@@ -212,7 +212,7 @@ The second auxiliary property asserts that an application of `succ`
 in a sum can be shifted from one operand to the other without
 affecting the result.
 
-```agda
+```
 +-succ : (x y : ℕ) -> succ x + y == x + succ y
 +-succ zero     y = refl
 +-succ (succ x) y = cong succ (+-succ x y)
@@ -220,15 +220,15 @@ affecting the result.
 
 We are now ready to prove the commutativity property of `+`.
 
-```agda
+```
 +-comm : (x y : ℕ) -> x + y == y + x
 +-comm x y = {!!}
 ```
 
 As usual, we proceed by performing case analysis on `x`, which
-yields the following two cases to deal with:
+yields the following two cases:
 
-```agda
+```
 +-comm₁ : (x y : ℕ) -> x + y == y + x
 +-comm₁ zero     y = {!!}
 +-comm₁ (succ x) y = {!!}
@@ -238,7 +238,7 @@ Concerning the first case, we have to provide a proof of `y == y +
 zero`. This is precisely the property that we called `+-unit-r`
 applied to the variable `y`.
 
-```agda
+```
 +-comm₂ : (x y : ℕ) -> x + y == y + x
 +-comm₂ zero     y = +-unit-r y
 +-comm₂ (succ x) y = {!!}
@@ -262,7 +262,7 @@ justifies a single rewriting step from `Eᵢ` to the subsequent
 expression. Let's see how we can close the commutativity proof of
 `+` using an equational reasoning block.
 
-```agda
+```
 +-comm₃ : (x y : ℕ) -> x + y == y + x
 +-comm₃ zero     y = +-unit-r y
 +-comm₃ (succ x) y =
@@ -285,7 +285,7 @@ We use the number in comments to reference each step in the block:
 3. Here we use reflexivity once more to rewrite `succ (y + x)` into
    `(succ y) + x`, again using the definition of `+` (but from right
    to left!).
-4. Finally, we use the auxiliary property `+-succ` proved before to
+4. Finally, we use the auxiliary property `+-succ` proved earlier to
    shift the application of `succ` from the left to the right
    operand.
 
@@ -312,7 +312,7 @@ We conclude this chapter with the proof that multiplication is
 associative. To this aim, we first prove that `*` distributes over
 `+` on the right.
 
-```agda
+```
 *-dist-r : (x y z : ℕ) -> (x + y) * z == x * z + y * z
 *-dist-r zero y z = refl
 *-dist-r (succ x) y z =
@@ -345,7 +345,7 @@ abstract over the other one.
 
 We are now ready to prove the associativity of `*`.
 
-```agda
+```
 *-assoc : (x y z : ℕ) -> x * (y * z) == (x * y) * z
 *-assoc zero y z = refl
 *-assoc (succ x) y z =
@@ -390,7 +390,7 @@ usual `E ==⟨ P ⟩ E'`.
    has higher precedence than `*`.
 7. Prove that `x ^ m * x ^ n == x ^ (m + n)`. CONTROLLARE
 
-```agda
+```
 -- EXERCISE 1
 
 _-_ : ℕ -> ℕ -> ℕ
