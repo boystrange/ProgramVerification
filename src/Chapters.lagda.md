@@ -15,27 +15,34 @@ import Chapter.Demo
 import Chapter.Setup
 ```
 
-## Basics
+## Functions and data
 
 ```
 import Chapter.Lambda
 import Chapter.Bool
 import Chapter.BoolProperties
--- import Chapter.NaturalNumbers -- do not import this
+import Chapter.NaturalNumbers
 import Chapter.Polymorphism
+import Chapter.Lists
+```
+
+Fin and Vec?
+
+## Constructive logic
+
+```
 import Chapter.Connectives
 import Chapter.Negation
 import Chapter.Existential
-import Chapter.Lists
 import Chapter.Predicates
 import Chapter.Equality
 import Chapter.LessThan
--- import Chapter.Permutations
 ```
 
 ## Verification of functional programs
 
 ```
+-- import Chapter.Permutations
 import Chapter.ExtrinsicInsertionSort
 import Chapter.IntrinsicInsertionSort
 import Chapter.RedBlackTree
@@ -43,8 +50,6 @@ import Chapter.Regex
 import Chapter.Division
 import Chapter.QuickSort
 ```
-
-Fin and Vec?
 
 ## Verification of imperative programs
 
