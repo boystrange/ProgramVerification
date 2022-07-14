@@ -150,11 +150,12 @@ id₅ : {A : Set} -> A -> A
 id₅ {A} x = x
 ```
 
-SHOW EXAMPLES OF ARGUMENTS THAT CANNOT BE INFERRED?
-
-BEST PRACTICE FOR DECLARING IMPLICIT ARGUMENT?
-
-PROPOSITIONS AS TYPES?
+There is no general guideline to establish whether an argument
+should be explicit or implicit. As a rule of thumb, an argument can
+be declared implicit if either it is (part of) the type of some
+subsequent argument. We will see systematic applications of this
+rule in the next chapters, as we make greater use of dependent
+types.
 
 ## Exercises
 

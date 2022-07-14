@@ -57,10 +57,10 @@ _ #⟨⟩ ps = ps
 ++-permutation (x :: xs) ys =
   #begin
     (x :: xs) ++ ys #⟨⟩
-    x :: xs ++ ys #⟨ #push ⟩
-    xs ++ x :: ys #⟨ ++-permutation xs (x :: ys) ⟩
+    x :: xs ++ ys   #⟨ #push ⟩
+    xs ++ x :: ys   #⟨ ++-permutation xs (x :: ys) ⟩
     (x :: ys) ++ xs #⟨⟩
-    x :: ys ++ xs #⟨ #push ⟩
+    x :: ys ++ xs   #⟨ #push ⟩
     ys ++ x :: xs
   #end
 
@@ -81,9 +81,9 @@ reverse-permutation : ∀{A : Set} (xs : List A) -> reverse xs # xs
 reverse-permutation [] = #refl
 reverse-permutation (x :: xs) =
   #begin
-    reverse (x :: xs) #⟨⟩
+    reverse (x :: xs)   #⟨⟩
     reverse xs ++ [ x ] #⟨ ++-permutation (reverse xs) [ x ] ⟩
     [ x ] ++ reverse xs #⟨⟩
-    x :: reverse xs #⟨ #cong (reverse-permutation xs) ⟩
+    x :: reverse xs     #⟨ #cong (reverse-permutation xs) ⟩
     x :: xs
   #end

@@ -18,15 +18,15 @@ module Chapter.Existential where
 
 ## Defining the existential quantifier
 
-In constructive logic the proof of a predicate of the form $∃x\in
+In constructive logic, the proof of a predicate of the form $∃x\in
 A.P(x)$ is a **pair** consisting of a particular element $x$ of $A$
 along with a proof that $x$ satisfies the predicate $P$. This is an
-example of **dependent pair** in which the first component has type
-$A$ and where the type of the second component depends on the value
-$x$ of the first one. The data type that we use to represent
-dependent pairs is traditionally called "sigma type" and is a
-refinement of the type `_∧_` we have defined in the [previous
-chapter]({% link pages/Chapter.Connectives.md#conjunction %}).
+example of **dependent pair** where the type of the second component
+depends on the value $x$ of the first one. The data type that we use
+to represent dependent pairs is traditionally called "sigma type"
+and is a refinement of the type `_∧_` we have defined in the
+[previous chapter]({% link pages/Chapter.Connectives.md
+%}#conjunction).
 
     data Σ (A : Set) (B : A -> Set) : Set where
       _,_ : (x : A) -> B x -> Σ A B
@@ -83,15 +83,15 @@ List⁺ A = Σ (List A) (_!= [])
 ## Partial functions
 
 Type refinements may be useful for the implementation of *partial
-function* that are only defined for a subset of their
+functions* that are only defined for a subset of their
 domain. Typical examples are division, which is defined only for
 non-null divisors, and the functions `head` and `tail` that
 respectively return the head and the tail of a non-empty list.
 
 ```
 head : {A : Set} -> List⁺ A -> A
-head ([]     , nempty) = absurd (nempty refl)
-head (x :: _ , _     ) = x
+head ([]      , nempty) = absurd (nempty refl)
+head (x :: _  , _     ) = x
 
 tail : {A : Set} -> List⁺ A -> List A
 tail ([]      , nempty) = absurd (nempty refl)
@@ -103,10 +103,10 @@ an element of type `List⁺ A`, which is a pair consisting of a list
 and a proof that the list is not empty. We further analyze the
 structure of the list. Agda is not able to automatically rule out
 the case in which the list is `[]`. However, this case is made
-impossible by the proof `p` that the list is not empty, hence we can
-honor our obligation to yield a result of the desired type by
+impossible by the proof `nempty` that the list is not empty, hence
+we can honor our obligation to yield a result of the desired type by
 invoking `absurd`. When the list is not empty, we simply return the
-desired component.
+right component.
 
 ## Intrinsic verification
 
@@ -263,20 +263,27 @@ left.
 
 ## Exercises
 
-1. Define the type `ℕ₂` of natural numbers greater that `1`. Show
+1. Prove the theorem `pred' : (x : ℕ) -> x == 0 ∨ (∃[ y ] x == succ y)`.
+2. Define the type `ℕ₂` of natural numbers greater that `1`. Show
    that `2` (along with a suitable proof) is an element of `ℕ₂`. Then define
    the succesor on `ℕ₂`, namely the function `succ₂ : ℕ₂ -> ℕ₂`.
-2. Prove that if `x` divides both `y` and `z`, then `x` divides
+3. Prove that if `x` divides both `y` and `z`, then `x` divides
    `y + z` as well.
-3. Prove the theorem `∣-not-total : ∃[ x ] ∃[ y ] ¬ (x ∣ y) ∧ ¬ (y ∣ x)`.
-4. Prove the theorem `last-view : {A : Set} (xs : List A) -> xs !=
+4. Prove the theorem `∣-not-total : ∃[ x ] ∃[ y ] ¬ (x ∣ y) ∧ ¬ (y ∣ x)`.
+5. Prove the theorem `last-view : {A : Set} (xs : List A) -> xs !=
    [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]`.
-5. Prove the theorem `half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z
+6. Prove the theorem `half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z
    ∧ (z == 0 ∨ z == 1)`.
 
 
 ```
 -- EXERCISE 1
+
+pred' : (x : ℕ) -> x == 0 ∨ (∃[ y ] x == succ y)
+pred' zero     = inl refl
+pred' (succ x) = inr (x , refl)
+
+-- EXERCISE 2
 
 ℕ₂ : Set
 ℕ₂ = Σ ℕ λ x -> x != 0 ∧ x != 1
@@ -287,12 +294,12 @@ _ = 2 , (λ ()) , (λ ())
 succ₂ : ℕ₂ -> ℕ₂
 succ₂ (x , nzero , none) = succ x , (λ ()) , λ { refl -> nzero refl }
 
--- EXERCISE 2
+-- EXERCISE 3
 
 ∣-plus : {x y z : ℕ} -> x ∣ y -> x ∣ z -> x ∣ (y + z)
 ∣-plus {x} (u , refl) (v , refl) = u + v , *-dist-r u v x
 
--- EXERCISE 3
+-- EXERCISE 4
 
 ∣-not-total : ∃[ x ] ∃[ y ] ¬ (x ∣ y) ∧ ¬ (y ∣ x)
 ∣-not-total = 2 , 3 , f , g
@@ -305,7 +312,7 @@ succ₂ (x , nzero , none) = succ x , (λ ()) , λ { refl -> nzero refl }
     g (zero   , ())
     g (succ _ , ())
 
--- EXERCISE 4
+-- EXERCISE 5
 
 last-view : {A : Set} (xs : List A) -> xs != [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]
 last-view []             nempty = absurd (nempty refl)
@@ -313,7 +320,7 @@ last-view (x :: [])      nempty = [] , x , refl
 last-view (x :: z :: xs) nempty with last-view (z :: xs) (λ ())
 ... | ys , y , eq = x :: ys , y , cong (x ::_) eq
 
--- EXERCISE 5
+-- EXERCISE 6
 
 half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z ∧ (z == 0 ∨ z == 1)
 half zero            = zero , zero , refl , inl refl

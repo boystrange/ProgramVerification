@@ -13,23 +13,24 @@ open import Fun
 The logic we have been using so far is based on a small set of
 operators that correspond to a limited set of Agda types:
 
-* The arrow type corresponds to **logical implication**: a proof of
-  `A -> B` is a function that, applied to a proof of `A`, yields a
-  proof of `B`.
-* The dependent arrow type corresponds to **universal
-  quantification**: a proof of `(x : A) -> B` is a function that,
-  applied to an element `x` of type `A`, yields a proof of `B`
-  (where `x` may occur in `B`).
-* The **equality predicate** `E == F` is the type of proofs showing
-  that `E` is equal to `F`.
+* **Logical implication** corresponds to the *arrow type*: a proof
+  of `A -> B` is a function that, applied to a proof of `A`, yields
+  a proof of `B`.
+* **Universal quantification** corresponds to the **dependent arrow
+  type**: a proof of `(x : A) -> B` is a function that, applied to
+  an element `x` of type `A`, yields a proof of `B` (where `x` may
+  occur in `B`).
+* **Equality** `E == F` is the type of proofs showing that `E` is
+  equal to `F`. We have used *reflexivity* `refl` as the only way of
+  proving equalities.
 
 In general, we will need a richer set of logical connectives in
 order to prove interesting properties of programs. For example, to
 prove the correctness of a sorting function on lists we must be able
 to state that the list resulting from the function is sorted *and*
-is a permutation of the original list. In this chapter we will
-develop a small library of data types representing **conjunction**,
-**disjunction**, **truth** and **falsity**.
+that it is also a permutation of the original list. In this chapter
+we will develop a small library of data types representing
+**conjunction**, **disjunction**, **truth** and **falsity**.
 
 ## Conjunction
 
@@ -47,9 +48,9 @@ data _∧_ (A B : Set) : Set where
 Notice that we have chosen an infix form for both the data type and
 its only constructor: we will be able to write `A ∧ B` for the type
 of pairs whose first component has type `A` and whose second
-component has type `B`; we will be able to write `p , q` for the
-pair whose first component is `p` and whose second component is
-`q`. We specify the fixity of `∧` and `,` so that they are both
+component has type `B`; similarly, we will be able to write `p , q`
+for the pair whose first component is `p` and whose second component
+is `q`. We specify the fixity of `∧` and `,` so that they are both
 right associative.
 
 ```
@@ -92,10 +93,7 @@ A <=> B = (A -> B) ∧ (B -> A)
 ```
 infixr 1 _<=>_
 ```
----
-
-For example, we can prove the theorem `(A ∧ B) <=> (B ∧ A)` as
-follows.
+-->
 
 ## Disjunction
 
@@ -141,18 +139,19 @@ commutative:
 
 ## Truth
 
-The trivially true proposition `⊤` is represented as a data type
-with a single constructor without arguments.
+The always true proposition `⊤` is represented as a data type with a
+single constructor without arguments. That is, truth is a
+proposition for which we can provide a proof without any effort.
 
 ```
 data ⊤ : Set where
   <> : ⊤
 ```
 
-## Falsity and negation
+## Falsity
 
-The false proposition `⊥` must not be provable. As such, it is
-represented by a data type without constructors.
+The always false proposition `⊥` must not be provable. As such, we
+can represent it by a data type without constructors.
 
 ```
 data ⊥ : Set where
@@ -174,6 +173,35 @@ value is denoted by `()` in an equation for `absurd` that *has no
 right hand side* (note that there is no equal sign): as there is no
 proof of `⊥`, we are not obliged to provide a proof of `A` as
 required by the codomain of `absurd`.
+
+In most programming languages, it is possible to assign the type `⊥`
+to non-terminating expressions. If this were allowed also in Agda,
+the whole language would be useless insofar program verification is
+concerned, since `absurd` would easily allow us to prove *any*
+property for *any* program. For this reason, Agda has a *termination
+checker* making sure that every definition is *terminating*. For
+example, if we try to define `loop` as follows
+
+    loop : ℕ -> ⊥
+    loop n = loop (succ n)
+
+Agda reports that this definition does not pass the termination
+check. Indeed, `loop` is recursively applied to increasingly larger
+arguments. An even simpler example of non-terminating definition is
+`bottom`, shown below.
+
+    bottom : ⊥
+    bottom = bottom
+
+All the recursive functions we have defined until now are
+*terminating* because there is an argument that becomes
+*structurally smaller* from an application of the function to its
+recursive invocation. Structural recursion applies to a large family
+of functions, but some of them (e.g. [division]({% link
+pages/Chapter.Division.md %}) or [quick sort]({% link
+pages/Chapter.QuickSort.md %})) cannot be easily formulated in this
+way. We will see a general technique for having these functions
+accepted by Agda in later chapters.
 
 ## Exercises
 

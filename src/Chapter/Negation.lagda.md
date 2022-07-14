@@ -16,9 +16,9 @@ module Chapter.Negation where
 ## Constructive negation
 
 In constructive logic, the `⊥` data type has a fundamental role
-since it allows us to define negation. In particular, the negation
-of a proposition `A` is a function that, given a proof of `A`,
-provides a proof of `⊥`.
+since it allows us to define negation. To show that the *negation*
+of a proposition `A` holds amounts to show that a proof of `A` can
+be turned into a proof of `⊥`.
 
 ```
 ¬_ : Set -> Set
@@ -47,12 +47,13 @@ double-negation x p = p x
 
 In classical logic it is common to assume the validity of the
 *excluded middle* principle, namely that `¬ A ∨ A` is true for every
-proposition `A`. As we know from the [previous chapter], in
-constructive logic, a proof of a disjunction `¬ A ∨ A` embeds either
-a proof of `¬ A` or a proof of `A`, hence it may very well be the
-case that we are unable to prove `¬ A ∨ A` if we cannot find either
-a proof of `¬ A` or a proof of `A`. The proporitions for which we
-are able to prove `¬ A ∨ A` are said to be **decidable**.
+proposition `A`. As we know from the [previous chapter]({% link
+pages/Chapter.Connectives.md %}), in constructive logic, a proof of
+a disjunction `¬ A ∨ A` embeds either a proof of `¬ A` or a proof of
+`A`, hence it may very well be the case that we are unable to prove
+`¬ A ∨ A` if we cannot find either a proof of `¬ A` or a proof of
+`A`. The propositions for which we are able to prove `¬ A ∨ A` are
+said to be **decidable**.
 
 ```
 Decidable : Set -> Set

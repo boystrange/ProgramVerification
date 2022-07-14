@@ -388,7 +388,9 @@ usual `E ==⟨ P ⟩ E'`.
 6. Define the exponentiation function `_^_ : ℕ -> ℕ -> ℕ` and
    provide a fixity declaration so that it is left associative and
    has higher precedence than `*`.
-7. Prove that `x ^ m * x ^ n == x ^ (m + n)`. CONTROLLARE
+7. Prove that `x ^ m * x ^ n == x ^ (m + n)`.
+8. Prove that `(x * y) ^ n == x ^ n * y ^ n`.
+9. Prove that `x ^ m ^ n == x ^ (m * n)`.
 
 ```
 -- EXERCISE 1
@@ -482,18 +484,46 @@ x ^ succ n = x * x ^ n
     x * x ^ (m + n)
   end
 
-^-prop-2 : (x n : ℕ) -> (x * x) ^ n == x ^ n * x ^ n
-^-prop-2 x zero = refl
-^-prop-2 x (succ n) =
+-- EXERCISE 8
+
+^-prop-2 : (x y n : ℕ) -> (x * y) ^ n == x ^ n * y ^ n
+^-prop-2 x y zero = refl
+^-prop-2 x y (succ n) =
   begin
-    (x * x) ^ succ n          ==⟨ refl ⟩
-    (x * x) * (x * x) ^ n     ==⟨ cong ((x * x) *_) (^-prop-2 x n) ⟩
-    (x * x) * (x ^ n * x ^ n) ==⟨ *-assoc (x * x) (x ^ n) (x ^ n) ⟩
-    ((x * x) * x ^ n) * x ^ n   ⟨ cong (_* x ^ n) (*-assoc x x (x ^ n)) ⟩==
-    (x * (x * x ^ n)) * x ^ n ==⟨ cong (λ u -> (x * u) * x ^ n) (*-comm x (x ^ n)) ⟩
-    (x * (x ^ n * x)) * x ^ n ==⟨ cong (_* x ^ n) (*-assoc x (x ^ n) x) ⟩
-    ((x * x ^ n) * x) * x ^ n   ⟨ *-assoc (x * x ^ n) x (x ^ n) ⟩==
-    (x * x ^ n) * (x * x ^ n) ==⟨ refl ⟩
-    x ^ succ n * x ^ succ n
+    (x * y) ^ succ n          ==⟨ refl ⟩
+    (x * y) * (x * y) ^ n     ==⟨ cong ((x * y) *_) (^-prop-2 x y n) ⟩
+    (x * y) * (x ^ n * y ^ n) ==⟨ *-assoc (x * y) (x ^ n) (y ^ n) ⟩
+    ((x * y) * x ^ n) * y ^ n   ⟨ cong (_* y ^ n) (*-assoc x y (x ^ n)) ⟩==
+    (x * (y * x ^ n)) * y ^ n ==⟨ cong (λ u -> (x * u) * y ^ n) (*-comm y (x ^ n)) ⟩
+    (x * (x ^ n * y)) * y ^ n ==⟨ cong (_* y ^ n) (*-assoc x (x ^ n) y) ⟩
+    ((x * x ^ n) * y) * y ^ n   ⟨ *-assoc (x * x ^ n) y (y ^ n) ⟩==
+    (x * x ^ n) * (y * y ^ n) ==⟨ refl ⟩
+    x ^ succ n * y ^ succ n
   end
+
+-- EXERCISE 9
+
+^-unit : (n : ℕ) -> 1 ^ n == 1
+^-unit zero = refl
+^-unit (succ n) =
+  begin
+    1 ^ succ n ==⟨ refl ⟩
+    1 * 1 ^ n  ==⟨ refl ⟩
+    1 ^ n + 0  ==⟨ cong (_+ 0) (^-unit n) ⟩
+    1 + 0      ==⟨ +-unit-r 1 ⟩
+    1
+  end
+
+^-prop-3 : (x m n : ℕ) -> x ^ m ^ n == x ^ (m * n)
+^-prop-3 x zero n = ^-unit n
+^-prop-3 x (succ m) n =
+  begin
+    x ^ succ m ^ n      ==⟨ refl ⟩
+    (x * x ^ m) ^ n     ==⟨ ^-prop-2 x (x ^ m) n ⟩
+    x ^ n * x ^ m ^ n   ==⟨ cong (x ^ n *_) (^-prop-3 x m n) ⟩
+    x ^ n * x ^ (m * n) ==⟨ ^-prop-1 x n (m * n) ⟩
+    x ^ (n + m * n)     ==⟨ refl ⟩
+    x ^ (succ m * n)
+  end
+
 ```

@@ -112,16 +112,23 @@ is able to figure out that `x` has type `ℕ` from both the signature
 of `f` and the fact that the operators `^` and `+` concern natural
 numbers.
 
+A note on **spacing** in Agda: unlike most programming languages,
+Agda allows almost any character to be part of an identifier. For
+example, `^` and `+` are plain Agda identifiers just like `f` and
+`ℕ`. If we write `x^2` (without spaces around `^`), Agda considers
+this a single identifier (for which we have provided no definition).
+
 By loading the program using `C-c C-l`, Agda verifies that `f` is
 well typed and that its type is consistent with the one provided in
-its signature.  We can try the definition of `f` by applying it to
-some natural number. For example, if we hit `C-c C-n` and enter `f
+its signature.  We can verify the behavior of `f` by applying it to
+some natural numbers. For example, if we hit `C-c C-n` and enter `f
 2` we obtain `5` as result. The command `C-c C-n` asks Agda to
 *evaluate* (technically, to *normalize*), the provided expression.
 
 When defining abstractions, Agda provides an alternative, more
-convenient notation in which the argument is moved to the left of
-the symbol `=`. For example, an equivalent way of defining `f` is
+convenient notation with which argument and body of the function are
+separated by the symbol `=` . For example, an equivalent way of
+defining `f` is
 
 ```
 f₁ : ℕ -> ℕ
@@ -174,7 +181,8 @@ twice f x = f (f x)
 ```
 
 applied to a function `f` and an argument `x` applies `f` to `x`
-twice so that evaluating `twice f 2` yields `26`.
+twice. Evaluating `twice f 2` where `f` is the function defined
+above yields `26`.
 
 ## Exercises
 
@@ -208,5 +216,4 @@ succ₅ x = x + 1
 
 succ₆ : ℕ -> ℕ
 succ₆ x = 1 + x
-
 ```

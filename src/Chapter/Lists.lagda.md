@@ -38,13 +38,13 @@ data List (A : Set) : Set where
 According to this definition, `List` by itself is not a
 type. Rather, it is a function that, when applied to an arbitrary
 type `A`, yields the type of lists with elements of type `A`. Notice
-that the parameter `A` is declared type just after the name of the
-data type and its scope covers all the constructors of the data
-type, in which it becomes an implicit argument. In line with the
-syntax adopted in many functional languages, we have chosen to write
-`[]` for the empty list and `x :: xs` for the list with head `x` and
-tail `xs`. We declare `::` as a right associative operator so as to
-make it easy to write lists by repeated applications of `::`.
+that the parameter `A` is declared right after the name of the data
+type and its scope covers all the constructors of the data type, in
+which it becomes an implicit argument. In line with the syntax
+adopted in many functional languages, we have chosen to write `[]`
+for the empty list and `x :: xs` for the list with head `x` and tail
+`xs`. We declare `::` as a right associative operator so as to make
+it easy to write lists by repeated applications of `::`.
 
 ```
 infixr 5 _::_
@@ -60,7 +60,7 @@ _ = 0 :: 1 :: 2 :: 3 :: []
 
 ## Basic operations on lists
 
-As we have said, each constructor of lists carries an implicit
+As noted above, each constructor of lists carries an implicit
 argument `A` standing for the type of the elements of the list being
 constructed. We have to bear this aspect in mind when we define
 functions that manipulate lists. For example, the following function
@@ -74,7 +74,10 @@ creates a list containing a single element.
 We can write `[ 0 ]` for the list consisting of the sole element `0`
 or `[ true ]` for the list consisting of the sole element
 `true`. The type of the elements of these lists is inferred
-automatically by Agda.
+automatically by Agda. If we want to write the implicit argument
+explicitly, we have to resort to the prefix notation: `[_] {ℕ} 0` is
+the singleton list made of `0` and `[_] {Bool} true` is the
+singleton list made of `true`.
 
 As another example, below is the function that computes the length
 of a list.
@@ -107,7 +110,8 @@ infixr 5 _++_
 ```
 
 A first obvious fact about `++` is that the length of the
-concatenation of two lists is the sum of the lengths of the lists.
+concatenation of two lists is the sum of the lengths of the two
+lists.
 
 ```
 length-++ : {A : Set} (xs ys : List A) -> length (xs ++ ys) == length xs + length ys
@@ -222,10 +226,10 @@ reverse-onto (x :: xs) ys = reverse-onto xs (x :: ys)
 
 For exampe, using `C-c C-n` we can verify that `reverse-onto (1 :: 2
 :: 3 :: []) [ 4 ]` normalizes to `3 :: 2 :: 1 :: 4 :: []`. In
-particular, we can thus obtain an alternative way of computing
-`reverse xs` as `reverse-onto xs []`. The advantage of this approach
-is that `reverse-onto` is only defined in terms of `::`, whose
-complexity is constant.
+particular, we can obtain an alternative way of computing `reverse
+xs` as `reverse-onto xs []`. The advantage of this approach is that
+`reverse-onto` is only defined in terms of `::`, whose complexity is
+constant.
 
 ```
 fast-reverse : {A : Set} -> List A -> List A
