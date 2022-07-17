@@ -15,18 +15,18 @@ open import Logic
 ++-length (_ :: xs) ys = cong succ (++-length xs ys)
 
 ++-assoc : ∀{A : Set} (xs ys zs : List A) -> xs ++ (ys ++ zs) == (xs ++ ys) ++ zs
-++-assoc [] ys zs = refl
+++-assoc []        ys zs = refl
 ++-assoc (x :: xs) ys zs = cong (x ::_) (++-assoc xs ys zs)
 
-lemma-++-[] : ∀{A : Set} (xs : List A) -> xs ++ [] == xs
-lemma-++-[] [] = refl
-lemma-++-[] (x :: xs) = cong (x ::_) (lemma-++-[] xs)
+++-unit-l : {A : Set} (xs : List A) -> [] ++ xs == xs
+++-unit-l _ = refl
 
-lemma-[]-++ : ∀{A : Set} (xs ys : List A) -> [] == xs ++ ys -> xs == [] ∧ ys == []
-lemma-[]-++ [] _ refl = refl , refl
+++-unit-r : {A : Set} (xs : List A) -> xs ++ [] == xs
+++-unit-r []        = refl
+++-unit-r (x :: xs) = cong (x ::_) (++-unit-r xs)
 
 reverse-++ : ∀{A : Set} (xs ys : List A) -> reverse (xs ++ ys) == reverse ys ++ reverse xs
-reverse-++ [] ys = symm (lemma-++-[] (reverse ys))
+reverse-++ [] ys = symm (++-unit-r (reverse ys))
 reverse-++ (x :: xs) ys =
   begin
     reverse ((x :: xs) ++ ys)           ==⟨⟩
@@ -65,7 +65,7 @@ fast-reverse-correct xs =
   begin
     fast-reverse xs    ==⟨⟩
     reverse-onto xs [] ==⟨ lemma-reverse-onto xs [] ⟩
-    reverse xs ++ []   ==⟨ lemma-++-[] (reverse xs) ⟩
+    reverse xs ++ []   ==⟨ ++-unit-r (reverse xs) ⟩
     reverse xs
   end
 

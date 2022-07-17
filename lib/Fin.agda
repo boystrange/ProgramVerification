@@ -9,9 +9,9 @@ data Fin : ℕ -> Set where
   succ : ∀{n : ℕ} -> Fin n -> Fin (succ n)
 
 _=?_ : ∀{n : ℕ} (i j : Fin n) -> Decidable (i == j)
-zero =? zero = yes refl
-zero =? succ j = no λ ()
-succ i =? zero = no (λ ())
+zero =? zero = inr refl
+zero =? succ j = inl λ ()
+succ i =? zero = inl (λ ())
 succ i =? succ j with i =? j
-... | yes refl = yes refl
-... | no neq = no  λ { refl -> neq refl }
+... | inr refl = inr refl
+... | inl neq  = inl  λ { refl -> neq refl }

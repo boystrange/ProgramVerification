@@ -102,16 +102,17 @@ following predicate:
 
     ∀(x : Bool) . not (not x) == x
 
-In Agda, we state this property as the type
+In Agda, we may state this property as the type
 
-    (x : Bool) -> not (not x) == x
+    ∀(x : Bool) -> not (not x) == x
 
 which describes a function that, when applied to a value `x` of type
 `Bool`, yields a proof that `not (not x)` is equal to `x`. Unlike
 the arrow types that we have used until now, this is an example of
 **dependent function type** because the type of the codomain of the
 function -- `not (not x) == x` -- *depends* the argument `x` to
-which the function is applied.
+which the function is applied. The `∀` symbol is purely cosmetic and
+will be omitted from now on.
 
 Going back to our goal, proving that `not` is an involution is the
 same as finding a function that has type `(x : Bool) -> not (not x)
@@ -162,12 +163,12 @@ evaluate `not (not x)` to `true` using the definition of `not`. The
 good news is that we are now able to provide the proof that `true`
 is equal to `true`, that is just `refl` as in `true-eq`. A similar
 thing happens for the second hole. In this case, Agda knows that `x`
-is `false`, so the goal simplies to `false == false` for which
+is `false`, so the goal simplifies to `false == false` for which
 `refl` is a perfectly valid proof. We have thus completed our first
 proper theorem in Agda:
 
 ```
-not-inv₂ : ∀(x : Bool) -> not (not x) == x
+not-inv₂ : (x : Bool) -> not (not x) == x
 not-inv₂ true  = refl
 not-inv₂ false = refl
 ```
@@ -197,34 +198,23 @@ x` part of the goal but not the `x && y` part.
 We take advantage of this example to illustrate some convenient
 syntactic sugar that allows us to write more compact and more
 readable types. From the type of `&&-comm` we see that `&&-comm` is
-a that, when applied to two arguments `x` and `y` of type `Bool`,
-yields a proof that `x && y == y && x`. In Agda it is not necessary
-to write the `->` symbol to separate subsequent arguments in a
-dependent function type. That is, the type of `&&-comm` can be
+a function that, when applied to two arguments `x` and `y` of type
+`Bool`, yields a proof that `x && y == y && x`. In Agda it is not
+necessary to write the `->` symbol to separate subsequent arguments
+in a dependent function type. That is, the type of `&&-comm` can be
 equivalently written as
 
-```
-&&-comm₁ : (x : Bool) (y : Bool) -> x && y == y && x
-```
+    &&-comm : (x : Bool) (y : Bool) -> x && y == y && x
 
 Also, where there are multiple subsequent arguments of the same type
 in a dependent function type we can collapse them together, like
 this:
 
-```
-&&-comm₂ : (x y : Bool) -> x && y == y && x
-```
+    &&-comm : (x y : Bool) -> x && y == y && x
 
 This is sometimes referred to as Agda's "telescopic notation". Note
 that these types are totally equivalent and therefore
 interchangeable.
-
-<!--
-```
-&&-comm₁ = &&-comm
-&&-comm₂ = &&-comm
-```
--->
 
 ## Exercises
 

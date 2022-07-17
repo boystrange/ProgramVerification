@@ -99,12 +99,12 @@ infixr 1 _<=>_
 
 In constructive logic, a proof of a disjunction `A ∨ B` is either a
 proof of `A` or a proof of `B` together with an indication of which
-proof it is. This interpretation suggests the representation of
-disjunction `∨` as a data type with two constructors, one taking a
-proof of `A` and the other taking a proof of `B`, to yield a proof
-of `A ∨ B`. The name of the constructor indicates which of the two
-proofs is provided. We call the two constructors `inl` and `inr` for
-"inject left" and "inject right".
+proof we are providing. This interpretation suggests the
+representation of disjunction `∨` as a data type with two
+constructors, one taking a proof of `A` and the other taking a proof
+of `B`, to yield a proof of `A ∨ B`. The name of the constructor
+indicates which of the two proofs is provided. We call the two
+constructors `inl` and `inr` for "inject left" and "inject right".
 
 ```
 data _∨_ (A B : Set) : Set where
@@ -167,20 +167,20 @@ absurd : {A : Set} -> ⊥ -> A
 absurd ()
 ```
 
-The pattern `()` in the definition of `absurd` indicates a value of
-type `⊥`. Since no constructor is provided for `⊥`, such impossible
-value is denoted by `()` in an equation for `absurd` that *has no
-right hand side* (note that there is no equal sign): as there is no
-proof of `⊥`, we are not obliged to provide a proof of `A` as
-required by the codomain of `absurd`.
+The pattern `()` in the definition of `absurd` matches an
+hypothetical value of type `⊥`. Since no constructor is provided for
+`⊥` and no such value may exist, the equation *has no right hand
+side* (note that there is no equal sign) and we are not obliged to
+provide a proof of `A` as required by the codomain of `absurd`.
 
-In most programming languages, it is possible to assign the type `⊥`
-to non-terminating expressions. If this were allowed also in Agda,
-the whole language would be useless insofar program verification is
+In other programming languages that are capable of defining a data
+type analogous to `⊥` it is possible to assign the type `⊥` to
+non-terminating expressions. If this were allowed also in Agda, the
+whole language would be useless insofar program verification is
 concerned, since `absurd` would easily allow us to prove *any*
-property for *any* program. For this reason, Agda has a *termination
-checker* making sure that every definition is *terminating*. For
-example, if we try to define `loop` as follows
+property about *any* program. For this reason, Agda has a
+*termination checker* making sure that every definition is
+*terminating*. For example, if define `loop` as follows
 
     loop : ℕ -> ⊥
     loop n = loop (succ n)
@@ -193,11 +193,11 @@ arguments. An even simpler example of non-terminating definition is
     bottom : ⊥
     bottom = bottom
 
-All the recursive functions we have defined until now are
-*terminating* because there is an argument that becomes
-*structurally smaller* from an application of the function to its
-recursive invocation. Structural recursion applies to a large family
-of functions, but some of them (e.g. [division]({% link
+All the recursive functions we have defined until now are verified
+by Agda to be *terminating* because there is an argument that
+becomes *structurally smaller* from an application of the function
+to its recursive invocation. Structural recursion applies to a large
+family of functions, but some of them (e.g. [division]({% link
 pages/Chapter.Division.md %}) or [quick sort]({% link
 pages/Chapter.QuickSort.md %})) cannot be easily formulated in this
 way. We will see a general technique for having these functions

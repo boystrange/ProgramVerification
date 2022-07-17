@@ -42,7 +42,7 @@ import Chapter.LessThan
 ## Verification of functional programs
 
 ```
--- import Chapter.Permutations
+import Chapter.SortedLists
 import Chapter.ExtrinsicInsertionSort
 import Chapter.IntrinsicInsertionSort
 import Chapter.RedBlackTree

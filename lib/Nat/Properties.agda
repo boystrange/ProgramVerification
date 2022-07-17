@@ -16,6 +16,9 @@ succ-injective refl = refl
 +-succ zero y = refl
 +-succ (succ x) y = cong succ (+-succ x y)
 
++-unit-l : (x : ℕ) -> 0 + x == x
++-unit-l _ = refl
+
 +-unit-r : (x : ℕ) -> x + 0 == x
 +-unit-r zero = refl
 +-unit-r (succ x) = cong succ (+-unit-r x)

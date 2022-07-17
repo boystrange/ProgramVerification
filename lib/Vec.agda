@@ -46,9 +46,9 @@ module Ugh where
     subst (Vec A) eq xs == ys -> subst (Vec A) (cong succ eq) (x :: xs) == (x :: ys)
   coerce-::-cong x refl refl = refl
 
-  ++-associative : {A : Set} {m n o : ℕ} (xs : Vec A m) (ys : Vec A n) (zs : Vec A o) -> subst (Vec A) (+-associative m n o) (xs ++ (ys ++ zs)) == (xs ++ ys) ++ zs
+  ++-associative : {A : Set} {m n o : ℕ} (xs : Vec A m) (ys : Vec A n) (zs : Vec A o) -> subst (Vec A) (+-assoc m n o) (xs ++ (ys ++ zs)) == (xs ++ ys) ++ zs
   ++-associative [] ys zs = refl
-  ++-associative {_} {succ m} {n} {o} (x :: xs) ys zs = coerce-::-cong x (+-associative m n o) (++-associative xs ys zs)
+  ++-associative {_} {succ m} {n} {o} (x :: xs) ys zs = coerce-::-cong x (+-assoc m n o) (++-associative xs ys zs)
 
   infix 4 _~~_
 
@@ -64,7 +64,7 @@ module Ugh where
 
   ++-associative' : {A : Set} {m n o : ℕ} (xs : Vec A m) (ys : Vec A n) (zs : Vec A o) -> xs ++ (ys ++ zs) ~~ (xs ++ ys) ++ zs
   ++-associative' [] ys zs = refl
-  ++-associative' {_} {succ m} {n} {o} (x :: xs) ys zs = ::-cong x (+-associative m n o) (++-associative' xs ys zs)
+  ++-associative' {_} {succ m} {n} {o} (x :: xs) ys zs = ::-cong x (+-assoc m n o) (++-associative' xs ys zs)
 
 
   lemma : {A : Set} {x y : A} -> x ~~ y -> x == y
