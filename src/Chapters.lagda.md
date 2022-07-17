@@ -46,7 +46,7 @@ import Chapter.SortedLists
 import Chapter.ExtrinsicInsertionSort
 import Chapter.IntrinsicInsertionSort
 import Chapter.RedBlackTree
-import Chapter.Regex
+import Chapter.RegularExpressions
 import Chapter.Division
 import Chapter.QuickSort
 ```
