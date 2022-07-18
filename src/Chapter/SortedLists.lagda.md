@@ -9,6 +9,7 @@ correctness of some sorting algorithms.
 
 <!--
 ```
+open import Fun
 open import Logic
 open import Equality
 open import List using (List; []; _::_; [_]; reverse; _++_)
@@ -89,7 +90,7 @@ aim, we define a parametric `All` predicate such that `All P xs`
 holds if so does `P x` for each element `x` of `xs`.
 
 ```
-All : (A -> Set) -> List A -> Set
+All : {A : Set} -> (A -> Set) -> List A -> Set
 All P []        = ⊤
 All P (x :: xs) = P x ∧ All P xs
 ```
@@ -293,6 +294,20 @@ Sorted'->Sorted {x :: y :: xs} (x≼y , p) = (x≼y , lem x≼y p) , Sorted'->So
     lem {x} {y} {z :: xs} x≼y (y≼z , p) = ≼-trans x≼y y≼z , lem (≼-trans x≼y y≼z) p
 ```
 {:.solution}
+
+Prove the following theorem, asserting that list predicates defined
+using `All` are preserved by permutations.
+
+```
+#All : {A : Set} (P : A -> Set) {xs ys : List A} -> xs # ys -> All P xs -> All P ys
+```
+
+```
+#All P #refl         ps           = ps
+#All P #swap         (p , q , ps) = q , p , ps
+#All P (#cong π)     (p , ps)     = p , #All P π ps
+#All P (#trans π π') ps           = #All P π' (#All P π ps)
+```
 
 Prove the following theorem asserting that the first element of any
 list can be pushed arbitrarily deep into list still obtaining a
