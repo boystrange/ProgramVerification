@@ -289,7 +289,7 @@ must depend on a state `s`.
 
 ```
 _<ℕ_ : ℕ → ℕ → Bool          --  n <ℕ m == true if n < m 
-zero <ℕ   zero   = false     --  in the ordinary ordering of ℕ
+zero <ℕ   zero   = false      --  in the ordinary ordering of ℕ
 zero <ℕ   succ n = true
 succ n <ℕ zero   = false
 succ n <ℕ succ m = n <ℕ m
@@ -303,12 +303,14 @@ bval (And b1 b2) s = bval b1 s && bval b2 s
 
 ## Exercises
 
-1. Prove that the function bval is total, namely that
+1. Prove that the function `bval` is total, namely that
 
-   lemma-bval-tot : ∀ (b : Bexp) (s : State) → bval b s == true ∨ bval b s == false
+               lemma-bval-tot : ∀ (b : Bexp) (s : State) →
+                           bval b s == true ∨ bval b s == false
    
-2. Define a suitable function  `_[_/_]B :  Bexp → Aexp → Vname → Bexp` extending
-   substitution to expressions in `Bexp` and prove the lemma:
+2. Define a function  `_[_/_]B :  Bexp → Aexp → Vname → Bexp` extending
+   substitution to expressions in `Bexp`.
+3. Prove the lemma:
 
                lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) →
                            bval (b [ a / x ]B) s == bval b (s [ x ::= aval a s ])
@@ -323,13 +325,15 @@ lemma-bval-tot b s with bval b s
 ... | true  = inl refl
 ... | false = inr refl
 
---EXERCISE 2
+-- EXERCISE 2
 
 _[_/_]B : Bexp → Aexp → Vname → Bexp
 B c [ a / x ]B       = B c
 Leq a1 a2 [ a / x ]B = Leq (a1 [ a / x ]) (a2 [ a / x ])
 Not b [ a / x ]B     = Not (b [ a / x ]B)
 And b1 b2 [ a / x ]B = And (b1 [ a / x ]B) (b2 [ a / x ]B)
+
+-- EXERCISE 3
 
 lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) →
                      bval (b [ a / x ]B) s == bval b (s [ x ::= aval a s ])
@@ -339,7 +343,7 @@ lemma-subst-bexp (Leq a1 a2) a x s =
     begin
        bval (Leq a1 a2 [ a / x ]B) s                        ==⟨⟩
        bval (Leq (a1 [ a / x ]) (a2 [ a / x ])) s           ==⟨⟩
-       (aval  (a1 [ a / x ]) s) <ℕ (aval  (a2 [ a / x ]) s) ==⟨ cong2 _<ℕ_ lemma1 lemma2 ⟩
+       (aval  (a1 [ a / x ]) s) <ℕ (aval  (a2 [ a / x ]) s) ==⟨ cong2 _<ℕ_ lm1 lm2 ⟩
        (aval a1 s') <ℕ (aval a2 s')                         ==⟨⟩
        bval (Leq a1 a2) s'
     end
@@ -347,11 +351,11 @@ lemma-subst-bexp (Leq a1 a2) a x s =
          s' : State
          s' = s [ x ::= aval a s ]
 
-         lemma1 : aval (a1 [ a / x ]) s == aval a1 (s [ x ::= aval a s ])
-         lemma1 = lemma-subst-aexp a1 a x s
+         lm1 : aval (a1 [ a / x ]) s == aval a1 (s [ x ::= aval a s ])
+         lm1 = lemma-subst-aexp a1 a x s
 
-         lemma2 : aval (a2 [ a / x ]) s == aval a2 (s [ x ::= aval a s ])
-         lemma2 = lemma-subst-aexp a2 a x s
+         lm2 : aval (a2 [ a / x ]) s == aval a2 (s [ x ::= aval a s ])
+         lm2 = lemma-subst-aexp a2 a x s
 lemma-subst-bexp (Not b) a x s
          rewrite lemma-subst-bexp b a x s = refl
 lemma-subst-bexp (And b1 b2) a x s
