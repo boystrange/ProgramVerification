@@ -56,7 +56,7 @@ succ n =ℕ zero = false
 succ n =ℕ succ m = n =ℕ m
 
 _=Vn_ : (x y : Vname) → Bool
-Vn x =Vn Vn y = x =ℕ y
+Vn i =Vn Vn j = i =ℕ j
 ```
 
 Now we can define the syntax of arithmetic expressions by the grammar:
@@ -80,7 +80,7 @@ aexp0 = Plus (V X) (Plus (N 1) (V Y))
 is abstract syntax of the (concrete) expression: `X + (1 + Y)`.
 
 
-### Semantix of aritmetic expressions
+### Semantics of aritmetic expressions
 
 The meaning of an expression `a ∈ Aexp` is a value that we define as a natural number. Since `a` may include
 program variables we have to assign a meaning to each of them; this is done via the notion of **state**,
@@ -141,11 +141,11 @@ by the arithmetical function `_+_`.
 Consider:
 
 ```
-example1 : Val
-example1 = aval aexp0 st2
+aval-example1 : Val
+aval-example1 = aval aexp0 st2
 ```
 
-Then you can check by hitting `C-c C-n example1` that the value of `aexp0` 
+Then you can check by hitting `C-c C-n eaval-xample1` that the value of `aexp0` 
 encoding the expression `X + (1 + Y)` when computed in the state `st2` above is 4.
 
 
@@ -182,7 +182,7 @@ When typing `C-c Cn aexp2` we get
 
 where rember that `Vn 0 == X`.
 
-### The Substitution lemma
+### The substitution lemma
 
 A key property of substitution, which is a syntactic operation, is its consistency with the
 semantics of expressions in `Aexp` as given by the evaluation function `aval`. This is some kind
@@ -243,12 +243,17 @@ Indeed the proof is verbose, since we could have written just
 
 letting Agda to evaluate the left and right-hand sides of the equation.
 
-The case `a == V y` is rather subtle. A tentative proof would be
+The case `a == V y` is rather subtle. A naive proof would be
+
+                   lemma-subst-aexp (V y) a' x s = x =Vn y
+
+But the type of the right-hand side is `Bool` instead of being an equation `_==_` as required.
+A further attempt would be
 
                    lemma-subst-aexp (V y) a' x s = if x =Vn y then refl else refl
 
-However the right hand side of it does not type check. The reason is that
-the two `refl` in the `if_then_else_` above have different types namely
+However the right-hand side of this proof does not type check. The reason is that
+the two `refl` in `if x =Vn y then refl else refl` above  have different types namely
 
                    aval a' s == aval a' s    and     s y == s y
            
@@ -256,7 +261,7 @@ respectively, while `if_then_else_` has type
 
                    ∀{A : Set} -> Bool -> A -> A -> A.
 
-We escape the difficulty by means of the `with` construct which is polymorphic.
+We escape the difficulty by means of the `with` construct.
 
 Finally the case `a == Plus a1 a2` is an immedite consequence of the induction
 hypotheses `h1` and `h2`, but these are used inside the
@@ -267,7 +272,7 @@ The very same proof can be written more concisely by means of the `rewrite` tact
     lemma-subst-aexp (Plus a1 a2) a' x s
           rewrite lemma-subst-aexp a1 a' x s | lemma-subst-aexp a2 a' x s = refl
 
-## Boolean expressions
+## Boolean expressions: syntax and semantics
 
 The syntax of bolean expressions is defined by the grammar:
 
@@ -281,6 +286,15 @@ data Bexp : Set where
    Leq : Aexp → Aexp → Bexp    -- less than
    Not : Bexp → Bexp           -- negation
    And : Bexp → Bexp → Bexp    -- conjunction
+```
+
+Examples:
+```
+bexp1 : Bexp
+bexp1 = Not (Leq (V X) (N 1))       -- not (X < 1)
+
+bexp2 : Bexp
+bexp2 = And bexp1 (Leq (N 0) (V Y)) -- (not (X < 1)) && (0 < Y)
 ```
 
 The semantics of expressions in Bexp associate a boolean value is a boolean; in particular
@@ -303,14 +317,17 @@ bval (And b1 b2) s = bval b1 s && bval b2 s
 
 ## Exercises
 
-1. Prove that the function `bval` is total, namely that
+1. Find states `st3, st4, st5, st6` such that `bval bexp1 st3 == true`,
+   `bval bexp1 st4 == false`, `bval bexp2 st3 == true` and `bval bexp2 st4 == false`
+   (hint: use `st0`, `st1` or `st2` possibly with some updates).
+2. Prove that the function `bval` is total, namely that
 
                lemma-bval-tot : ∀ (b : Bexp) (s : State) →
                            bval b s == true ∨ bval b s == false
    
-2. Define a function  `_[_/_]B :  Bexp → Aexp → Vname → Bexp` extending
+3. Define a function  `_[_/_]B :  Bexp → Aexp → Vname → Bexp` extending
    substitution to expressions in `Bexp`.
-3. Prove the lemma:
+4. Prove the lemma:
 
                lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) →
                            bval (b [ a / x ]B) s == bval b (s [ x ::= aval a s ])
@@ -320,12 +337,38 @@ bval (And b1 b2) s = bval b1 s && bval b2 s
 ```
 -- EXERCISE 1
 
+st3 : State
+st3 = st1
+
+bval-chek1 : bval bexp1 st3 == true
+bval-chek1 = refl
+
+st4 : State
+st4 = st0
+
+bval-chek2 : bval bexp1 st4 == false
+bval-chek2 = refl
+
+st5 : State
+st5 = st1 [ Y ::= 1 ]
+
+bval-chek3 : bval bexp2 st5 == true
+bval-chek3 = refl
+
+st6 : State
+st6 = st1
+
+bval-chek4 : bval bexp2 st6 == false
+bval-chek4 = refl
+
+-- EXERCISE 2
+
 lemma-bval-tot : ∀ (b : Bexp) (s : State) → bval b s == true ∨ bval b s == false
 lemma-bval-tot b s with bval b s
 ... | true  = inl refl
 ... | false = inr refl
 
--- EXERCISE 2
+-- EXERCISE 3
 
 _[_/_]B : Bexp → Aexp → Vname → Bexp
 B c [ a / x ]B       = B c
@@ -333,7 +376,7 @@ Leq a1 a2 [ a / x ]B = Leq (a1 [ a / x ]) (a2 [ a / x ])
 Not b [ a / x ]B     = Not (b [ a / x ]B)
 And b1 b2 [ a / x ]B = And (b1 [ a / x ]B) (b2 [ a / x ]B)
 
--- EXERCISE 3
+-- EXERCISE 4
 
 lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) →
                      bval (b [ a / x ]B) s == bval b (s [ x ::= aval a s ])
