@@ -243,7 +243,7 @@ Indeed the proof is verbose, since we could have written just
 
 letting Agda to evaluate the left and right-hand sides of the equation.
 
-The case `a == V y` is rather subtle. A tentative definition would be
+The case `a == V y` is rather subtle. A tentative proof would be
 
                    lemma-subst-aexp (V y) a' x s = if x =Vn y then refl else refl
 
