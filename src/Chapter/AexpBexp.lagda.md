@@ -56,7 +56,7 @@ succ n =ℕ zero = false
 succ n =ℕ succ m = n =ℕ m
 
 _=Vn_ : (x y : Vname) → Bool
-Vn x =Vn Vn y = if x =ℕ y then true else false
+Vn x =Vn Vn y = x =ℕ y
 ```
 
 Now we can define the syntax of arithmetic expressions by the grammar:
