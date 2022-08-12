@@ -297,9 +297,10 @@ bexp2 : Bexp
 bexp2 = And bexp1 (Leq (N 0) (V Y)) -- (not (X < 1)) && (0 < Y)
 ```
 
-The semantics of expressions in Bexp associate a boolean value is a boolean; in particular
-the meaning of `Leq a a'` is `aval a s < aval a's`, therefore in general the meaning of `b ∈ Bexp`
-must depend on a state `s`.
+The semantics of expressions in `Bexp` are boolean values; in particular
+the meaning of `Leq a a'` is `true` if `aval a s < aval a's`, `false` otherwiese.
+Since evaluating expressions in `Aexp` requires a state, in general the meaning of `b ∈ Bexp`
+must depend on a state as well.
 
 ```
 _<ℕ_ : ℕ → ℕ → Bool          --  n <ℕ m == true if n < m 
