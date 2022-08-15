@@ -405,4 +405,5 @@ lemma-subst-bexp (Not b) a x s
 lemma-subst-bexp (And b1 b2) a x s
          rewrite lemma-subst-bexp b1 a x s | lemma-subst-bexp b2 a x s = refl
 ```
+
 {:.solution}

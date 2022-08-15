@@ -65,7 +65,7 @@ state `s` terminates with the final state `t`; in general this requires several 
 that are summarised by a single *big-step*, hence the name.
 
 The definition below uses the trick by Wadler in his PLFA book
-(see e.g. the chapter devoted to the [λ-calculus](https://plfa.github.io/Lambda/))
+(see e.g. the chapter [Relations](https://plfa.github.io/Relations/))
 to make the Adga definition of a data type looking as a formal system,
 where constructors play the role of rules and the comment `-------`
 represents the line separating the premises from the conclusion.
@@ -298,7 +298,9 @@ explains the alternative cases in the `with` clause.
          lemma-while-if : ∀ (b : Bexp) (c : Com) →
                 (WHILE b DO c) ∼ (IF b THEN (c :: (WHILE b DO c)) ELSE SKIP)
 
-Hint: you might use implicit arguments in the proofs.
+Hint: you might use implicit arguments in the proofs as in the previous lemmas.
+
+
 ```
 -- EXERCISE 1
 
@@ -345,4 +347,5 @@ lemma-while-if b c {s} {t} = only-if-part , if-part
          if-part (IfTrue x (Comp hyp1 hyp2)) = WhileTrue x hyp1 hyp2
          if-part (IfFalse x Skip) = WhileFalse x
 ```
+
 {:.solution}
