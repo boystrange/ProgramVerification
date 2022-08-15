@@ -176,7 +176,7 @@ Notice that substitution is not recursive:
 aexp2 : Aexp
 aexp2 = aexp0 [ Plus (V X) (N 3) / X ]
 ```
-When typing `C-c Cn aexp2` we get
+When typing `C-c C-n aexp2` we get
 
                      Plus (Plus (V (Vn 0)) (N 3)) (Plus (N 1) (V (Vn 1)))
 
