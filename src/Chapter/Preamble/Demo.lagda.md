@@ -4,7 +4,7 @@ title: A taste of Agda
 
 <!--
 ```
-module Chapter.Demo where
+module Chapter.Preamble.Demo where
 
 open import Equality
 open import Equality.Reasoning

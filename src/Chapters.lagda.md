@@ -11,8 +11,8 @@ module Chapters where
 ## Preamble
 
 ```
-import Chapter.Demo
-import Chapter.Setup
+import Chapter.Preamble.Demo
+import Chapter.Preamble.Setup
 ```
 
 ## Functions and data

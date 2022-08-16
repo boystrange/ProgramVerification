@@ -4,7 +4,7 @@ title: Setup
 
 <!--
 ```agda
-module Chapter.Setup where
+module Chapter.Preamble.Setup where
 ```
 -->
 
