@@ -12,7 +12,7 @@ A red black tree is a binary search tree in which nodes are colored
 The combination of these properties makes sure that the depth of a red black tree cannot be more than twice the length of the shortest path from its root to one of its leaves. So, a red black tree is reasonably balanced.
 
 ```agda
-module Chapter.RedBlackTree (A : Set) (_≼_ : A -> A -> Set) where
+module Chapter.Fun.RedBlackTree (A : Set) (_≼_ : A -> A -> Set) where
 
 open import Nat
 open import Nat.Properties

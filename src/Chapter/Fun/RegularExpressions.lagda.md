@@ -2,7 +2,7 @@
 ---
 
 ```agda
-module Chapter.RegularExpressions where
+module Chapter.Fun.RegularExpressions where
 
 open import Nat using (ℕ)
 open import Nat.Properties using (_=?_)

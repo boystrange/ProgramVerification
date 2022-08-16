@@ -2,7 +2,7 @@
 ---
 
 ```agda
-module Chapter.Division where
+module Chapter.Fun.Division where
 
 open import Nat
 open import Nat.Properties

@@ -27,7 +27,7 @@ in which they are necessary. For instance, the module corresponding
 to this chapter is declared thus.
 
 ```
-module Chapter.SortedLists
+module Chapter.Fun.SortedLists
   (A       : Set)
   (_≼_     : A -> A -> Set)
   (≼-refl  : {x : A} -> x ≼ x)

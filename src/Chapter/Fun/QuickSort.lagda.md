@@ -14,7 +14,7 @@ open import LessThan.Alternative
 open import Logic
 open import WellFounded
 
-module Chapter.QuickSort
+module Chapter.Fun.QuickSort
   (A : Set)
   (_≼_ : A -> A -> Set)
   (≼-trans : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z)

@@ -7,7 +7,7 @@ open import List
 open import List.Properties
 open import List.Permutation
 
-module Chapter.ExtrinsicInsertionSort
+module Chapter.Fun.ExtrinsicInsertionSort
   (A : Set)
   (_≼_ : A -> A -> Set)
   (≼-trans : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z)

@@ -42,13 +42,13 @@ import Chapter.LessThan
 ## Verification of functional programs
 
 ```
-import Chapter.SortedLists
-import Chapter.ExtrinsicInsertionSort
-import Chapter.IntrinsicInsertionSort
-import Chapter.RedBlackTree
-import Chapter.RegularExpressions
-import Chapter.Division
-import Chapter.QuickSort
+import Chapter.Fun.SortedLists
+import Chapter.Fun.ExtrinsicInsertionSort
+import Chapter.Fun.IntrinsicInsertionSort
+import Chapter.Fun.RedBlackTree
+import Chapter.Fun.RegularExpressions
+import Chapter.Fun.Division
+import Chapter.Fun.QuickSort
 ```
 
 ## Verification of imperative programs
