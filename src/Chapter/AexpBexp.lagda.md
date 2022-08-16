@@ -176,7 +176,7 @@ Notice that substitution is not recursive:
 aexp2 : Aexp
 aexp2 = aexp0 [ Plus (V X) (N 3) / X ]
 ```
-When typing `C-c Cn aexp2` we get
+When typing `C-c C-n aexp2` we get
 
                      Plus (Plus (V (Vn 0)) (N 3)) (Plus (N 1) (V (Vn 1)))
 
@@ -405,4 +405,5 @@ lemma-subst-bexp (Not b) a x s
 lemma-subst-bexp (And b1 b2) a x s
          rewrite lemma-subst-bexp b1 a x s | lemma-subst-bexp b2 a x s = refl
 ```
+
 {:.solution}
