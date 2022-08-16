@@ -10,7 +10,7 @@ open import Nat
 open import Logic
 open import Equality
 
-module Chapter.Predicates where
+module Chapter.Logic.Predicates where
 ```
 -->
 

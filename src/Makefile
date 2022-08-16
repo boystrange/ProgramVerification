@@ -18,4 +18,4 @@ dependencies.pdf: dependencies.dot
 	dot -Tpdf $< >$@
 
 clean:
-	rm -f dependencies.*
+	rm -f dependencies.* $(HTMLDIR)/*

@@ -4,7 +4,7 @@ title: Programming with lists
 
 <!--
 ```
-module Chapter.Lists where
+module Chapter.Intro.Lists where
 
 open import Fun
 open import Equality

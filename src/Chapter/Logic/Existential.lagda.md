@@ -12,7 +12,7 @@ open import List
 open import Equality
 open import Logic hiding (fst; snd)
 
-module Chapter.Existential where
+module Chapter.Logic.Existential where
 ```
 -->
 
@@ -25,7 +25,7 @@ example of **dependent pair** where the type of the second component
 depends on the value $x$ of the first one. The data type that we use
 to represent dependent pairs is traditionally called "sigma type"
 and is a refinement of the type `_∧_` we have defined in the
-[previous chapter]({% link pages/Chapter.Connectives.md
+[previous chapter]({% link pages/Chapter.Logic.Connectives.md
 %}#conjunction).
 
     data Σ (A : Set) (B : A -> Set) : Set where

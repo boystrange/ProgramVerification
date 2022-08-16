@@ -4,7 +4,7 @@ title: Types and functions
 
 <!--
 ```
-module Chapter.Lambda where
+module Chapter.Intro.Lambda where
 ```
 -->
 
@@ -12,7 +12,7 @@ To try out the examples discussed in this chapter and to solve the
 proposed exercises it is necessary to include the `Nat` module,
 which defines the natural numbers and some basic operations on
 them. We will discuss natural numbers in a [dedicated chapter]({%
-link pages/Chapter.NaturalNumbers.md %}). For the time being, we
+link pages/Chapter.Intro.NaturalNumbers.md %}). For the time being, we
 simply import the module and make its content accessible by means of
 the following clause.
 

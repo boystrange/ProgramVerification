@@ -9,7 +9,7 @@ open import Nat
 open import Logic
 open import Equality
 
-module Chapter.LessThan where
+module Chapter.Logic.LessThan where
 ```
 -->
 
@@ -26,7 +26,7 @@ the following rules.
               0 <= x              1 + x <= 1 + y
 
 As we will see in a [later chapter]({% link
-pages/Chapter.Division.md %}), this is not the only conceivable
+pages/Chapter.Fun.Division.md %}), this is not the only conceivable
 inference system that defines non-strict inequality. However, it
 turns out to be a convenient one in most situations.
 

@@ -4,7 +4,7 @@ title: Logical connectives
 
 <!--
 ```
-module Chapter.Connectives where
+module Chapter.Logic.Connectives where
 
 open import Fun
 ```
@@ -198,8 +198,8 @@ by Agda to be *terminating* because there is an argument that
 becomes *structurally smaller* from an application of the function
 to its recursive invocation. Structural recursion applies to a large
 family of functions, but some of them (e.g. [division]({% link
-pages/Chapter.Division.md %}) or [quick sort]({% link
-pages/Chapter.QuickSort.md %})) cannot be easily formulated in this
+pages/Chapter.Fun.Division.md %}) or [quick sort]({% link
+pages/Chapter.Fun.QuickSort.md %})) cannot be easily formulated in this
 way. We will see a general technique for having these functions
 accepted by Agda in later chapters.
 

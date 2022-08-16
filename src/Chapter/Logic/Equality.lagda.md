@@ -11,7 +11,7 @@ open import Nat
 open import List
 open import Logic
 
-module Chapter.Equality where
+module Chapter.Logic.Equality where
 ```
 -->
 
@@ -44,8 +44,8 @@ if they have the same normal form, we can use `refl` to construct
 equality proofs for any two terms `x` and `y` that have the same
 normal form. We have already seen a few examples of this when
 proving [properties of boolean values]({% link
-pages/Chapter.BoolProperties.md %}) and when introducing [natural
-numbers]({% link pages/Chapter.NaturalNumbers.md %}).
+pages/Chapter.Intro.BoolProperties.md %}) and when introducing
+[natural numbers]({% link pages/Chapter.Intro.NaturalNumbers.md %}).
 
 ```
 _ : not true == false
@@ -128,7 +128,7 @@ trans₁ refl refl = refl
 ## Congruence and substitution
 
 In the chapter on [natural numbers]({% link
-pages/Chapter.NaturalNumbers.md %}) we have used the congruence
+pages/Chapter.Intro.NaturalNumbers.md %}) we have used the congruence
 property of function application, namely the property that, if `x ==
 y`, then `f x == f y`. We can now see how this theorem is proved.
 

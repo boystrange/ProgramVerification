@@ -4,7 +4,7 @@ title: Polymorphic functions and implicit arguments
 
 <!--
 ```
-module Chapter.Polymorphism where
+module Chapter.Intro.Polymorphism where
 
 open import Bool
 open import Nat

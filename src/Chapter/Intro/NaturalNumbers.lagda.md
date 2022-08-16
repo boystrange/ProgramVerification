@@ -6,7 +6,7 @@ title: Natural numbers
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Chapter.NaturalNumbers where
+module Chapter.Intro.NaturalNumbers where
 
 open import Nat using (ℕ; zero; succ)
 open import Equality

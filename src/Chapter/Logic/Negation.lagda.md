@@ -8,9 +8,9 @@ open import Nat
 open import List
 open import Fun
 open import Equality
-open import Chapter.Connectives
+open import Chapter.Logic.Connectives
 
-module Chapter.Negation where
+module Chapter.Logic.Negation where
 ```
 
 ## Constructive negation
@@ -48,7 +48,7 @@ double-negation x p = p x
 In classical logic it is common to assume the validity of the
 *excluded middle* principle, namely that `¬ A ∨ A` is true for every
 proposition `A`. As we know from the [previous chapter]({% link
-pages/Chapter.Connectives.md %}), in constructive logic, a proof of
+pages/Chapter.Logic.Connectives.md %}), in constructive logic, a proof of
 a disjunction `¬ A ∨ A` embeds either a proof of `¬ A` or a proof of
 `A`, hence it may very well be the case that we are unable to prove
 `¬ A ∨ A` if we cannot find either a proof of `¬ A` or a proof of

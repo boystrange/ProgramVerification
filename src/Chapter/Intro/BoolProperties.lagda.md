@@ -6,7 +6,7 @@ title: Proving properties of Booleans
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Chapter.BoolProperties where
+module Chapter.Intro.BoolProperties where
 ```
 -->
 
@@ -21,7 +21,7 @@ a proof for them) or "false" (if we are able to show that every
 proof of them leads to a contradiction). In this chapter we will use
 **propositional equality**. This relation is not built into Agda,
 but is actually [definable as a data type]({% link
-pages/Chapter.Equality.md %}). For the time being, we simply *use*
+pages/Chapter.Logic.Equality.md %}). For the time being, we simply *use*
 the definition of propositional equality from the library without
 pretending to understand how it works. To this aim, we *import* the
 `Equality` module, along with the previous chapter from which we
@@ -30,7 +30,7 @@ values.
 
 ```
 open import Equality
-open import Chapter.Bool
+open import Chapter.Intro.Bool
 ```
 
 The first aspect we have to familiarize with is that, unlike the

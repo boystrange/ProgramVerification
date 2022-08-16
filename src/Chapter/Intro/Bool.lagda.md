@@ -6,7 +6,7 @@ title: "Inductive data types: the Booleans"
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Chapter.Bool where
+module Chapter.Intro.Bool where
 ```
 -->
 

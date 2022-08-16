@@ -18,12 +18,12 @@ import Chapter.Preamble.Setup
 ## Functions and data
 
 ```
-import Chapter.Lambda
-import Chapter.Bool
-import Chapter.BoolProperties
-import Chapter.NaturalNumbers
-import Chapter.Polymorphism
-import Chapter.Lists
+import Chapter.Intro.Lambda
+import Chapter.Intro.Bool
+import Chapter.Intro.BoolProperties
+import Chapter.Intro.NaturalNumbers
+import Chapter.Intro.Polymorphism
+import Chapter.Intro.Lists
 ```
 
 Fin and Vec?
@@ -31,12 +31,12 @@ Fin and Vec?
 ## Constructive logic
 
 ```
-import Chapter.Connectives
-import Chapter.Negation
-import Chapter.Existential
-import Chapter.Predicates
-import Chapter.Equality
-import Chapter.LessThan
+import Chapter.Logic.Connectives
+import Chapter.Logic.Negation
+import Chapter.Logic.Existential
+import Chapter.Logic.Predicates
+import Chapter.Logic.Equality
+import Chapter.Logic.LessThan
 ```
 
 ## Verification of functional programs
