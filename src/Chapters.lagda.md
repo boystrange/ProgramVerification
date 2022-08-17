@@ -56,6 +56,7 @@ import Chapter.Fun.QuickSort
 ```
 import Chapter.AexpBexp
 import Chapter.BigStep
+import Chapter.SmallStep
 ```
 
 ## Verification of concurrent programs

@@ -142,7 +142,7 @@ shape of the absurd hypothesis; nonetheless the induction hypothesis
 is perfectly legal and accepted by Agda. The reason is that the proof is not by
 induction over the command `WHILE B true DO c `, rather it is on
 the derivation of the absurd hypothesis. As a final remark let us observe that
-this is **not** a *reductio ad absurdum*, which is intuitionistically invaid, but
+this is **not** a *reductio ad absurdum*, which is intuitionistically invalid, but
 just the proof of a negative statement `¬ A` that is an abbreviation of
 the implication `A → ⊥`.
 
