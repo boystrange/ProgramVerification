@@ -6,7 +6,7 @@ title: "Arithmetic and boolean expressions"
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Chapter.AexpBexp where
+module Chapter.Imp.AexpBexp where
 
 open import Bool
 open import Nat

@@ -6,7 +6,7 @@ title: "Small-step operational semantics"
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Chapter.SmallStep where
+module Chapter.Imp.SmallStep where
 
 open import Bool
 open import Nat
@@ -16,8 +16,8 @@ open import Logic.Laws
 open import Equality
 open import Equality.Reasoning
 
-open import Chapter.AexpBexp
-open import Chapter.BigStep
+open import Chapter.Imp.AexpBexp
+open import Chapter.Imp.BigStep
 
 ```
 -->
