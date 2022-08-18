@@ -23,11 +23,10 @@ open import Chapter.Imp.BigStep
 -->
 
 An alternative approach to the operational semantics w.r.t. the big-step semantics is 
-the **structured operational semantics** initiated by Gordon Plotkin in his femous
+the **structured operational semantics** initiated by Gordon Plotkin in his famous
 *Pisa notes*, and commonly called **small-step** semantics in the literature.
 The idea is to describe the computation of a command out of
-an initial state via a transition relation modeling step by step the execution
-of the command.
+an initial state via a transition relation modeling step by step its execution. 
 
 ## One-step reduction relation 
 
@@ -98,9 +97,9 @@ exercise 3 in chapter [Big-step operational semantics]({% link pages/Chapter.Big
 
 ## Reflexive and transitive closure of one-step reduction
 
-In mathematics the reflexive and transitive closure of a binary relation *R*
-is the least reflexive and transitive relation *R'* including *R*.
-Having defined the one-step reduction, we consider its reflexive and transitive
+In mathematics the reflexive and transitive closure of a binary relation `R`
+is the least reflexive and transitive relation `R*` including `R`.
+Having defined the one-step reduction `⟶`, we consider its reflexive and transitive
 closure `⟶*` to model executions of arbitrary length, and we dub it
 **multi-step reduction** or just **reduction**. 
 
@@ -159,7 +158,7 @@ in the same style of the function `_==⟨_⟩` for equational reasoning:
 Although conceptually different, both the big-step and the small-step semantics
 model the same notion of execution of IMP programs, namely the same interpreter.
 This is not to say that
-the relations `_⇒_` and `_⟶_` coincide, as they have different co-domains, that are
+the relations `_⇒_` and `_⟶*_` coincide, as they have different co-domains, that are
 the sets of states and of configurations respectively, which is reflected by
 their different types in Agda. Instead we can prove the following
 **Big and Small-step Equivalence Theorem**:
@@ -276,3 +275,57 @@ language, even slightly extending the *While* language used in Kfoury, Mall and 
 as an equivalent substitute for Turing machines. Were either big or small-step relations decidable,
 we would have an algorithm deciding the halting problem.
 
+## Exercise
+
+Let `com0` be the command
+```
+com0 : Com
+com0 = (Z := V X) :: ((X := V Y) :: (Y := V Z))
+```
+swapping the values of `X` and `Y` using `Z` to temporarily save the value of `X`.
+Consider the following states:
+```
+st07 : State
+st07 = ((λ z → 0) [ X ::= 1 ]) [ Y ::= 2 ]
+
+st08 : State
+st08 = st07 [ Z ::= aval (V X) st07 ]
+
+st09 : State
+st09 = st08 [ X ::= aval (V Y) st08 ]
+
+st10 : State
+st10 = st09 [ Y ::= aval (V Z) st09 ]
+```
+such that
+```
+_ : st07 X == 1
+_ = refl
+
+_ : st07 Y == 2
+_ = refl
+
+_ : st10 X == 2
+_ = refl
+
+_ : st10 Y == 1
+_ = refl
+```
+
+By means of the macros for reasoning about reduction, show
+
+      exec0 : ⦅ com0 , st07 ⦆ ⟶* ⦅ SKIP , st10 ⦆
+
+
+
+
+```
+exec0 : ⦅ com0 , st07 ⦆ ⟶* ⦅ SKIP , st10 ⦆
+exec0 = ⦅ com0 , st07 ⦆⟶⟨ Comp₂ Loc ⟩ 
+        ⦅ SKIP :: ((X := V Y) :: (Y := V Z)), st07 [ Z ::= st07 X ] ⦆⟶⟨ Comp₁ ⟩
+        ⦅ (X := V Y) :: (Y := V Z) , st08 ⦆⟶⟨ Comp₂ Loc ⟩
+        ⦅ SKIP :: (Y := V Z) , st09 ⦆⟶⟨ Comp₁ ⟩ 
+        ⦅ Y := V Z , st09 ⦆⟶⟨ Loc ⟩
+        ⦅ SKIP , st10 ⦆∎
+```
+{:.solution}
