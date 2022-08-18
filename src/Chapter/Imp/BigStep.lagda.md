@@ -135,7 +135,7 @@ infix 10 _⇒_
 ## Properties
 
 First we show that the convergence predicate is non trivial, namely that
-there exist commands that do not produce any final state as the result of their computation;
+there exist commands that do not produce any final state as the result of their execution;
 the simplest ones are of the shape `WHILE B true DO c `, for any `c ∈ Com`.
 
 ```
@@ -294,7 +294,9 @@ In the proof of the if-part we use the lemma
       lemma-bval-tot : ∀ (b : Bexp) (s : State) →
                        bval b s == true ∨ bval b s == false
 
-from Chapter.AexpBexp (see the solution of exercise 2) stating that given any
+from the chapter 
+[Arithmetic and boolean expressions]({% link pages/Chapter.AexpBexp.md %}) 
+(see the solution of exercise 2) stating that given any
 `s ∈ State` the value of `b ∈ Bexp` is always computable and it is either `true` or
 `false`; then we can select the proper rule among `IfTrue` and `IfFalse` to derive
 `⦅ IF b THEN c ELSE c , s ⦆ ⇒ t` from `hyp`

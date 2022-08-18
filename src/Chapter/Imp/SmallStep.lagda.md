@@ -23,7 +23,7 @@ open import Chapter.Imp.BigStep
 -->
 
 An alternative approach to the operational semantics w.r.t. the big-step semantics is 
-the **structured operational semantics** initiated by Plotkin in his femous
+the **structured operational semantics** initiated by Gordon Plotkin in his femous
 *Pisa notes*, and commonly called **small-step** semantics in the literature.
 The idea is to describe the computation of a command out of
 an initial state via a transition relation modeling step by step the execution
@@ -92,7 +92,8 @@ represented by the `SKIP` in the fals branch of the continuation;
 otherwise the value of `b` is `true` and the execution will proceed by executing `c`
 and then by repeating the `WHILE b DO c` command: this exatcly the true branch in the `IF`, namely
 `c :: (WHILE b DO c)`. Incidentally we observe that the continuation in the reducion rule `While`
-is justified w.r.t. the big-step semantics by the equivalence in `lemma-while-if`.
+is justified w.r.t. the big-step semantics by the equivalence in `lemma-while-if` from
+exercise 3 in chapter [Big-step operational semantics]({% link pages/Chapter.BigStep.md %}). 
 
 
 ## Reflexive and transitive closure of one-step reduction
@@ -139,7 +140,6 @@ in the same style of the function `_==⟨_⟩` for equational reasoning:
 ⦅_,_⦆∎ : ∀ c s → ⦅ c , s ⦆ ⟶* ⦅ c , s ⦆
 ⦅ c , s ⦆∎ = ⟶*-refl
 
-
 ⦅_,_⦆⟶⟨_⟩_ : ∀ c s {c' c'' s' s''} →
              ⦅ c , s ⦆ ⟶ ⦅ c' , s' ⦆ →
              ⦅ c' , s' ⦆ ⟶* ⦅ c'' , s'' ⦆ →
@@ -156,9 +156,10 @@ in the same style of the function `_==⟨_⟩` for equational reasoning:
 
 ## Relating big-step and small-step operational semantics
 
-Althought conceptually different, both the big-step and small-step semantics
-model the same notion of execution of IMP programs. This is not to say that
-the relations `_⇒_` and `_⟶_` coincide, as they have different co-domains, that is
+Although conceptually different, both the big-step and the small-step semantics
+model the same notion of execution of IMP programs, namely the same interpreter.
+This is not to say that
+the relations `_⇒_` and `_⟶_` coincide, as they have different co-domains, that are
 the sets of states and of configurations respectively, which is reflected by
 their different types in Agda. Instead we can prove the following
 **Big and Small-step Equivalence Theorem**:
@@ -170,7 +171,7 @@ their different types in Agda. Instead we can prove the following
 
 We proceed by first establishing `theorem-small-big`, namely the if part
 of the Equivalence Theorem above. Its proof uses `lemma-small-big` talling that
-if a configuration reduces in one step to a second one which converges to some
+if a configuration reduces in one step to a second one which converges to a
 state, then the former converges to the same state.
 
 ```
@@ -205,9 +206,9 @@ theorem-small-big (⟶*-incl x hyp) = lemma-small-big x indHyp
 
 Proving the only if part of the Equivalence Theorem is more laborious.
 We begin by estblishing `lemma-big-small` which is the extension to `⟶*` of
-rule `Comp₂` in the definition of  `⟶`, therefore allowing more setps in the
-execution of the `c` in command `c :: c''`. This will be of help in the theorem proof
-when treating the case of sequential composition.
+rule `Comp₂` in the definition of  `⟶`, therefore allowing several setps in the
+execution of the `c` command while executing `c :: c''`.
+This will be of help in the theorem proof when treating the case of sequential composition.
 
 ```
 lemma-big-small : ∀ {c c' c'' s s'} →
@@ -221,7 +222,7 @@ lemma-big-small (⟶*-incl x hyp) =
 
 Then we prove `theorem-small-big` by induction over the derivation
 of `⦅ c , s ⦆ ⇒ t`. In this proof we profit of the macros for reasoning
-about reductions hopefully making the argument more readable.
+about reductions, hopefully making the argument more readable. 
 ```
 theorem-big-small : ∀ {c s t} →
           ⦅ c , s ⦆ ⇒ t → ⦅ c , s ⦆ ⟶* ⦅ SKIP , t ⦆
@@ -265,12 +266,13 @@ the reduction relation `_⟶*_` can model even such diverging executions
 which correspond to infinite reductions, even if we cannot decide when
 this is the case.
 
-As a matter of fact both relations are semi-decideble, but not decidable in
+As a matter of fact both relations are *semi-decidable*, but not *decidable* in
 the sense of computability theory. Semi-decidability follows by the
 fact that both relations are defined by finitary formal systems. Their undecidability
 is consequence of the fact that both are formal descriptions of an interpreter for IMP
-programs. Now, in spite of its rudimentary syntax, IMP is a Turing complete programming
+programs. In fact, in spite of its rudimentary syntax, IMP is a Turing complete programming
 language, even slightly extending the *While* language used in Kfoury, Mall and Arbib's book
 *A Programming Approach to Computability*
-as a substitute for Turing machines. Were either big or small-step relations decidable,
-we had an algorithm deciding the halting problem.
+as an equivalent substitute for Turing machines. Were either big or small-step relations decidable,
+we would have an algorithm deciding the halting problem.
+
