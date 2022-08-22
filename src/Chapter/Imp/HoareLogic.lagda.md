@@ -84,8 +84,13 @@ the triple `[ P ] c [ Q ]` is **valid** if for all `s, t ∈ State` whenever `P`
 
 ## The system of Hoare Logic
 
+The rules of Hoare Logic can be found in chapter 6 of Winskel's book and
+in chapter 12 of Nipkow and Klein's book. A quick reference is
+[Wikipedia - Hoare Logic](https://en.wikipedia.org/wiki/Hoare_logic). 
+We represent the logic system in Agda by the following data type:
+
 ```
-data ⊢_ : Triple → Set₁ where      -- ⊢ is written \|-
+data ⊢_ : Triple → Set₁ where           -- ⊢ is written \|-
 
    H-Skip : ∀ {P}
           --------------------
@@ -110,36 +115,79 @@ data ⊢_ : Triple → Set₁ where      -- ⊢ is written \|-
           → ⊢ [ (λ s → P s ∧ bval b s == true) ] c [ P ]
           → ⊢ [ P ] (WHILE b DO c) [ (λ s → P s ∧ bval b s == false) ]
 
-   H-Conseq : ∀ {P Q P′ Q′ : Ass} {c}
-          → (∀ s → P′ s → P s)
+   H-Conseq : ∀ {P Q P' Q' : Ass} {c}
+          → (∀ s → P' s → P s)
           → ⊢ [ P  ] c [ Q  ]
-          → (∀ s → Q s → Q′ s)
+          → (∀ s → Q s → Q' s)
           --------------------
-          → ⊢ [ P′ ] c [ Q′ ]
+          → ⊢ [ P' ] c [ Q' ]
+```
+Due to our definition of the type `Ass` of assertions, there are some differences
+among some rules above and the original ones. In case of rule `Loc` Hoare's formulation was:
 
+                               -------------------
+                               {P[a/x]} x := a {P}
 
+where `P[a/x]` is the result of the substitution of `x` by `a` in the formula `P`.
+Suppose to extend the  *substitution lemma* in chapter
+[Arithmetic and boolean expressions]({% link pages/Chapter.AexpBexp.md %})
+to the syntax of formule (in case we had such things in our 
+code, which we don't). Then we would have:
+
+                    s ⊨ P[a/x]   if and only if  s [ x ::= aval a s] ⊨ P
+
+where `s ⊨ Q` means that `Q` is true in the standard model of arithmetic if
+the program variables in it are interpreted according to `s`. In our 
+setting `Q` has type `State → Set` and `s ⊨ Q` is written `Q s`; now,
+while it is unclear the meaning of `P[a/x] s`, since actually
+we cannot substitute a variable in a predicate, writing
+`P (s [ x ::= aval a s])` for `s [ x ::= aval a s] ⊨ P` makes perfect sense
+in our formalism. 
+
+There is a last step to make: `P (s[ x ::= aval a s])` has type `Set`,
+but we need a predicate telling that this expression is a function of `s ∈ State`,
+hence the pre-condition of the rule
+`Loc` is the λ-expression `λ s → Q (s [ x ::= aval a s ])`. Similar remarks
+apply to rules `H-If` and `H-While`.
+
+Finally rule `H-Conseq`, for *consequence*, corresponds to the original one:
+
+                       ⊨ P' → P    {P}c{Q}    ⊨ Q → Q'
+                       -------------------------------
+                                  {P'}c{Q'}
+
+Here we must encode the premises `⊨ P' → P` and `⊨ Q → Q'` as predicates.
+In logic the meaning of `⊨ P' → P` is: for all `s` if `s ⊨ P'` then `s ⊨ P`,
+which is immediately encoded into the Agda predicate `∀ s → P' s → P s`, that is
+the first premise in the rule; the premise `⊨ Q → Q'` is treated similarly. 
+
+```
 ---------------------
 -- Soundness Theorem
 ---------------------
 
 lemma-Hoare-inv : ∀ {P : Ass} {s b c t} →
-                  (∀{s' t'} → (P s' ∧ bval b s' == true) → ⦅ c , s' ⦆ ⇒ t' → P t') →
+                  (∀{s' t'} → (P s' ∧ bval b s' == true) →
+                               ⦅ c , s' ⦆ ⇒ t'
+                               → P t') →
                   P s →
                   ⦅ WHILE b DO c , s ⦆ ⇒ t →
                   P t
                   
 lemma-Hoare-inv {P} {s} {b} {c} {.s} hyp1 hyp2 (WhileFalse x) = hyp2
 lemma-Hoare-inv {P} {s} {b} {c} {t} hyp1 hyp2
-                  (WhileTrue {.c} {.b} {.s} {s'} {s''} x hyp3 hyp4) = claim2 
+           (WhileTrue {.c} {.b} {.s} {s'} {s''} x hyp3 hyp4) = claim2 
      where
        claim1 = hyp1 {s} {s'} (hyp2 , x) hyp3               
-       claim2 = lemma-Hoare-inv {P} {s'} {b} {c} {t} (hyp1 {_} {_}) claim1 hyp4
+       claim2 = lemma-Hoare-inv {P} {s'} {b} {c} {t}
+                                  (hyp1 {_} {_}) claim1 hyp4
 
 lemma-Hoare-loop-exit : ∀ {b c s t}
              → ⦅ WHILE b DO c , s ⦆ ⇒ t → bval b t == false 
 
 lemma-Hoare-loop-exit (WhileFalse x) = x
-lemma-Hoare-loop-exit (WhileTrue x hyp1 hyp2) = lemma-Hoare-loop-exit hyp2
+lemma-Hoare-loop-exit (WhileTrue x hyp1 hyp2) =
+                                 lemma-Hoare-loop-exit hyp2
 
 lemma-Hoare-sound : ∀ {P c Q s t} →
              ⊢ [ P ] c [ Q ] → 
@@ -180,7 +228,8 @@ lemma-Hoare-sound {P} {_} {_} {s} {t}
         b-false : bval b t == false
         b-false = lemma-Hoare-loop-exit hyp3
 
-lemma-Hoare-sound {_} {_} {_} {s} {t} (H-Conseq x hyp1 y) hyp2 hyp3 = ths
+lemma-Hoare-sound {_} {_} {_} {s} {t}
+                               (H-Conseq x hyp1 y) hyp2 hyp3 = ths
       where
 
         P₁s = x s hyp2
