@@ -39,7 +39,7 @@ to reason about programs,
 Tony Hoare proposed a logical system to derive formulas
 of the shape `{P} c {Q}` he called a **triple**, made of a command `c`and
 two formulas `P, Q` of first order arithmetic, called **pre-condition** and
-**post-condition** respectivey. The meaning of such triples is
+**post-condition** respectively. The meaning of such triples is
 the so called *partial correctness* criterion:
 
      A command (program) c is partially correct w.r.t the specification
@@ -50,7 +50,7 @@ the so called *partial correctness* criterion:
 Observe that the termination of the execution of `c` is not ensured by the truth of `P`,
 so that when this is not the case the triple `{P} c {Q}` vacuously holds.
 
-A literal formalization of triples and Hoare Logic with Agda involves the definition of
+A direct formalization of triples and Hoare Logic with Agda involves the definition of
 the language of arithmetic and of its semantics. Following the technique in
 chapter 12 of Nipkow and Klein's book, we use instead a shallow embedding of triples into Agda,
 much as we have done for the IMP language until now. Then
@@ -65,7 +65,7 @@ data Triple : Set₁ where
 ```
 *Remark.* In the definition of the data type `Triple` we use square instead of curly braces because
 the latter are reserved for implicit arguments in Agda. A peculiarity of `Triple` is
-its type `Set₁` which is the least *universe* such that `Set == Set₀ : Set₁`. This is forced by Agda since
+its type `Set₁` which is the least *universe* such that `Set = Set₀ : Set₁`. This is forced by Agda since
 the type `Ass = State → Set`, and consequently the type `Set`, occurrs in negative position
 in the type `Ass → Com → Ass → Triple` of `[_]_[_]`.
 
