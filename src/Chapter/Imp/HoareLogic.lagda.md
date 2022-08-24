@@ -195,7 +195,7 @@ where `P` is the **loop invariant**, which is assumed to hold before executing t
 `WHILE b DO c` and to be preserved by the execution of the body `c` whenever
 the condition of the guard `b` is true. From such hypotheses and the hypothesis
 that the execution of `WHILE b DO c` terminates, the rule infers that the post-condition
-of this loop is `P ∧ ¬ b`, where `¬ b` expresses the fact that fora `WHILE` command to
+of this loop is `P ∧ ¬ b`, where `¬ b` expresses the fact that for a `WHILE` command to
 terminate the guard must be eventually false.
 
 In our system the above rule is encoded by
@@ -207,7 +207,7 @@ In our system the above rule is encoded by
  
 To simplify the proof of the theorem, we begin with two lemmas stating respectively
 that under the hypothesis that `[ (λ s → P s ∧ bval b s == true) ] c [ P ]` is valid,
-the assertion `P` is a loop-invariant for `WHILE b DO c` and that if its execution
+the assertion `P` is a loop invariant for `WHILE b DO c` and that if its execution
 terminates in a state `t` then `bval b t == false`.
 
 ```
