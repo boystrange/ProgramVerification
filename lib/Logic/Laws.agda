@@ -2,8 +2,11 @@ module Logic.Laws where
 
 open import Logic
 
-ex-falso : ∀ {A : Set} → ⊥ → A
-ex-falso = λ ()
+ex-falso : {A : Set} -> ⊥ -> A
+ex-falso ()
 
-contrad : ∀ {A : Set} → A → ¬ A → ⊥
-contrad x ¬x = ¬x x
+contradiction : {A : Set} -> A -> ¬ A -> ⊥
+contradiction x ¬x = ¬x x
+
+contraposition : {A B : Set} -> (A -> B) -> ¬ B -> ¬ A
+contraposition f nb a = nb (f a)

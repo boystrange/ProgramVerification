@@ -16,6 +16,9 @@ DEPS  = \
 serve:
 	bundle exec jekyll serve --incremental
 
+build:
+	bundle exec jekyll build
+
 all: $(TARGETS:%=target/%.md)
 
 fake:

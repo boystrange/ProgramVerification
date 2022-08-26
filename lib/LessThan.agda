@@ -3,6 +3,7 @@ module LessThan where
 open import Nat
 open import Nat.Properties
 open import Logic
+open import Logic.Laws
 open import Equality
 
 infix 4 _<=_ _>=_ _<_ _>_
@@ -73,11 +74,11 @@ x > y = y < x
 
 not-lt-ge : {x y : ℕ} -> ¬ (x < y) -> (y <= x)
 not-lt-ge {_}      {zero}   p = le-zero
-not-lt-ge {zero}   {succ _} p = absurd (p (le-succ le-zero))
+not-lt-ge {zero}   {succ _} p = ex-falso (p (le-succ le-zero))
 not-lt-ge {succ _} {succ _} p = le-succ (not-lt-ge λ q -> p (le-succ q))
 
 le-ne-lt : {x y : ℕ} -> x <= y -> x != y -> x < y
-le-ne-lt {.0} {zero} le-zero ne = absurd (ne refl)
+le-ne-lt {.0} {zero} le-zero ne = ex-falso (ne refl)
 le-ne-lt {.0} {succ y} le-zero ne = le-succ le-zero
 le-ne-lt {.(succ _)} {.(succ _)} (le-succ le) ne = le-succ (le-ne-lt le λ { refl → ne refl } )
 
