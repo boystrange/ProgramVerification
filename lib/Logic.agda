@@ -53,14 +53,8 @@ data _∨_ (A B : Set) : Set where
 
 -- NEGATION
 
-absurd : {A : Set} -> ⊥ -> A
-absurd ()
-
 ¬_ : Set -> Set
 ¬_ A = A -> ⊥
-
-contraposition : {A B : Set} -> (A -> B) -> ¬ B -> ¬ A
-contraposition f nb a = nb (f a)
 
 -- DECIDABILITY
 

@@ -9,6 +9,7 @@ open import Nat.Properties using (_=?_)
 open import List
 open import Equality
 open import Logic
+open import Logic.Laws
 
 infixr 7 _+_
 infixr 8 _·_
@@ -99,7 +100,7 @@ eps-complete ([star] p)   = [eps]
 
 δ-complete : {x : Symbol} {xs : Word} {e : Regex} -> (x :: xs) ∈ e -> xs ∈ δ e x
 δ-complete ([sym] x) with x =? x
-... | inl x!=x = absurd (x!=x refl)
+... | inl x!=x = ex-falso (x!=x refl)
 ... | inr refl = [eps]
 δ-complete ([seq] p q append-[]) =
   [plus-r] ([seq] (eps-complete p) (δ-complete q) append-[])

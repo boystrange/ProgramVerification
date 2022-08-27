@@ -17,6 +17,7 @@ import List.Permutation
 import List.Properties
 import List.Sorted
 import Logic
+import Logic.Laws
 import Nat
 import Nat.Properties
 import WellFounded

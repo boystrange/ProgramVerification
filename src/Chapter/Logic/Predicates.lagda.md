@@ -8,6 +8,7 @@ open import Fun
 open import Bool
 open import Nat
 open import Logic
+open import Logic.Laws
 open import Equality
 
 module Chapter.Logic.Predicates where
@@ -268,7 +269,7 @@ m=>p (y , refl) = lem y
 -- EXERCISE 2
 
 not-even : (x : ℕ) -> ¬ Even-i x -> x == 1 + half x * 2
-not-even zero            nev = absurd (nev even-zero)
+not-even zero            nev = ex-falso (nev even-zero)
 not-even (succ zero)     nev = refl
 not-even (succ (succ x)) nev = cong (succ ∘ succ) (not-even x (lem x nev))
   where

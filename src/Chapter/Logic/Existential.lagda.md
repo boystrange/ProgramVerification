@@ -11,6 +11,7 @@ open import Nat.Properties
 open import List
 open import Equality
 open import Logic hiding (fst; snd)
+open import Logic.Laws
 
 module Chapter.Logic.Existential where
 ```
@@ -90,11 +91,11 @@ respectively return the head and the tail of a non-empty list.
 
 ```
 head : {A : Set} -> List⁺ A -> A
-head ([]      , nempty) = absurd (nempty refl)
+head ([]      , nempty) = ex-falso (nempty refl)
 head (x :: _  , _     ) = x
 
 tail : {A : Set} -> List⁺ A -> List A
-tail ([]      , nempty) = absurd (nempty refl)
+tail ([]      , nempty) = ex-falso (nempty refl)
 tail (_ :: xs , _     ) = xs
 ```
 
@@ -138,7 +139,7 @@ cases. With the help of this syntax we define `pred` thus.
 
 ```
 pred : (p : ℕ⁺) -> ∃[ x ] fst p == succ x
-pred (zero   , nzero) = absurd (nzero refl)
+pred (zero   , nzero) = ex-falso (nzero refl)
 pred (succ x , _    ) = x , refl
 ```
 
@@ -220,7 +221,7 @@ both numbers must be `1`.
 
 ```
 *-one : (x y : ℕ) -> x * y == 1 -> x == 1 ∧ y == 1
-*-one (succ x)        zero            eq = absurd (*-zero-neq-one x eq)
+*-one (succ x)        zero            eq = ex-falso (*-zero-neq-one x eq)
 *-one (succ zero)     (succ zero)     eq = refl , refl
 *-one (succ (succ x)) (succ zero)     ()
 *-one (succ (succ x)) (succ (succ y)) ()
@@ -233,7 +234,7 @@ either `x` is `1` or `y` is `0`.
 *-same : (x y : ℕ) -> x * y == y -> x == 1 ∨ y == 0
 *-same x               zero     eq = inr refl
 *-same (succ zero)     (succ y) eq = inl refl
-*-same (succ (succ x)) (succ y) eq = absurd (+-succ-neq (succ-injective eq))
+*-same (succ (succ x)) (succ y) eq = ex-falso (+-succ-neq (succ-injective eq))
 ```
 
 We combine these results to prove that `∣` is antisymmetric.
@@ -315,7 +316,7 @@ succ₂ (x , nzero , none) = succ x , (λ ()) , λ { refl -> nzero refl }
 -- EXERCISE 5
 
 last-view : {A : Set} (xs : List A) -> xs != [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]
-last-view []             nempty = absurd (nempty refl)
+last-view []             nempty = ex-falso (nempty refl)
 last-view (x :: [])      nempty = [] , x , refl
 last-view (x :: z :: xs) nempty with last-view (z :: xs) (λ ())
 ... | ys , y , eq = x :: ys , y , cong (x ::_) eq
