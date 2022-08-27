@@ -276,14 +276,14 @@ The very same proof can be written more concisely by means of the `rewrite` tact
 
 The syntax of bolean expressions is defined by the grammar:
 
-                   Bexp ∋ b, b' ::= B bc | Leq a a' | Not b | And b b'
+                   Bexp ∋ b, b' ::= B bc | Less a a' | Not b | And b b'
 
 where `bc ∈ Bool` and `a, a' ∈ Aexp`.
 
 ```
 data Bexp : Set where
    B : Bool → Bexp             -- boolean constants
-   Leq : Aexp → Aexp → Bexp    -- less than
+   Less : Aexp → Aexp → Bexp    -- less than
    Not : Bexp → Bexp           -- negation
    And : Bexp → Bexp → Bexp    -- conjunction
 ```
@@ -291,14 +291,14 @@ data Bexp : Set where
 Examples:
 ```
 bexp1 : Bexp
-bexp1 = Not (Leq (V X) (N 1))       -- not (X < 1)
+bexp1 = Not (Less (V X) (N 1))       -- not (X < 1)
 
 bexp2 : Bexp
-bexp2 = And bexp1 (Leq (N 0) (V Y)) -- (not (X < 1)) && (0 < Y)
+bexp2 = And bexp1 (Less (N 0) (V Y)) -- (not (X < 1)) && (0 < Y)
 ```
 
 The semantics of expressions in `Bexp` are boolean values; in particular
-the meaning of `Leq a a'` is `true` if `aval a s < aval a's`, `false` otherwiese.
+the meaning of `Less a a'` is `true` if `aval a s < aval a's`, `false` otherwiese.
 Since evaluating expressions in `Aexp` requires a state, in general the meaning of `b ∈ Bexp`
 must depend on a state as well.
 
@@ -311,7 +311,7 @@ succ n <ℕ succ m = n <ℕ m
 
 bval : Bexp → State → Bool
 bval (B x) s       = x
-bval (Leq x y) s   = (aval x s) <ℕ (aval y s)
+bval (Less x y) s   = (aval x s) <ℕ (aval y s)
 bval (Not b) s     = not (bval b s)
 bval (And b1 b2) s = bval b1 s && bval b2 s
 ```
@@ -373,7 +373,7 @@ lemma-bval-tot b s with bval b s
 
 _[_/_]B : Bexp → Aexp → Vname → Bexp
 B c [ a / x ]B       = B c
-Leq a1 a2 [ a / x ]B = Leq (a1 [ a / x ]) (a2 [ a / x ])
+Less a1 a2 [ a / x ]B = Less (a1 [ a / x ]) (a2 [ a / x ])
 Not b [ a / x ]B     = Not (b [ a / x ]B)
 And b1 b2 [ a / x ]B = And (b1 [ a / x ]B) (b2 [ a / x ]B)
 
@@ -383,13 +383,13 @@ lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) →
                      bval (b [ a / x ]B) s == bval b (s [ x ::= aval a s ])
                      
 lemma-subst-bexp (B c) a x s = refl
-lemma-subst-bexp (Leq a1 a2) a x s =
+lemma-subst-bexp (Less a1 a2) a x s =
     begin
-       bval (Leq a1 a2 [ a / x ]B) s                        ==⟨⟩
-       bval (Leq (a1 [ a / x ]) (a2 [ a / x ])) s           ==⟨⟩
+       bval (Less a1 a2 [ a / x ]B) s                        ==⟨⟩
+       bval (Less (a1 [ a / x ]) (a2 [ a / x ])) s           ==⟨⟩
        (aval  (a1 [ a / x ]) s) <ℕ (aval  (a2 [ a / x ]) s) ==⟨ cong2 _<ℕ_ lm1 lm2 ⟩
        (aval a1 s') <ℕ (aval a2 s')                         ==⟨⟩
-       bval (Leq a1 a2) s'
+       bval (Less a1 a2) s'
     end
     where
          s' : State
