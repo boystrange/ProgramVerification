@@ -1,5 +1,5 @@
 ---
-title: "Hoare Logic for program verification"
+title: "Hoare Logic for verification of IMP programs" 
 ---
 
 <!--
@@ -165,7 +165,30 @@ Finally rule `H-Conseq`, for *consequence*, corresponds to the original rule:
 Here we must encode the premises `|= P' -> P` and `|= Q -> Q'` as predicates.
 In logic the meaning of `|= P' -> P` is: for all `s` if `s |= P'` then `s |= P`,
 which is immediately encoded into the Agda predicate `∀ s -> P' s -> P s`, that is
-the first premise in the rule; the premise `|= Q -> Q'` is treated similarly. 
+the first premise in the rule; the premise `|= Q -> Q'` is treated similarly.
+
+## Derived rules
+
+```
+H-Strengthening : ∀ {P Q P′ : Assn} {c}
+            -> (∀ s -> P′ s -> P s)
+            -> |- [ P  ] c [ Q  ]
+            ------------------------
+            -> |- [ P′ ] c [ Q ]
+
+H-Strengthening {P}{Q}{P′}{c} hyp1 hyp2 =
+            H-Conseq {P}{Q}{P′}{Q}{c} hyp1 hyp2 (λ s -> λ x -> x)
+
+
+H-Weakening :  ∀ {P Q Q′ : Assn} {c}
+          -> |- [ P  ] c [ Q  ]
+          -> (∀ s -> Q s -> Q′ s)
+          ------------------------
+          -> |- [ P ] c [ Q′ ]
+
+H-Weakening {P}{Q}{Q′}{c} hyp1 hyp2 =
+            H-Conseq {P}{Q}{P}{Q′}{c} (λ s -> λ x -> x) hyp1 hyp2
+```
 
 ## Examples
 
@@ -200,13 +223,13 @@ pr0-0 = H-Loc {V Z ==' N 1} {V X} {Z}
 
 ### Composition
 
-The next example is the proof of `|- {X = 1} Z := X ; Y := Z {Y = 1}` where `;` is written `::` in our setting:
+The next example is the proof of `|- {X = 1} Z := X ; Y := Z {Y = 1}` where `;` is written `::` in our formalism:
 
                        |-  [ V X ==' N 1 ]
                            (Z := V X) :: (Y := V Z)
                            [ V Y ==' N 1 ]
 
-This case can be treated by applying the composition rule `H-Comp` to the proofs `pr0-0` and to
+This case can be treated by applying the composition rule `H-Comp` to `pr0-0` and `pr0-1` below:
 ```
 pr0-1 : |- [ V Z ==' N 1 ]
            Y := V Z
@@ -227,3 +250,114 @@ pr0-2 = H-Comp {V X ==' N 1}
               {Y := V Z}
               pr0-0 pr0-1              
 ```
+
+### Selection
+
+Let's consider the triple `{⊤} IF X < Y THEN Z := Y ELSE Z := X {Z = max(X,Y)}`, where `⊤` is the trivial pre-condition
+which is true of any state. To formalize this triple in our setting, we first introduce the trivial assertion `⊤' ∈ Assn`
+that is true of any `s ∈ State`,
+and the predicate `max' a₁ a₂ a₃ ∈ Assn` with `a₁ a₂ a₃ ∈ Aexp` that is true of `s ∈ State`
+if `aval a₃ s ∈ ℕ` is the maximum among `aval a₁ s` and `aval a₂ s`: 
+```
+⊤' : Assn
+⊤' s = ⊤
+
+max' : Aexp -> Aexp -> Aexp -> Assn
+max' a₁ a₂ a₃ = λ s -> max (aval a₁ s) (aval a₂ s) == aval a₃ s
+
+```
+where `max : ℕ -> ℕ -> ℕ` is the maximum function defined in the library `Nat.agda`.
+Now we can express the goal of our proof as follows:
+
+                  |- [ ⊤' ]
+                     IF (Less (V X) (V Y)) THEN (Z := V Y) ELSE (Z := V X)
+                     [ max' (V X) (V Y) (V Z) ]
+ 
+Here we expect to use rule `H-If` whose premises are:
+
+              H1  |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ]
+                     Z := V Y
+                     [ max' (V X) (V Y) (V Z) ]
+
+              H2  |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == false)) ]
+                     Z := V X
+                     [ max' (V X) (V Y) (V Z) ]
+
+Toward proving the first hypothesis `H1` let us show that if `|- {max(X, Y) = Y} Z := Y {max(X, Y) = Z}`:
+```
+pr1-1 : |- [ max' (V X) (V Y) (V Y) ]
+           Z := V Y
+           [ max' (V X) (V Y) (V Z) ]
+           
+pr1-1 = H-Loc {max' (V X) (V Y) (V Z)} {V Y} {Z} 
+```
+Next we show that if  `X < Y` and we assign `Z := Y` then `max(X, Y) = Z`:  
+
+```
+less-max : ∀(n m : ℕ) -> n <ℕ m == true -> max n m == m
+ 
+less-max zero m hyp = refl
+less-max (succ n) (succ m) hyp = cong succ (less-max n m hyp)
+
+less-max' : ∀(a a' : Aexp) -> (s : State) ->
+               bval (Less a a') s == true -> max' a a' a' s
+               
+less-max' a a' s hyp = less-max (aval a s) (aval a' s) hyp
+
+pr1-2 : ∀ s -> (⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ->
+               max' (V X) (V Y) (V Y) s
+               
+pr1-2 s (x , y) = less-max' (V X) (V Y) s y
+```
+In `pr1-2` we have considered the hypothesis `∀ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true` instead of
+its equivalent (and more natural) `∀ s -> (bval (Less (V X) (V Y)) s == true` because it is exactly
+the pre-condition of `H1` we are trying to prove; on the other
+hand the consequence `max' (V X) (V Y) (V Y) s` of `pr1-2` matches with the pre-condition of `pr1-1`, where
+the arbitrary `s` is omitted because we have just the predicate `max' (V X) (V Y) (V Y)`. This suggests
+that to conclude `H1` we can use the rule `H-Strengthening` applied to `pr1-2` and `pr1-1`: 
+```
+H1 : |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ]
+        Z := V Y
+        [ max' (V X) (V Y) (V Z) ]
+           
+H1 = H-Strengthening pr1-2 pr1-1
+```
+The proof of `H2` follows a similar pattern, this time considering the case when `bval (Less (V X) (V Y)) s == false`:
+```
+geq-max : ∀(n m : ℕ) -> n <ℕ m == false -> max n m == n
+
+geq-max zero zero hyp = refl
+geq-max (succ n) zero hyp = refl
+geq-max (succ n) (succ m) hyp = cong succ (geq-max n m hyp)
+
+geq-max' : ∀(a a' : Aexp) -> (s : State) ->
+           bval (Less a a') s == false -> max' a a' a s
+
+geq-max' a a' s hyp = geq-max (aval a s) (aval a' s) hyp
+
+pr1-3 : |- [ max' (V X) (V Y) (V X) ]
+           Z := V X
+           [ max' (V X) (V Y) (V Z) ]
+           
+pr1-3 = H-Loc {max' (V X) (V Y) (V Z)} {V X} {Z}
+
+pr1-4 : ∀ s -> (⊤' s ∧ (bval (Less (V X) (V Y)) s == false)) ->
+             max' (V X) (V Y) (V X) s
+             
+pr1-4 s (x , y) = geq-max' (V X) (V Y) s y
+
+H2 : |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == false)) ]
+        Z := V X
+        [ max' (V X) (V Y) (V Z) ]
+           
+H2 = H-Strengthening pr1-4 pr1-3
+```
+Evenually we apply rule `H-If` to `H1` and `H2`, and we conclude:
+```
+pr1-5 : |- [ ⊤' ]
+          IF (Less (V X) (V Y)) THEN (Z := V Y) ELSE (Z := V X)
+          [ max' (V X) (V Y) (V Z) ]
+
+pr1-5 = H-If H1 H2
+```
+
