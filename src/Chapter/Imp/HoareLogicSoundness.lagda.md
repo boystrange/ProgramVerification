@@ -115,7 +115,6 @@ lemma-Hoare-sound : ∀ {P c Q s t} ->
              P s -> 
              ⦅ c , s ⦆ ⇒ t -> 
              Q t
-
 ```
 To facilitate the understanding of the proof we
 intersperse the cases with some comments drown from the interactive construction of the proof itself.
@@ -130,7 +129,6 @@ and then we hit `C-c C-c` twice splitting `hyp1 :  |- [ P ] c [ Q ]` and
 lemma-Hoare-sound H-Skip hyp2 Skip = hyp2
 
 lemma-Hoare-sound H-Loc hyp2 Loc = hyp2
-
 ```
 In cases of `H-Skip` and `H-Loc` the hypothesis `hyp2` in
 the left-hand sides has the types `P s` and
@@ -139,12 +137,10 @@ These are the same as the types of the respective right-hand sides, hence they
 are both authomatically obtained typing `C-c C-a` while putting the cursor in the holes.
  
 ```
-
 lemma-Hoare-sound (H-Comp hyp1 hyp4) hyp2 (Comp hyp3 hyp5) = IH2
       where
          IH1 = lemma-Hoare-sound hyp1 hyp2 hyp3
          IH2 = lemma-Hoare-sound hyp4 IH1 hyp5
-
 ```
 In case of `H-Comp`, typing
 
@@ -208,7 +204,6 @@ The case `(IfFalse y hyp3) : ⦅ IF b THEN c₁ ELSE c₂ , s ⦆ ⇒ t`, where
 hypothesis `IH = lemma-Hoare-sound hyp4`.
 
 ```
-
 lemma-Hoare-sound {P} {_} {_} {s} {t}
                   (H-While {_} {b} hyp1) hyp2 hyp3 = Pt , b-false
       where
@@ -218,7 +213,6 @@ lemma-Hoare-sound {P} {_} {_} {s} {t}
 
         b-false : bval b t == false
         b-false = lemma-Hoare-loop-exit hyp3
-
 ```
 
 Case `H-While` is the most interesting one. Starting with
@@ -250,7 +244,6 @@ On the other hand applying `lemma-Hoare-loop-exit` to `hyp3 : ⦅ WHILE b DO c ,
 we obtain a proof `b-false : bval b t == false` which ends the proof of this case. 
 
 ```
-
 lemma-Hoare-sound {_} {_} {_} {s} {t}
                                (H-Conseq x hyp1 y) hyp2 hyp3 = ths
       where
@@ -288,4 +281,4 @@ are extensionally equivalent, that is they yield the same values for the same ar
 However the extensionality principle
 is not part of the Agda logic, rather it is just compatible with it and must be postulated for
 use in proofs.
-
+ 
