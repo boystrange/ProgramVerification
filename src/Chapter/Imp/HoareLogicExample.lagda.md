@@ -24,93 +24,118 @@ open import Chapter.Imp.HoareLogic
 ```
 -->
 
+Consider the program `sum-prog` computing the sum of two natural numbers by iterating the successor: 
+ 
+                          Z := X ;
+                          I := 0 ;
+                          WHILE I < Y DO
+                                Z := Z + 1 ;
+                                I := I + 1
+
+Then we want to show that
+
+                              |- {⊤} sum-prog {Z = X + Y}
+
+
+To begin with, we encode the program into the IMP syntax:
 ```
-{-
-
-Consider the program computing the sum of two natural numbers by iterating the successor:
-
-       sum-succ =
-                Z := X ;
-                I := 0 ;
-                WHILE I < Y DO
-                      Z := Z + 1 ;
-                      I := I + 1
-
-Then we show that |- {⊤} com1 {Z = X + Y}.
-
--}
-
 I : Vname
 I = Vn 3
 
 -- Initialization: Z := X ; I := 0
 
-sum-succ-init : Com
-sum-succ-init = (Z := V X) :: (I := N 0)
+sum-prog-init : Com
+sum-prog-init = (Z := V X) :: (I := N 0)
 
 -- Body:           Z := Z + 1 ; I := I + 1
 
-sum-succ-body : Com
-sum-succ-body = (Z := (Plus (V Z) (N 1))) ::
+sum-prog-body : Com
+sum-prog-body = (Z := (Plus (V Z) (N 1))) ::
                (I := (Plus (V I) (N 1)))
 
--- Complete program computing X + Y by iterating successor
+-- Complete program computing X + Y by iterating the successor
 
-sum-succ : Com
-sum-succ = sum-succ-init ::
+sum-prog : Com
+sum-prog = sum-prog-init ::
            (WHILE (Less (V I) (V Y)) DO
-                 sum-succ-body)
+                 sum-prog-body)
 
--- Explicit version
-
-sumSuc : Com
-sumSuc = ((Z := V X) :: (I := N 0)) ::
-          (WHILE (Less (V I) (V Y)) DO
-                   (
-                        (Z := (Plus (V Z) (N 1))) ::
-                        (I := (Plus (V I) (N 1)))
-                   )
-          )
+```
 
 
--- Goal: |- [ ⊤' ] sum-suc [ Plus' (V Z) (V X) (V Y) ]
+### Initialization
 
--- Proof of: |- {⊤} sum-succ-init {Z == X ∧ I == 0}
+To improve readability, we introduce the following abbreviations of assertions:
 
+```
+X=X : Assn
+X=X =  (V X ==' V X)
 
-pr2-0 : |- [ (V X ==' V X) ∧' (N 0 ==' N 0) ]
-           (Z := V X)
-           [ (V Z ==' V X) ∧' (N 0 ==' N 0) ]
-           
-pr2-0 = H-Loc {(V Z ==' V X) ∧' (N 0 ==' N 0)} {V X} {Z}
-
-pr2-1 : |- [ (V Z ==' V X) ∧' (N 0 ==' N 0) ]
-           (I := N 0)
-           [ (V Z ==' V X) ∧' (V I ==' N 0) ]
-           
-pr2-1 = H-Loc {(V Z ==' V X) ∧' (V I ==' N 0)} {N 0} {I}
-
-pr2-2 : |- [ (V X ==' V X) ∧' (N 0 ==' N 0) ]
-           sum-succ-init
-           [ (V Z ==' V X) ∧' (V I ==' N 0) ]
-
-pr2-2 = H-Comp pr2-0 pr2-1
-
-impl2-0 : ∀ s -> ⊤' s -> ((V X ==' V X) ∧' (N 0 ==' N 0)) s
-impl2-0 _ _ = refl , refl
+0=0 : Assn
+0=0 = (N 0 ==' N 0)
 
 Z=X : Assn
 Z=X = (V Z ==' V X)
 
 I=0 : Assn
 I=0 = (V I ==' N 0)
+```
+Then we prove
 
-pr2-3 : |- [ ⊤' ]
-           ((Z := V X) :: (I := N 0))
+           [ X=X ∧' 0=0 ]
+           (Z := V X) :: (I := N 0)
            [ Z=X ∧' I=0 ]
 
-pr2-3 = H-Str impl2-0 pr2-2
+as follows. First we apply rule `H-Loc` twice:
 
+```
+pr2-0 : |- [ X=X ∧' 0=0 ]
+           (Z := V X)
+           [ Z=X ∧' 0=0 ]
+           
+pr2-0 = H-Loc {Z=X ∧' 0=0} {V X} {Z}
+
+pr2-1 : |- [ Z=X ∧' 0=0 ]
+           (I := N 0)
+           [ Z=X ∧' I=0 ]
+           
+pr2-1 = H-Loc {Z=X ∧' I=0} {N 0} {I}
+```
+Then we combine these proofs using rule `H-Comp`:
+```
+pr2-2 : |- [ X=X ∧' 0=0 ]
+           (Z := V X) :: (I := N 0)
+           [ Z=X ∧' I=0 ]
+
+pr2-2 = H-Comp pr2-0 pr2-1
+```
+Since the pre-condition `X=X ∧' 0=0` is trivially true of any state,
+it is a logical consequence of the trivial assertion `⊤'`:
+```
+⊤->X=X∧I=0 : ∀ s -> ⊤' s -> (X=X ∧' 0=0) s
+⊤->X=X∧I=0 _ _ = refl , refl
+```
+Combining this implication with the proof `pr2-2`, by rule `H-Str` we get: 
+```
+pr2-3 : |- [ ⊤' ]
+           (Z := V X) :: (I := N 0)
+           [ Z=X ∧' I=0 ]
+
+pr2-3 = H-Str ⊤->X=X∧I=0 pr2-2
+```
+
+### Loop
+
+The central part of the proof is devising the appropriate **loop-invariant**; it should
+represent a property of the state telling how at each iteration it approximates
+the final state and hence the result of the whole computation. For this purpose we choose
+
+                                (Z = X + I) ∧ (I ≤ Y)
+
+  
+
+  
+```
 Plus' : Aexp -> Aexp -> Aexp -> Assn
 Plus' a₁ a₂ a₃ = λ s -> (aval a₁ s) == (aval a₂ s) + (aval a₃ s)
 
@@ -126,10 +151,10 @@ a₁ <=' a₂ = λ s -> (aval a₁ s) <= (aval a₂ s)
 _<'_ : Aexp -> Aexp -> Assn
 a₁ <' a₂ = λ s -> (aval a₁ s) <ℕ (aval a₂ s) == true
 
-sum-succ-inv : Assn
-sum-succ-inv = (Plus' (V Z) (V X) (V I)) ∧' ((V I) <=' (V Y))
+sum-prog-inv : Assn
+sum-prog-inv = (Plus' (V Z) (V X) (V I)) ∧' ((V I) <=' (V Y))
 
--- Proof of: |- {(Z = X + I) ∧ (I ≤ Y) ∧ I < Y} sum-succ-body {(Z = X + I) ∧ (I ≤ Y)}
+-- Proof of: |- {(Z = X + I) ∧ (I ≤ Y) ∧ I < Y} sum-prog-body {(Z = X + I) ∧ (I ≤ Y)}
 
 Z+1=X+I+1 : Assn
 Z+1=X+I+1 = Plus' (Plus (V Z) (N 1)) (V X) (Plus (V I) (N 1))
@@ -162,7 +187,7 @@ pr2-5 : |- [ Z=X+I+1 ∧' I+1<Y+1 ]
 pr2-5 = H-Loc {Z=X+I ∧' I<Y+1} {Plus (V I) (N 1)} {I}
 
 pr2-6 : |- [ Z+1=X+I+1 ∧' I+1<Y+1 ]
-            sum-succ-body
+            sum-prog-body
            [ Z=X+I ∧' I<Y+1 ]
 
 pr2-6 = H-Comp pr2-4 pr2-5
@@ -263,7 +288,7 @@ Z=X+I∧I<Y+1->Z=X+I∧I<=Y s (x , y) = x , h2
     h2 = lemma-<-+-1-><= h1
 
 pr2-7 : |- [ (Z=X+I ∧' I<=Y) ∧' I<Y ]
-            sum-succ-body
+            sum-prog-body
            [ (Z=X+I ∧' I<=Y) ]
            
 pr2-7 = H-Conseq Z=X+I∧I<=Y∧I<Y->Z+1=X+I+1∧I+1<Y+1
@@ -275,7 +300,7 @@ pr2-7 = H-Conseq Z=X+I∧I<=Y∧I<Y->Z+1=X+I+1∧I+1<Y+1
 
 pr2-8 : |- [ Z=X+I ∧' I<=Y ]
             (WHILE (Less (V I) (V Y)) DO
-                 sum-succ-body)
+                 sum-prog-body)
             [ (Z=X+I ∧' I<=Y) ∧' ¬I<Y ]
 
 pr2-8 = H-While pr2-7
@@ -313,7 +338,7 @@ Z=X+I∧I<=Y∧¬I<Y->Z=X+Y s ((x , y) , z) = ths
 
 pr2-9 : |- [ Z=X+I ∧' I<=Y ]
             (WHILE (Less (V I) (V Y)) DO
-                 sum-succ-body)
+                 sum-prog-body)
             [ Z=X+Y ]
             
 pr2-9 = H-While' pr2-7 Z=X+I∧I<=Y∧¬I<Y->Z=X+Y
@@ -344,7 +369,7 @@ pr2-3' : |- [ ⊤' ]
 pr2-3' = H-Weak pr2-3 Z=X∧I=0->Z=X+I
 
 pr2-10 : |- [ ⊤' ]
-            sum-succ
+            sum-prog
             [ Z=X+Y ]
 
 pr2-10 = H-Comp pr2-3' pr2-9
