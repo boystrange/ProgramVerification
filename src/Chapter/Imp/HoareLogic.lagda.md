@@ -37,10 +37,10 @@ albeit possible in principle, is quite awkward in practice.
 In the late 60s, building on Robert Floyd's idea to decorate flowcharts with logical formulas
 to reason about programs,
 Tony Hoare proposed a logical system to derive formulas
-of the shape `{P} c {Q}` he called a **triple**, made of a command `c`and
+of the shape `{P} c {Q}` he called **triples**. A triple is made of a command `c` and
 two formulas `P, Q` of first order arithmetic, called **pre-condition** and
 **post-condition** respectively. The meaning of such triples is
-the so called *partial correctness* criterion:
+the so called **partial correctness** criterion:
 
      A command (program) c is partially correct w.r.t the specification
      with pre-condition P and post-condition Q if whenever P is true
@@ -52,7 +52,7 @@ so that when this is not the case the triple `{P} c {Q}` vacuously holds.
 
 A direct formalization of triples and Hoare Logic with Agda involves the definition of
 the language of arithmetic and of its semantics. Following the technique in
-chapter 12 of Nipkow and Klein's book, we use instead a shallow embedding of triples into Agda,
+chapter 12 of Nipkow and Klein's book, we use instead a *shallow embedding* of triples into Agda,
 much as we have done for the IMP language until now. Then
 pre and post-conditions, named **assertions** in Hoare's words, are formalized as Agda
 predicates of states:
@@ -74,19 +74,11 @@ referred to [Agda's documentation](https://agda.readthedocs.io/en/latest/languag
 Luckily, the occurrences of `Set₁` here and in the definition of the inference system below can be
 naively identified with `Set` without missing the content of the chapter.
 
-Translating the partial correctness criterion into a definition, we say that
-the triple `[ P ] c [ Q ]` is **valid** if for all `s, t ∈ State` whenever `P` holds of `s` and
-`⦅ c , s ⦆` converges to `t`, `Q` holds of `t`. Formally, we define the following predicate: 
-
-```
-|=_ : Triple -> Set
-|= [ P ] c [ Q ] = ∀ {s t} -> P s -> ⦅ c , s ⦆ ⇒ t -> Q t
-```
 
 ## The system of Hoare Logic
 
-Hoare Logic is an axiomatization of the notion of valid triple, consisting of
-a formal system of inference rules whose judgments are triples plus
+Hoare Logic is an axiomatization of the notion of **partially correct program**, 
+consisting of a formal system of inference rules whose judgments are triples plus
 logical formulas to make arithmetics available when reasoning about IMP
 programs. The original formulation of the system
 can be found e.g. in chapter 6 of Winskel's book and
@@ -150,7 +142,7 @@ while it is unclear how to define `P[a/x] s` since
 we cannot substitute a variable in a predicate, writing
 `P (s [ x ::= aval a s])` for `s [ x ::= aval a s] |= P` makes perfect sense
 in our formalism. 
-
+ 
 There is a last step to take: `P (s[ x ::= aval a s])` has type `Set`,
 but we need a predicate whose value is this expression as a function of `s ∈ State`,
 hence the pre-condition of the rule `H-Loc` is the λ-expression
@@ -170,24 +162,31 @@ the first premise in the rule; the premise `|= Q -> Q'` is treated similarly.
 ## Derived rules
 
 ```
-H-Strengthening : ∀ {P Q P′ : Assn} {c}
+H-Str :    ∀ {P Q P′ : Assn} {c}
             -> (∀ s -> P′ s -> P s)
             -> |- [ P  ] c [ Q  ]
             ------------------------
             -> |- [ P′ ] c [ Q ]
 
-H-Strengthening {P}{Q}{P′}{c} hyp1 hyp2 =
+H-Str {P}{Q}{P′}{c} hyp1 hyp2 =
             H-Conseq {P}{Q}{P′}{Q}{c} hyp1 hyp2 (λ s -> λ x -> x)
 
 
-H-Weakening :  ∀ {P Q Q′ : Assn} {c}
+H-Weak :  ∀ {P Q Q′ : Assn} {c}
           -> |- [ P  ] c [ Q  ]
           -> (∀ s -> Q s -> Q′ s)
           ------------------------
           -> |- [ P ] c [ Q′ ]
 
-H-Weakening {P}{Q}{Q′}{c} hyp1 hyp2 =
+H-Weak {P}{Q}{Q′}{c} hyp1 hyp2 =
             H-Conseq {P}{Q}{P}{Q′}{c} (λ s -> λ x -> x) hyp1 hyp2
+
+H-While' :  ∀ {P b c Q}
+          -> |- [ (λ s -> P s ∧ bval b s == true) ] c [ P ]
+          -> (∀ s -> (P s ∧ bval b s == false) -> Q s)
+          -> |- [ P ] (WHILE b DO c) [ Q ]
+
+H-While' hyp1 hyp2 = H-Weak (H-While hyp1) hyp2
 ```
 
 ## Examples
@@ -264,7 +263,6 @@ if `aval a₃ s ∈ ℕ` is the maximum among `aval a₁ s` and `aval a₂ s`:
 
 max' : Aexp -> Aexp -> Aexp -> Assn
 max' a₁ a₂ a₃ = λ s -> max (aval a₁ s) (aval a₂ s) == aval a₃ s
-
 ```
 where `max : ℕ -> ℕ -> ℕ` is the maximum function defined in the library `Nat.agda`.
 Now we can express the goal of our proof as follows:
@@ -314,13 +312,13 @@ its equivalent (and more natural) `∀ s -> (bval (Less (V X) (V Y)) s == true` 
 the pre-condition of `H1` we are trying to prove; on the other
 hand the consequence `max' (V X) (V Y) (V Y) s` of `pr1-2` matches with the pre-condition of `pr1-1`, where
 the arbitrary `s` is omitted because we have just the predicate `max' (V X) (V Y) (V Y)`. This suggests
-that to conclude `H1` we can use the rule `H-Strengthening` applied to `pr1-2` and `pr1-1`: 
+that to conclude `H1` we can use the rule `H-Str` applied to `pr1-2` and `pr1-1`: 
 ```
 H1 : |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ]
         Z := V Y
         [ max' (V X) (V Y) (V Z) ]
            
-H1 = H-Strengthening pr1-2 pr1-1
+H1 = H-Str pr1-2 pr1-1
 ```
 The proof of `H2` follows a similar pattern, this time considering the case when `bval (Less (V X) (V Y)) s == false`:
 ```
@@ -350,7 +348,7 @@ H2 : |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == false)) ]
         Z := V X
         [ max' (V X) (V Y) (V Z) ]
            
-H2 = H-Strengthening pr1-4 pr1-3
+H2 = H-Str pr1-4 pr1-3
 ```
 Evenually we apply rule `H-If` to `H1` and `H2`, and we conclude:
 ```
@@ -361,3 +359,58 @@ pr1-5 : |- [ ⊤' ]
 pr1-5 = H-If H1 H2
 ```
 
+## Exercise 
+
+To abbreviate some assertions, we add the following "conjunction" operator:
+```
+_∧'_ : Assn -> Assn -> Assn
+P ∧' Q = λ s -> P s ∧ Q s
+```
+Then prove:
+
+              |- [ (V X ==' N 1) ∧' (V Y ==' N 2) ]
+                 (Z := V X) :: ((X := V Y) :: (Y := V Z))
+                 [ (V Y ==' N 1) ∧' (V X ==' N 2) ]
+
+
+```
+pr1 : |- [ (V Z ==' N 1) ∧' (V X ==' N 2) ]
+         Y := V Z
+         [ (V Y ==' N 1) ∧' (V X ==' N 2) ]
+         
+pr1 = H-Loc { (V Y ==' N 1) ∧' (V X ==' N 2) } {V Z} {Y}
+
+pr2 : |- [ (V Z ==' N 1) ∧' (V Y ==' N 2) ]
+         X := V Y
+        [ (V Z ==' N 1) ∧' (V X ==' N 2) ]
+         
+pr2 =  H-Loc { (V Z ==' N 1) ∧' (V X ==' N 2) } {V Y} {X} 
+
+pr3 : |- [ (V X ==' N 1) ∧' (V Y ==' N 2) ]
+         Z := V X
+        [ (V Z ==' N 1) ∧' (V Y ==' N 2) ]
+        
+pr3 =  H-Loc { (V Z ==' N 1) ∧' (V Y ==' N 2) } {V X} {Z}
+
+pr4 : |- [ (V Z ==' N 1) ∧' (V Y ==' N 2) ]
+        (X := V Y) :: (Y := V Z)
+        [ (V Y ==' N 1) ∧' (V X ==' N 2) ]
+        
+pr4 = H-Comp { (V Z ==' N 1) ∧' (V Y ==' N 2) }
+            { (V Z ==' N 1) ∧' (V X ==' N 2) }
+            { (V Y ==' N 1) ∧' (V X ==' N 2) }
+            { X := V Y } { Y := V Z }
+            pr2 pr1
+
+pr5 : |- [ (V X ==' N 1) ∧' (V Y ==' N 2) ]
+        (Z := V X) :: ((X := V Y) :: (Y := V Z))
+        [ (V Y ==' N 1) ∧' (V X ==' N 2) ]
+
+pr5 = H-Comp {(V X ==' N 1) ∧' (V Y ==' N 2)}
+             {(V Z ==' N 1) ∧' (V Y ==' N 2)}
+             {(V Y ==' N 1) ∧' (V X ==' N 2)}
+             {Z := V X}
+             {(X := V Y) :: (Y := V Z)}
+             pr3 pr4
+```
+{:.solution} 

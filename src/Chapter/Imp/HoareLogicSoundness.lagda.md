@@ -23,10 +23,17 @@ open import Chapter.Imp.HoareLogic
 ```
 -->
 
+Formalizing the partial correctness criterion into a definition, we say that
+the triple `[ P ] c [ Q ]` is **valid** if for all `s, t ∈ State` whenever `P` holds of `s` and
+`⦅ c , s ⦆` converges to `t`, `Q` holds of `t`. Formally, we define the following predicate: 
 
+```
+|=_ : Triple -> Set
+|= [ P ] c [ Q ] = ∀ {s t} -> P s -> ⦅ c , s ⦆ ⇒ t -> Q t
+```
 
 Hoare Logic is intended to provide a tool to establish when a triple is valid.
-To ensure that this is the case, we show that the system is *sound*  i.e. that only
+To ensure that this is the case, we show that the system is **sound**  i.e. that only
 valid triples are derivable. This is the content of `theorem-Hoare-sound` claiming the
 implication
 
