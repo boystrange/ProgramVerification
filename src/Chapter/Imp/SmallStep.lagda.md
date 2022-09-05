@@ -92,7 +92,7 @@ otherwise the value of `b` is `true` and the execution will proceed by executing
 and then by repeating the `WHILE b DO c` command: this exatcly the true branch in the `IF`, namely
 `c :: (WHILE b DO c)`. Incidentally we observe that the continuation in the reducion rule `While`
 is justified w.r.t. the big-step semantics by the equivalence in `lemma-while-if` from
-exercise 3 in chapter [Big-step operational semantics]({% link pages/Chapter.BigStep.md %}). 
+exercise 3 in chapter [Big-step operational semantics]({% link pages/Chapter.Imp.BigStep.md %}). 
 
 
 ## Reflexive and transitive closure of one-step reduction
