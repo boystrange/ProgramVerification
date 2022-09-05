@@ -24,13 +24,13 @@ open import Chapter.Imp.HoareLogic
 ```
 -->
 
-Consider the program `sum-prog` computing the sum of two natural numbers by iterating the successor: 
+Consider the program `sum-prog` computing the sum of two natural numbers by iterating the successor:
  
-                          Z := X ;
-                          I := 0 ;
-                          WHILE I < Y DO
-                                Z := Z + 1 ;
-                                I := I + 1
+                                 Z := X ;
+                                 I := 0 ;
+                                 WHILE I < Y DO
+                                       Z := Z + 1 ;
+                                       I := I + 1
 
 Then we want to show that
 
@@ -51,7 +51,7 @@ sum-prog-init = (Z := V X) :: (I := N 0)
 
 sum-prog-body : Com
 sum-prog-body = (Z := (Plus (V Z) (N 1))) ::
-               (I := (Plus (V I) (N 1)))
+                (I := (Plus (V I) (N 1)))
 
 -- Complete program computing X + Y by iterating the successor
 
@@ -86,7 +86,7 @@ Then we prove
            (Z := V X) :: (I := N 0)
            [ Z=X ∧' I=0 ]
 
-as follows. First we apply rule `H-Loc` twice:
+First, we apply rule `H-Loc` twice:
 
 ```
 pr2-0 : |- [ X=X ∧' 0=0 ]
@@ -127,35 +127,52 @@ pr2-3 = H-Str ⊤->X=X∧I=0 pr2-2
 ### Loop
 
 The central part of the proof is devising the appropriate **loop-invariant**; it should
-represent a property of the state telling how at each iteration it approximates
-the final state and hence the result of the whole computation. For this purpose we choose
+represent a property of the state telling how it approximates 
+the final state  at each iteration and hence the result of the whole computation.
+For this purpose we choose
 
                                 (Z = X + I) ∧ (I ≤ Y)
 
-  
-
+To encode this assertion, as well as the others that will be involved in the proof, 
+we introduce three new predicates:
   
 ```
 Plus' : Aexp -> Aexp -> Aexp -> Assn
 Plus' a₁ a₂ a₃ = λ s -> (aval a₁ s) == (aval a₂ s) + (aval a₃ s)
-
-Z=X+I : Assn
-Z=X+I = Plus' (V Z) (V X) (V I)
-
--- Loop invariant:  (Z = X + I) ∧ (I ≤ Y)
-
 
 _<='_ : Aexp -> Aexp -> Assn
 a₁ <=' a₂ = λ s -> (aval a₁ s) <= (aval a₂ s)
 
 _<'_ : Aexp -> Aexp -> Assn
 a₁ <' a₂ = λ s -> (aval a₁ s) <ℕ (aval a₂ s) == true
+```
+Then we define: 
+```
+Z=X+I : Assn
+Z=X+I = Plus' (V Z) (V X) (V I)
 
+I<=Y : Assn
+I<=Y = (V I) <=' (V Y)
+```
+Now, the invariant can be written as follows:
+```
 sum-prog-inv : Assn
-sum-prog-inv = (Plus' (V Z) (V X) (V I)) ∧' ((V I) <=' (V Y))
+sum-prog-inv = Z=X+I ∧' I<=Y
+```
+The next step is to show that 
 
--- Proof of: |- {(Z = X + I) ∧ (I ≤ Y) ∧ I < Y} sum-prog-body {(Z = X + I) ∧ (I ≤ Y)}
+                         |- [ (Z=X+I ∧' I<=Y) ∧' I<Y ]
+                              (Z := (Plus (V Z) (N 1))) ::
+                              (I := (Plus (V I) (N 1)))
+                            [ (Z=X+I ∧' I<=Y) ]
 
+where 
+```
+I<Y : Assn
+I<Y = (V I) <' (V Y)
+```
+Toward such proof, we first introduce some abbreviations:
+```
 Z+1=X+I+1 : Assn
 Z+1=X+I+1 = Plus' (Plus (V Z) (N 1)) (V X) (Plus (V I) (N 1))
 
@@ -165,20 +182,17 @@ Z=X+I+1 = Plus' (V Z) (V X) (Plus (V I) (N 1))
 I+1<Y+1 : Assn
 I+1<Y+1 = (Plus (V I) (N 1)) <' (Plus (V Y) (N 1))
 
+I<Y+1 : Assn
+I<Y+1 = (V I) <' (Plus (V Y) (N 1))
+```
+Then we establish the proof below concerning the body:
+```
 pr2-4 : |- [ Z+1=X+I+1 ∧' I+1<Y+1 ] 
             (Z := Plus (V Z) (N 1))
            [ Z=X+I+1 ∧' I+1<Y+1 ]
 
 pr2-4 = H-Loc {Z=X+I+1 ∧' I+1<Y+1} {Plus (V Z) (N 1)} {Z}
 
-I<=Y : Assn
-I<=Y = (V I) <=' (V Y)
-
-I<Y : Assn
-I<Y = (V I) <' (V Y)
-
-I<Y+1 : Assn
-I<Y+1 = (V I) <' (Plus (V Y) (N 1))
 
 pr2-5 : |- [ Z=X+I+1 ∧' I+1<Y+1 ]
             (I := Plus (V I) (N 1))
@@ -191,7 +205,39 @@ pr2-6 : |- [ Z+1=X+I+1 ∧' I+1<Y+1 ]
            [ Z=X+I ∧' I<Y+1 ]
 
 pr2-6 = H-Comp pr2-4 pr2-5
+```
+To use `pr2-6` when proving that `Z=X+I ∧' I<=Y` is a loop-invariant
+we have to establish the implications:
 
+            (Z=X+I ∧' I<=Y) ∧' I<Y ==> Z+1=X+I+1 ∧' I+1<Y+1    and
+
+            Z=X+I ∧' I<Y+1 ==> Z=X+I ∧' I<=Y
+
+Before facing such task and for further use in the proof, we establish some
+lemmas about the properties of `<=` and `<`:
+```
+succ-le : ∀ {n m : ℕ} -> succ n <= succ m -> n <= m  -- move to library LessThan
+succ-le (le-succ hyp) = hyp
+
++-1-succ : ∀ n -> n + 1 == succ n
++-1-succ zero = refl
++-1-succ (succ n) = cong succ (+-1-succ n)
+
+lt-succ : ∀ {x y : ℕ} -> x < y -> succ x < succ y
+lt-succ {x} {y} hyp = le-succ hyp
+
+lemma-<-+-1-><= : ∀ {n m : ℕ} -> n < m + 1 -> n <= m
+lemma-<-+-1-><= {n} {m} hyp = succ-le q
+  where
+    p : m + 1 == succ m
+    p = +-1-succ m
+
+    q : n < succ m  -- i.e. succ n <= succ m
+    q = subst (λ z -> n < z) p hyp
+```
+Also, we have to establish that the predicate `n < m` is equivalent to
+`n <ℕ m  == true`:
+```
 lemma-<ℕ-< : ∀ {n m : ℕ} -> n <ℕ m == true -> n < m
 lemma-<ℕ-< {zero} {succ m} _ = le-succ {0} {m} (le-zero {m})
 lemma-<ℕ-< {succ n} {succ m} hyp = le-succ {succ n} {m} IH
@@ -199,33 +245,13 @@ lemma-<ℕ-< {succ n} {succ m} hyp = le-succ {succ n} {m} IH
     IH : n < m  -- i.e. succ n <= m
     IH = lemma-<ℕ-< {n} {m} hyp
 
-succ-le : ∀ {n m : ℕ} -> succ n <= succ m -> n <= m  -- move to library LessThan
-succ-le (le-succ hyp) = hyp
-
 lemma-<-<ℕ : ∀ {n m : ℕ} -> n < m -> n <ℕ m == true
 lemma-<-<ℕ {zero} {succ m} hyp = refl
 lemma-<-<ℕ {succ n} {succ m} hyp =
            lemma-<-<ℕ {n} {m} (succ-le {succ n} {m} hyp)
-
-lemma-+-1-succ : ∀ n -> n + 1 == succ n
-lemma-+-1-succ zero = refl
-lemma-+-1-succ (succ n) = cong succ (lemma-+-1-succ n)
-
-impl2-1 : ∀ s -> ∀ {a₁ a₂ : Aexp} -> (a₁ <' Plus a₂ (N 1)) s -> (a₁ <=' a₂) s
-impl2-1 s {a₁} {a₂} hyp = ths
-  where
-    claim : (aval a₁ s) < (aval (Plus a₂ (N 1)) s)
-    claim = lemma-<ℕ-< {aval a₁ s} {aval (Plus a₂ (N 1)) s} hyp
-
-    calc : (aval (Plus a₂ (N 1)) s) == succ (aval a₂ s)
-    calc = lemma-+-1-succ (aval a₂ s)
-
-    lemma : ∀ {n m p} -> n < m -> m == p -> n < p
-    lemma {n} {m} {p} hyp1 hyp2 = subst (λ z -> n < z) hyp2 hyp1
-
-    ths : (aval a₁ s) <= (aval a₂ s)
-    ths = succ-le (lemma claim calc)
-
+```
+Now, we are in place to prove the required implications:
+```
 Z=X+I->Z+1=X+I+1 : ∀ s -> Z=X+I s -> Z+1=X+I+1 s
 Z=X+I->Z+1=X+I+1 s hyp = 
     begin
@@ -233,10 +259,7 @@ Z=X+I->Z+1=X+I+1 s hyp =
       (s X + s I) + 1              ==⟨ symm (+-assoc (s X) (s I) 1) ⟩
        s X + (s I + 1)
     end
-
-lt-succ : ∀ {x y : ℕ} -> x < y -> succ x < succ y
-lt-succ {x} {y} hyp = le-succ hyp
-
+    
 I<Y->I+1<Y+1 : ∀ s -> I<Y s -> I+1<Y+1 s
 I<Y->I+1<Y+1 s hyp = lemma-<-<ℕ {n + 1} {m + 1} c'
   where
@@ -247,13 +270,13 @@ I<Y->I+1<Y+1 s hyp = lemma-<-<ℕ {n + 1} {m + 1} c'
     a' = lt-succ {n} {m} (lemma-<ℕ-< hyp)
 
     a'' : succ n == n + 1
-    a'' = symm (lemma-+-1-succ n)
+    a'' = symm (+-1-succ n)
 
     b' : n + 1 < succ m
     b' = subst (λ z -> z < succ m) a'' a'
 
     d' : succ m == m + 1
-    d' = symm (lemma-+-1-succ m)
+    d' = symm (+-1-succ m)
 
     c' : n + 1 < m + 1
     c' = subst (λ z -> n + 1 < z) d' b'
@@ -267,17 +290,6 @@ Z=X+I∧I<=Y∧I<Y->Z+1=X+I+1∧I+1<Y+1 s ((x , y) , z) = a' , b'
     b' : I+1<Y+1 s 
     b' = I<Y->I+1<Y+1 s z
 
-
-lemma-<-+-1-><= : ∀ {n m : ℕ} -> n < m + 1 -> n <= m
-lemma-<-+-1-><= {n} {m} hyp = succ-le q
-  where
-    p : m + 1 == succ m
-    p = lemma-+-1-succ m
-
-    q : n < succ m  -- i.e. succ n <= succ m
-    q = subst (λ z -> n < z) p hyp
-
-
 Z=X+I∧I<Y+1->Z=X+I∧I<=Y : ∀ s -> (Z=X+I ∧' I<Y+1) s -> (Z=X+I ∧' I<=Y) s
 Z=X+I∧I<Y+1->Z=X+I∧I<=Y s (x , y) = x , h2
   where
@@ -286,7 +298,9 @@ Z=X+I∧I<Y+1->Z=X+I∧I<=Y s (x , y) = x , h2
 
     h2 : s I <= s Y
     h2 = lemma-<-+-1-><= h1
-
+```
+Putting al togather, we obtain: 
+```
 pr2-7 : |- [ (Z=X+I ∧' I<=Y) ∧' I<Y ]
             sum-prog-body
            [ (Z=X+I ∧' I<=Y) ]
