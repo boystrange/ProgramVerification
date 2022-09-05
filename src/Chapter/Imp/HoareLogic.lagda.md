@@ -95,6 +95,7 @@ data |-_ : Triple -> Set₁ where
           -> |- [ P ] SKIP [ P ]
 
    H-Loc : ∀ {P a x}
+          ---------------------------------------------------------- 
           -> |- [ (λ s -> P (s [ x ::= aval a s ])) ] (x := a) [ P ]
 
    H-Comp : ∀ {P Q R c₁ c₂}
@@ -124,8 +125,8 @@ data |-_ : Triple -> Set₁ where
 Due to our definition of the type `Assn` of assertions, there are some differences
 among the rules above and the original ones. In case of rule `H-Loc` Hoare's formulation was:
 
-                               -------------------
-                               {P[a/x]} x := a {P}
+    -------------------
+    {P[a/x]} x := a {P}
 
 where `P[a/x]` is the result of the substitution of `x` by `a` in the formula `P`.
 To understand rule `H-Loc`, suppose to extend the  *substitution lemma* in chapter
@@ -133,7 +134,7 @@ To understand rule `H-Loc`, suppose to extend the  *substitution lemma* in chapt
 to the syntax of formulas (if we had such things in our 
 code, which we don't). Then we would have:
 
-                    s |= P[a/x]   if and only if  s [ x ::= aval a s] |= P
+    s |= P[a/x]   if and only if  s [ x ::= aval a s] |= P
 
 where `s |= P` means that `P` is true in the standard model of arithmetic if
 the program variables in it are interpreted according to `s`. In our 
@@ -150,9 +151,9 @@ hence the pre-condition of the rule `H-Loc` is the λ-expression
 
 Finally rule `H-Conseq`, for *consequence*, corresponds to the original rule:
 
-                       |= P' -> P    {P} c {Q}    |= Q -> Q'
-                       -------------------------------------
-                                    {P'} c {Q'}
+    |= P' -> P    {P} c {Q}    |= Q -> Q'
+    -------------------------------------
+                 {P'} c {Q'}
 
 Here we must encode the premises `|= P' -> P` and `|= Q -> Q'` as predicates.
 In logic the meaning of `|= P' -> P` is: for all `s` if `s |= P'` then `s |= P`,
@@ -196,9 +197,9 @@ H-While' hyp1 hyp2 = H-Weak (H-While hyp1) hyp2
  
 Let us start with the example `|- {X = 1} Z := X {Z = 1}`, which in our formalism reads:
 
-                       |- [ V X ==' N 1 ]
-                          Z := V X
-                          [ V Z ==' N 1 ]
+    |- [ V X ==' N 1 ]
+         Z := V X
+       [ V Z ==' N 1 ]
 
 where `a₁ ==' a₂` is the predicate of `a₁, a₂ ∈ Aexp` which holds w.r.t. `s ∈ State` if
 `aval a₁ s == aval a₂ s`:
@@ -222,11 +223,12 @@ pr0-0 = H-Loc {V Z ==' N 1} {V X} {Z}
 
 ### Composition
 
-The next example is the proof of `|- {X = 1} Z := X ; Y := Z {Y = 1}` where `;` is written `::` in our formalism:
+The next example is the proof of `|- {X = 1} Z := X ; Y := Z {Y = 1}` where `;`
+is written `::` in our formalism: 
 
-                       |-  [ V X ==' N 1 ]
-                           (Z := V X) :: (Y := V Z)
-                           [ V Y ==' N 1 ]
+    |-  [ V X ==' N 1 ]
+          (Z := V X) :: (Y := V Z)
+        [ V Y ==' N 1 ]
 
 This case can be treated by applying the composition rule `H-Comp` to `pr0-0` and `pr0-1` below:
 ```
@@ -267,21 +269,22 @@ max' a₁ a₂ a₃ = λ s -> max (aval a₁ s) (aval a₂ s) == aval a₃ s
 where `max : ℕ -> ℕ -> ℕ` is the maximum function defined in the library `Nat.agda`.
 Now we can express the goal of our proof as follows:
 
-                  |- [ ⊤' ]
-                     IF (Less (V X) (V Y)) THEN (Z := V Y) ELSE (Z := V X)
-                     [ max' (V X) (V Y) (V Z) ]
+    |- [ ⊤' ]
+         IF (Less (V X) (V Y)) THEN (Z := V Y) ELSE (Z := V X)
+       [ max' (V X) (V Y) (V Z) ]
  
 Here we expect to use rule `H-If` whose premises are:
 
-              H1  |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ]
-                     Z := V Y
-                     [ max' (V X) (V Y) (V Z) ]
+    H1  |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ]
+             Z := V Y
+           [ max' (V X) (V Y) (V Z) ]
 
-              H2  |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == false)) ]
-                     Z := V X
-                     [ max' (V X) (V Y) (V Z) ]
+    H2  |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == false)) ]
+             Z := V X
+           [ max' (V X) (V Y) (V Z) ]
 
-Toward proving the first hypothesis `H1` let us show that if `|- {max(X, Y) = Y} Z := Y {max(X, Y) = Z}`:
+Toward proving the first hypothesis `H1` let us show that if
+`|- {max(X, Y) = Y} Z := Y {max(X, Y) = Z}`:
 ```
 pr1-1 : |- [ max' (V X) (V Y) (V Y) ]
            Z := V Y
@@ -307,12 +310,14 @@ pr1-2 : ∀ s -> (⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ->
                
 pr1-2 s (x , y) = less-max' (V X) (V Y) s y
 ```
-In `pr1-2` we have considered the hypothesis `∀ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true` instead of
-its equivalent (and more natural) `∀ s -> (bval (Less (V X) (V Y)) s == true` because it is exactly
+In `pr1-2` we have considered the hypothesis `∀ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true`
+instead of its equivalent (and more natural) `∀ s -> (bval (Less (V X) (V Y)) s == true`
+because it is exactly
 the pre-condition of `H1` we are trying to prove; on the other
-hand the consequence `max' (V X) (V Y) (V Y) s` of `pr1-2` matches with the pre-condition of `pr1-1`, where
-the arbitrary `s` is omitted because we have just the predicate `max' (V X) (V Y) (V Y)`. This suggests
-that to conclude `H1` we can use the rule `H-Str` applied to `pr1-2` and `pr1-1`: 
+hand the consequence `max' (V X) (V Y) (V Y) s` of `pr1-2` matches with the pre-condition
+of `pr1-1`, where
+the arbitrary `s` is omitted because we have just the predicate `max' (V X) (V Y) (V Y)`.
+This suggests that to conclude `H1` we can use the rule `H-Str` applied to `pr1-2` and `pr1-1`: 
 ```
 H1 : |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ]
         Z := V Y
@@ -320,7 +325,8 @@ H1 : |- [ (λ s -> ⊤' s ∧ (bval (Less (V X) (V Y)) s == true)) ]
            
 H1 = H-Str pr1-2 pr1-1
 ```
-The proof of `H2` follows a similar pattern, this time considering the case when `bval (Less (V X) (V Y)) s == false`:
+The proof of `H2` follows a similar pattern, this time considering the case when
+`bval (Less (V X) (V Y)) s == false`:
 ```
 geq-max : ∀(n m : ℕ) -> n <ℕ m == false -> max n m == n
 
@@ -368,9 +374,9 @@ P ∧' Q = λ s -> P s ∧ Q s
 ```
 Then prove:
 
-              |- [ (V X ==' N 1) ∧' (V Y ==' N 2) ]
-                 (Z := V X) :: ((X := V Y) :: (Y := V Z))
-                 [ (V Y ==' N 1) ∧' (V X ==' N 2) ]
+    |- [ (V X ==' N 1) ∧' (V Y ==' N 2) ]
+         (Z := V X) :: ((X := V Y) :: (Y := V Z))
+       [ (V Y ==' N 1) ∧' (V X ==' N 2) ]
 
 
 ```
