@@ -2,6 +2,8 @@
 title: Summary
 ---
 
+BASE = {{ base }}
+
 <!--
 ```
 module Chapters where

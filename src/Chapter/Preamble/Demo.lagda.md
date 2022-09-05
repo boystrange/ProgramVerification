@@ -1,24 +1,31 @@
 ---
 title: A taste of Agda
+next:  Chapter.Preamble.Setup
 ---
 
-<!--
 ```
 module Chapter.Preamble.Demo where
+```
 
+explain...
+
+## Imports
+
+```
 open import Equality
 open import Equality.Reasoning
 open import Nat
 open import Nat.Properties
 ```
--->
+
+explain...
+
+## The sequence of Fibonacci numbers
 
 To get a taste of Agda, let us write a `fibo` function that computes
 the k-th number in the sequence of Fibonacci, that is the sequence
 
-```text
-  0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
-```
+    0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
 
 that starts with 0 followed by 1 and such that each subsequent
 number is the sum of the previous two. For example, we expect `fibo`

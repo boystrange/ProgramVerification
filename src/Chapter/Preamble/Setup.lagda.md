@@ -1,5 +1,6 @@
 ---
 title: Setup
+prev:  Chapter.Preamble.Demo
 ---
 
 <!--

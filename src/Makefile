@@ -2,8 +2,7 @@
 NULL =
 
 ROOTS = \
-  Library.lagda.md \
-  Chapters.lagda.md \
+  index.lagda.md \
   $(NULL)
 
 HTMLDIR = ../pages

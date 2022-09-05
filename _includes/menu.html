@@ -1,0 +1,17 @@
+{%- if page.title != 'Summary' -%}
+<ul class="menu">
+  {%- if page.prev -%}
+  <li>
+    <a href="{{ page.prev }}.html">&lt;{{ page.prev }}</a>
+  </li>
+  {%- endif -%}
+  <li>
+    <a href="index.html">Summary</a>
+  </li>
+  {%- if page.next -%}
+  <li>
+    <a href="{{ page.next }}.html">{{ page.next }}&gt;</a>
+  </li>
+  {%- endif -%}
+</ul>
+{%- endif -%}
