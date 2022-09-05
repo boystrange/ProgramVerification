@@ -26,15 +26,15 @@ open import Chapter.Imp.HoareLogic
 
 Consider the program `sum-prog` computing the sum of two natural numbers by iterating the successor:
  
-                                 Z := X ;
-                                 I := 0 ;
-                                 WHILE I < Y DO
-                                       Z := Z + 1 ;
-                                       I := I + 1
+    Z := X ;
+    I := 0 ;
+    WHILE I < Y DO
+          Z := Z + 1 ;
+          I := I + 1
 
-Then we want to show that
+Then we want to show that 
 
-                              |- {⊤} sum-prog {Z = X + Y}
+    |- {⊤} sum-prog {Z = X + Y}
 
 
 To begin with, we encode the program into the IMP syntax:
@@ -131,7 +131,7 @@ represent a property of the state telling how it approximates
 the final state  at each iteration and hence the result of the whole computation.
 For this purpose we choose
 
-                                (Z = X + I) ∧ (I ≤ Y)
+    (Z = X + I) ∧ (I ≤ Y) 
 
 To encode this assertion, as well as the others that will be involved in the proof, 
 we introduce three new predicates:
@@ -161,10 +161,10 @@ sum-prog-inv = Z=X+I ∧' I<=Y
 ```
 The next step is to show that 
 
-                         |- [ (Z=X+I ∧' I<=Y) ∧' I<Y ]
-                              (Z := (Plus (V Z) (N 1))) ::
-                              (I := (Plus (V I) (N 1)))
-                            [ (Z=X+I ∧' I<=Y) ]
+    |- [ (Z=X+I ∧' I<=Y) ∧' I<Y ]
+         (Z := (Plus (V Z) (N 1))) ::
+         (I := (Plus (V I) (N 1)))
+       [ (Z=X+I ∧' I<=Y) ]
 
 where 
 ```
@@ -281,7 +281,9 @@ I<Y->I+1<Y+1 s hyp = lemma-<-<ℕ {n + 1} {m + 1} c'
     c' : n + 1 < m + 1
     c' = subst (λ z -> n + 1 < z) d' b'
 
-Z=X+I∧I<=Y∧I<Y->Z+1=X+I+1∧I+1<Y+1 : ∀ s -> ((Z=X+I ∧' I<=Y) ∧' I<Y) s -> (Z+1=X+I+1 ∧' I+1<Y+1) s
+Z=X+I∧I<=Y∧I<Y->Z+1=X+I+1∧I+1<Y+1 :
+       ∀ s -> ((Z=X+I ∧' I<=Y) ∧' I<Y) s -> (Z+1=X+I+1 ∧' I+1<Y+1) s
+       
 Z=X+I∧I<=Y∧I<Y->Z+1=X+I+1∧I+1<Y+1 s ((x , y) , z) = a' , b'
   where
     a' : Z+1=X+I+1 s 
@@ -318,12 +320,49 @@ pr2-8 : |- [ Z=X+I ∧' I<=Y ]
             [ (Z=X+I ∧' I<=Y) ∧' ¬I<Y ]
 
 pr2-8 = H-While pr2-7
+```
+In summary we have proved
 
----------------------------------------------
---            Post-condition
----------------------------------------------
+    pr2-3 : |- [ ⊤' ]
+           (Z := V X) :: (I := N 0)
+           [ Z=X ∧' I=0 ]
+
+    and
+
+    pr2-8 : |- [ Z=X+I ∧' I<=Y ]
+            (WHILE (Less (V I) (V Y)) DO
+                 sum-prog-body)
+            [ (Z=X+I ∧' I<=Y) ∧' ¬I<Y ]
 
 
+It remains to show that
+
+    Z=X ∧' I=0 ==> Z=X+I ∧' I<=Y
+
+to link `pr2-3` and `pr2-8`
+```
+Z=X∧I=0->Z=X+I : ∀ s -> (Z=X ∧' I=0) s -> (Z=X+I ∧' I<=Y) s
+Z=X∧I=0->Z=X+I s (x , y) = eq1 , eq2
+  where
+
+    eq1 : s Z == s X + s I
+    eq1 = begin
+             s Z          ==⟨ x ⟩
+             s X          ==⟨ symm (+-unit-r (s X)) ⟩
+             s X + 0      ==⟨ cong (λ z -> s X + z) (symm y) ⟩
+             s X + s I
+          end
+
+    eq2 : s I <= s Y
+    eq2 = subst (λ z -> z <= s Y) (symm y) (le-zero {s Y})
+
+```
+and to show that 
+
+    (Z=X+I ∧' I<=Y) ∧' ¬I<Y ==> Z=X+Y
+
+to get the desired post-condition
+```
 leq-not-le :  ∀ (n m : ℕ) -> n <= m -> n <ℕ m == false -> n == m
 
 leq-not-le zero zero hyp1 hyp2 = refl
@@ -356,26 +395,9 @@ pr2-9 : |- [ Z=X+I ∧' I<=Y ]
             [ Z=X+Y ]
             
 pr2-9 = H-While' pr2-7 Z=X+I∧I<=Y∧¬I<Y->Z=X+Y
-
---------- Conclusion
-
--- +-unit-r : (x : ℕ) -> x + 0 == x
-
-Z=X∧I=0->Z=X+I : ∀ s -> (Z=X ∧' I=0) s -> (Z=X+I ∧' I<=Y) s
-Z=X∧I=0->Z=X+I s (x , y) = eq1 , eq2
-  where
-
-    eq1 : s Z == s X + s I
-    eq1 = begin
-             s Z          ==⟨ x ⟩
-             s X          ==⟨ symm (+-unit-r (s X)) ⟩
-             s X + 0      ==⟨ cong (λ z -> s X + z) (symm y) ⟩
-             s X + s I
-          end
-
-    eq2 : s I <= s Y
-    eq2 = subst (λ z -> z <= s Y) (symm y) (le-zero {s Y})
-
+```
+Eventually we put all togather: 
+```
 pr2-3' : |- [ ⊤' ]
            ((Z := V X) :: (I := N 0))
            [ Z=X+I ∧' I<=Y ]
