@@ -1,7 +1,7 @@
 
 NULL =
 
-NAME = progav
+NAME = ProVer
 
 PDFS  = $(SECTIONS:%=assets/pdf/%.pdf)
 DEPS  = \
@@ -27,7 +27,7 @@ fake:
 zip:
 	( \
 		bundle exec jekyll build -d $(NAME); \
-		NAMEDATE="$(NAME)_versione_del_`date +'%d_%m_%Y'`"; \
+		NAMEDATE="$(NAME)_`date +'%d_%m_%Y'`"; \
 		zip --filesync -b /tmp -r "$$NAMEDATE".zip $(NAME) \
 	)
 
