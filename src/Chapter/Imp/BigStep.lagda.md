@@ -295,7 +295,7 @@ In the proof of the if-part we use the lemma
                        bval b s == true ∨ bval b s == false
 
 from the chapter 
-[Arithmetic and boolean expressions]({% link pages/Chapter.AexpBexp.md %}) 
+[Arithmetic and boolean expressions]({% link pages/Chapter.Imp.AexpBexp.md %}) 
 (see the solution of exercise 2) stating that given any
 `s ∈ State` the value of `b ∈ Bexp` is always computable and it is either `true` or
 `false`; then we can select the proper rule among `IfTrue` and `IfFalse` to derive
