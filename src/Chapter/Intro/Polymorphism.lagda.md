@@ -1,5 +1,7 @@
 ---
 title: Polymorphic functions and implicit arguments
+next:  Chapter.Intro.Lists
+prev:  Chapter.Intro.NaturalNumbers
 ---
 
 <!--

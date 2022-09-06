@@ -44,13 +44,19 @@ button {
 }
 
 .menu {
+    display: block;
     list-style: none;
-    margin: 1em 0;
+    margin: 0;
     padding: 0;
     text-align: center;
+    width: 100%;
 
     li {
-	display: inline;
+	margin: 0 0 1em 0;
+	padding: 0;
+	display: inline-block;
+	text-align: center;
+	width: 30%;
     }
 
     a {

@@ -1,5 +1,6 @@
 ---
 title: Types and functions
+next:  Chapter.Intro.Bool
 ---
 
 <!--

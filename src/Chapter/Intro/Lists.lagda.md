@@ -1,5 +1,6 @@
 ---
 title: Programming with lists
+prev:  Chapter.Intro.Polymorphism
 ---
 
 <!--

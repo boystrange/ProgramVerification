@@ -1,5 +1,7 @@
 ---
 title: "Inductive data types: the Booleans"
+next:  Chapter.Intro.Bool.Properties
+prev:  Chapter.Intro.Lambda
 ---
 
 <!--

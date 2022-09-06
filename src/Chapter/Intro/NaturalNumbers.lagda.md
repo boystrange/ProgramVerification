@@ -1,5 +1,7 @@
 ---
 title: Natural numbers
+next:  Chapter.Intro.Polymorphism
+prev:  Chapter.Intro.Bool.Properties
 ---
 
 <!--

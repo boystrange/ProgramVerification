@@ -1,12 +1,14 @@
 ---
 title: Proving properties of Booleans
+next:  Chapter.Intro.NaturalNumbers
+prev:  Chapter.Intro.Bool
 ---
 
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Chapter.Intro.BoolProperties where
+module Chapter.Intro.Bool.Properties where
 ```
 -->
 
