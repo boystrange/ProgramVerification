@@ -2,7 +2,7 @@
 NULL =
 
 ROOTS = \
-  index.lagda.md \
+  Main.lagda.md \
   $(NULL)
 
 HTMLDIR = ../pages

@@ -64,3 +64,18 @@ button {
 	padding: 0 1em;
     }
 }
+
+a.table-of-contents {
+    display: block;
+    padding: 1ex;
+    text-align: center;
+    font-size: larger;
+    font-weight: bold;
+    background-color: green;
+    color: white;
+    border-radius: 1ex;
+}
+
+a.table-of-contents:hover {
+    color: white;
+}
