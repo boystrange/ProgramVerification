@@ -2,7 +2,7 @@
 title: "Arithmetic and boolean expressions"
 ---
 
-<!--
+
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
@@ -16,7 +16,6 @@ open import Library.Equality
 open import Library.Equality.Reasoning
 
 ```
--->
 
 In this chapter we introduce the data types `Aexp` and `Bexp` for **arithmetic** and **boolean expressions**
 of the language IMP respectively.
@@ -28,7 +27,7 @@ index `i ∈ Index`, where `Index` is just `ℕ`, the set of natural numbers:
 ```
 Index = ℕ
 data Vname : Set where
-   Vn : Index → Vname
+   Vn : Index -> Vname
 ```
 
 In examples we shall use the following abbreviations:
@@ -49,13 +48,13 @@ returning `true` if they are the same, `false` otherwise. Such a definition depe
 `n =ℕ m` checking whether two indexes, namely two natural numbers, are the same:
 
 ```
-_=ℕ_ : ℕ → ℕ → Bool
+_=ℕ_ : ℕ -> ℕ -> Bool
 zero =ℕ zero = true
 zero =ℕ succ m = false
 succ n =ℕ zero = false
 succ n =ℕ succ m = n =ℕ m
 
-_=Vn_ : (x y : Vname) → Bool
+_=Vn_ : (x y : Vname) -> Bool
 Vn i =Vn Vn j = i =ℕ j
 ```
 
@@ -67,9 +66,9 @@ where `n ∈ Nat`, `vn ∈ Vname`, which is represented by the data type `Aexp`:
 
 ```
 data Aexp : Set where
-   N : ℕ → Aexp                  -- numerals
-   V : Vname → Aexp              -- variables
-   Plus : Aexp → Aexp → Aexp    -- sum
+   N : ℕ -> Aexp                  -- numerals
+   V : Vname -> Aexp              -- variables
+   Plus : Aexp -> Aexp -> Aexp    -- sum
 ```
 
 For example the expression `aexp0`:
@@ -88,7 +87,7 @@ which is a mapping from variable names to values:
 
 ```
 Val = ℕ
-State = Vname → Val
+State = Vname -> Val
 ```
 
 States are defined as total functions for the sake of simplicity. Indeed to determine the value of an expression
@@ -105,7 +104,7 @@ of the meaning of a single variable. We formalize the updating operation by mean
 `s [ x ::= v]` returning the state behaving like `s`, but when applied to `x` where it yields `v`.
 
 ```
-_[_::=_] : State → Vname → Val → State
+_[_::=_] : State -> Vname -> Val -> State
 (s [ x ::= v ]) y = if x =Vn y then v else s y 
 ```
 
@@ -114,7 +113,7 @@ to all program varibles:
 
 ```
 st0 : State
-st0 = λ x → 0
+st0 = λ x -> 0
 
 st1 : State
 st1 = st0 [ X ::= 1 ]
@@ -126,7 +125,7 @@ st2 = st1 [ Y ::= 2 ]  -- equivalently:  st2 = (st0 [ X ::= 1 ]) [ Y ::= 2 ]
 The function `aval` is an interpreter of expressions in `Aexp` that uses the state in case of variables:
 
 ```
-aval : Aexp → State → Val
+aval : Aexp -> State -> Val
 aval (N n) s = n
 aval (V vn) s = s vn
 aval (Plus a1 a2) s = aval a1 s + aval a2 s
@@ -155,7 +154,7 @@ encoding the expression `X + (1 + Y)` when computed in the state `st2` above is 
 expression `a` by an expression `a'`, producing the new expression `a [ a' / x]`.
 
 ```
-_[_/_] : Aexp → Aexp → Vname → Aexp
+_[_/_] : Aexp -> Aexp -> Vname -> Aexp
 N n  [ a' / x ] = N n
 V y  [ a' / x ] with x =Vn y
 ... | true  = a'
@@ -192,7 +191,7 @@ in the state `s [ x ::= (aval a' s) ]`, which is `s` where the value of `x` has 
 to the value of `a'` w.r.t. `s`.
 
 ```
-lemma-subst-aexp : ∀ (a a' : Aexp) (x : Vname) (s : State) →
+lemma-subst-aexp : ∀ (a a' : Aexp) (x : Vname) (s : State) ->
                      aval (a [ a' / x ]) s == aval a (s [ x ::= (aval a' s) ])
                      
 lemma-subst-aexp (N n) a' x s =
@@ -282,10 +281,10 @@ where `bc ∈ Bool` and `a, a' ∈ Aexp`.
 
 ```
 data Bexp : Set where
-   B : Bool → Bexp             -- boolean constants
-   Less : Aexp → Aexp → Bexp    -- less than
-   Not : Bexp → Bexp           -- negation
-   And : Bexp → Bexp → Bexp    -- conjunction
+   B : Bool -> Bexp             -- boolean constants
+   Less : Aexp -> Aexp -> Bexp    -- less than
+   Not : Bexp -> Bexp           -- negation
+   And : Bexp -> Bexp -> Bexp    -- conjunction
 ```
 
 Examples:
@@ -303,13 +302,13 @@ Since evaluating expressions in `Aexp` requires a state, in general the meaning 
 must depend on a state as well.
 
 ```
-_<ℕ_ : ℕ → ℕ → Bool          --  n <ℕ m == true if n < m 
+_<ℕ_ : ℕ -> ℕ -> Bool          --  n <ℕ m == true if n < m 
 zero <ℕ   zero   = false      --  in the ordinary ordering of ℕ
 zero <ℕ   succ n = true
 succ n <ℕ zero   = false
 succ n <ℕ succ m = n <ℕ m
 
-bval : Bexp → State → Bool
+bval : Bexp -> State -> Bool
 bval (B x) s       = x
 bval (Less x y) s   = (aval x s) <ℕ (aval y s)
 bval (Not b) s     = not (bval b s)
@@ -323,18 +322,17 @@ bval (And b1 b2) s = bval b1 s && bval b2 s
    (hint: use `st0`, `st1` or `st2` possibly with some updates).
 2. Prove that the function `bval` is total, namely that
 
-               lemma-bval-tot : ∀ (b : Bexp) (s : State) →
+               lemma-bval-tot : ∀ (b : Bexp) (s : State) ->
                            bval b s == true ∨ bval b s == false
    
-3. Define a function  `_[_/_]B :  Bexp → Aexp → Vname → Bexp` extending
+3. Define a function  `_[_/_]B :  Bexp -> Aexp -> Vname -> Bexp` extending
    substitution to expressions in `Bexp`.
 4. Prove the lemma:
 
-               lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) →
+               lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) ->
                            bval (b [ a / x ]B) s == bval b (s [ x ::= aval a s ])
                 
-
-
+ 
 ```
 -- EXERCISE 1
 
@@ -364,14 +362,14 @@ bval-chek4 = refl
 
 -- EXERCISE 2
 
-lemma-bval-tot : ∀ (b : Bexp) (s : State) → bval b s == true ∨ bval b s == false
+lemma-bval-tot : ∀ (b : Bexp) (s : State) -> bval b s == true ∨ bval b s == false
 lemma-bval-tot b s with bval b s
 ... | true  = inl refl
 ... | false = inr refl
 
 -- EXERCISE 3
 
-_[_/_]B : Bexp → Aexp → Vname → Bexp
+_[_/_]B : Bexp -> Aexp -> Vname -> Bexp
 B c [ a / x ]B       = B c
 Less a1 a2 [ a / x ]B = Less (a1 [ a / x ]) (a2 [ a / x ])
 Not b [ a / x ]B     = Not (b [ a / x ]B)
@@ -379,7 +377,7 @@ And b1 b2 [ a / x ]B = And (b1 [ a / x ]B) (b2 [ a / x ]B)
 
 -- EXERCISE 4
 
-lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) →
+lemma-subst-bexp : ∀(b : Bexp) (a : Aexp) (x : Vname) (s : State) ->
                      bval (b [ a / x ]B) s == bval b (s [ x ::= aval a s ])
                      
 lemma-subst-bexp (B c) a x s = refl

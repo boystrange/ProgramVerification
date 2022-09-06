@@ -22,7 +22,7 @@ import Chapter.Preamble.Setup
 ```
 import Chapter.Intro.Lambda
 import Chapter.Intro.Bool
-import Chapter.Intro.BoolProperties
+-- import Chapter.Intro.BoolProperties
 import Chapter.Intro.NaturalNumbers
 import Chapter.Intro.Polymorphism
 import Chapter.Intro.Lists
@@ -56,6 +56,7 @@ import Chapter.Fun.QuickSort
 ## Verification of imperative programs
 
 ```
+import Chapter.Imp.Introduction
 import Chapter.Imp.AexpBexp
 import Chapter.Imp.BigStep
 import Chapter.Imp.SmallStep

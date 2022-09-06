@@ -2,7 +2,7 @@
 title: "Hoare Logic for verification of IMP programs" 
 ---
 
-<!--
+ 
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
@@ -20,7 +20,7 @@ open import Chapter.Imp.AexpBexp
 open import Chapter.Imp.BigStep
 
 ```
--->
+
 
 The goal of *program verification* is to check whether programs satisfy their
 specifications, which nowdays is called *functional correctness* and
