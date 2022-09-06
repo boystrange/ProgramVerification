@@ -1,13 +1,23 @@
 ---
-title: "Example of derivation with Hoare Logic" 
+title: "Example of derivation with Hoare Logic"
+prev:  Chapter.Imp.HoareLogic
+next:  Chapter.Imp.HoareLogicSoundness 
 ---
-
+ 
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
+```
+-->
 
+
+```
 module Chapter.Imp.HoareLogicExample where
+```
 
+## Imports
+
+```
 open import Library.Bool
 open import Library.Nat
 open import Library.Nat.Properties
@@ -20,9 +30,17 @@ open import Library.LessThan
 open import Chapter.Imp.AexpBexp
 open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
-
 ```
--->
+
+In this chapter we illustrate the use of Hoare Logic to verify a larger program than in previous examples.
+The program is very simple, but it includes a `WHILE` loop; this makes the proof of the triple formalizing
+its pre and post-conditions more interesting, but it is rather long, which might appear disappointing at first glance.
+However, the reader should keep in mind that the proof below is a fully detailed derivation in the formal system
+of the logic, and not the demo of a tool to verify IMP programs. In fact, much effort is necessary to automatize even 
+trivial, but long and tedious steps; we will not treat this topic in detail, but we shall see in the chapter
+on **verification conditions** that, under suitable conditions,
+we can factor out in a proof the uses of rule `H-Conseq`, involving logic and arithmetic,
+from the other rules, whose usage is guided by the syntactical structure of the program under consideration. 
 
 Consider the program `sum-prog` computing the sum of two natural numbers by iterating the successor:
  
@@ -82,9 +100,9 @@ I=0 = (V I ==' N 0)
 ```
 Then we prove
 
-           [ X=X ∧' 0=0 ]
-           (Z := V X) :: (I := N 0)
-           [ Z=X ∧' I=0 ]
+    [ X=X ∧' 0=0 ]
+      (Z := V X) :: (I := N 0)
+    [ Z=X ∧' I=0 ]
 
 First, we apply rule `H-Loc` twice:
 
@@ -209,9 +227,9 @@ pr2-6 = H-Comp pr2-4 pr2-5
 To use `pr2-6` when proving that `Z=X+I ∧' I<=Y` is a loop-invariant
 we have to establish the implications:
 
-            (Z=X+I ∧' I<=Y) ∧' I<Y ==> Z+1=X+I+1 ∧' I+1<Y+1    and
+    (Z=X+I ∧' I<=Y) ∧' I<Y ==> Z+1=X+I+1 ∧' I+1<Y+1    and
 
-            Z=X+I ∧' I<Y+1 ==> Z=X+I ∧' I<=Y
+    Z=X+I ∧' I<Y+1 ==> Z=X+I ∧' I<=Y  
 
 Before facing such task and for further use in the proof, we establish some
 lemmas about the properties of `<=` and `<`:

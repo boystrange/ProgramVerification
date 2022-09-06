@@ -1,14 +1,22 @@
 ---
 title: "Big-step operational semantics"
+prev:  Chapter.Imp.AexpBexp
+next:  Chapter.Imp.SmallStep 
 ---
 
- 
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
+```
+--> 
 
+```
 module Chapter.Imp.BigStep where
+```
 
+## Imports 
+
+```
 open import Library.Bool
 open import Library.Nat
 open import Library.Nat.Properties
@@ -20,7 +28,7 @@ open import Library.Equality.Reasoning
 open import Chapter.Imp.AexpBexp
 
 ```
--->
+
 
 In this chapter we introduce the **operational semantics** of IMP, which is a method for
 assagning meaning to programs by formally describing their execution. Here we adopt the rather abstract

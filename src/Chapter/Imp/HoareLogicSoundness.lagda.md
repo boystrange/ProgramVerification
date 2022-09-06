@@ -1,13 +1,16 @@
 ---
 title: "Soundness of Hoare Logic"
+prev:  Chapter.Imp.HoareLogicExample
 ---
+  
 
-<!--
 ```
-{-# OPTIONS --allow-unsolved-metas #-}
-
 module Chapter.Imp.HoareLogicSoundness where
+```
 
+## Imports 
+
+```
 open import Library.Bool
 open import Library.Nat
 open import Library.Nat.Properties
@@ -21,7 +24,7 @@ open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
 
 ```
--->
+
 
 Formalizing the partial correctness criterion into a definition, we say that
 the triple `[ P ] c [ Q ]` is **valid** if for all `s, t ∈ State` whenever `P` holds of `s` and

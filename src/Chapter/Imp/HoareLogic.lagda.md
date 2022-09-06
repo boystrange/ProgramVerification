@@ -1,18 +1,29 @@
 ---
-title: "Hoare Logic for verification of IMP programs" 
+title: "Hoare Logic for verification of IMP programs"
+prev:  Chapter.Imp.SmallStep
+next:  Chapter.Imp.HoareLogicExample
 ---
 
-
+<!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
+```
+-->
 
+## Imports
+
+```
 module Chapter.Imp.HoareLogic where
+```
 
+## Imports
+
+```
 open import Library.Bool
 open import Library.Nat
 open import Library.Nat.Properties
 open import Library.Logic
-open import Library.Logic.Laws
+open import Library.Logic.Laws 
 open import Library.Equality
 open import Library.Equality.Reasoning
 

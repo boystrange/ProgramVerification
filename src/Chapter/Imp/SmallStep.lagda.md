@@ -1,11 +1,18 @@
 ---
 title: "Small-step operational semantics"
+prev:  Chapter.Imp.BigStep
+next:  Chapter.Imp.HoareLogic 
 ---
 
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
+```
+-->
 
+## Imports 
+
+```
 module Chapter.Imp.SmallStep where
 
 open import Library.Bool
@@ -18,15 +25,13 @@ open import Library.Equality.Reasoning
 
 open import Chapter.Imp.AexpBexp
 open import Chapter.Imp.BigStep
-
-```
--->
+``` 
 
 An alternative approach to the operational semantics w.r.t. the big-step semantics is 
 the **structured operational semantics** initiated by Gordon Plotkin in his famous
 *Pisa notes*, and commonly called **small-step** semantics in the literature.
 The idea is to describe the computation of a command out of
-an initial state via a transition relation modeling step by step its execution. 
+an initial state via a transition relation modelling its execution step by step. 
 
 ## One-step reduction relation 
 
@@ -41,35 +46,35 @@ the relation `⟶` the **one-step reduction**.
 
 
 ```
-data _⟶_ : Config → Config → Set where  -- the symbol ⟶ is written \-->
+data _⟶_ : Config -> Config -> Set where  -- the symbol ⟶ is written \-->
 
 
   Loc : ∀{x a s}
-        ----------------------------------------------
-      → ⦅ x := a , s ⦆ ⟶ ⦅ SKIP , s [ x ::= aval a s ] ⦆
+        --------------------------------------------------
+      -> ⦅ x := a , s ⦆ ⟶ ⦅ SKIP , s [ x ::= aval a s ] ⦆
 
   Comp₁ : ∀{c s}
-          --------------------------
-        → ⦅ SKIP :: c , s ⦆ ⟶ ⦅ c , s ⦆
+          ---------------------------------
+          -> ⦅ SKIP :: c , s ⦆ ⟶ ⦅ c , s ⦆
         
   Comp₂ : ∀{c₁ c₁′ c₂ s s′}
-        → ⦅ c₁ , s ⦆ ⟶ ⦅ c₁′ , s′ ⦆
-        ------------------------------------
-        → ⦅ c₁ :: c₂ , s ⦆ ⟶ ⦅ c₁′ :: c₂ , s′ ⦆
+          -> ⦅ c₁ , s ⦆ ⟶ ⦅ c₁′ , s′ ⦆
+          -----------------------------------------
+          -> ⦅ c₁ :: c₂ , s ⦆ ⟶ ⦅ c₁′ :: c₂ , s′ ⦆
         
   IfTrue  : ∀{b s c₁ c₂}
-          → bval b s == true
-            --------------------------------------
-          → ⦅ IF b THEN c₁ ELSE c₂ , s ⦆ ⟶ ⦅ c₁ , s ⦆
+          -> bval b s == true
+          ---------------------------------------------
+          -> ⦅ IF b THEN c₁ ELSE c₂ , s ⦆ ⟶ ⦅ c₁ , s ⦆
           
   IfFalse : ∀{b s c₁ c₂}
-          → bval b s == false
-            --------------------------------------
-          → ⦅ IF b THEN c₁ ELSE c₂ , s ⦆ ⟶ ⦅ c₂ , s ⦆
+          -> bval b s == false
+          ---------------------------------------------
+          -> ⦅ IF b THEN c₁ ELSE c₂ , s ⦆ ⟶ ⦅ c₂ , s ⦆
           
   While : ∀{b c s}
-          ---------------------------------------------------------------------
-       → ⦅ WHILE b DO c , s ⦆ ⟶ ⦅ IF b THEN (c :: (WHILE b DO c)) ELSE SKIP , s ⦆
+          ----------------------------------------------------------------------------
+          -> ⦅ WHILE b DO c , s ⦆ ⟶ ⦅ IF b THEN (c :: (WHILE b DO c)) ELSE SKIP , s ⦆
 ```
 In the above definition observe that for no `s` there is a configuration such that
 `⦅ SKIP , s ⦆` can be reduced to it: we call such configurations **terminated** and
@@ -104,12 +109,12 @@ closure `⟶*` to model executions of arbitrary length, and we dub it
 **multi-step reduction** or just **reduction**. 
 
 ```
-data  _⟶*_ : Config → Config → Set where
+data  _⟶*_ : Config -> Config -> Set where
 
-   ⟶*-refl : ∀ {c s} → ⦅ c , s ⦆ ⟶* ⦅ c , s ⦆  -- reflexivity
-   ⟶*-incl : ∀ {c1 s1 c2 s2 c3 s3} →            -- including ⟶
-                 ⦅ c1 , s1 ⦆ ⟶ ⦅ c2 , s2 ⦆ →
-                 ⦅ c2 , s2 ⦆ ⟶* ⦅ c3 , s3 ⦆ →
+   ⟶*-refl : ∀ {c s} -> ⦅ c , s ⦆ ⟶* ⦅ c , s ⦆  -- reflexivity
+   ⟶*-incl : ∀ {c1 s1 c2 s2 c3 s3} ->            -- including ⟶
+                 ⦅ c1 , s1 ⦆ ⟶ ⦅ c2 , s2 ⦆ ->
+                 ⦅ c2 , s2 ⦆ ⟶* ⦅ c3 , s3 ⦆ ->
                  ⦅ c1 , s1 ⦆ ⟶* ⦅ c3 , s3 ⦆
 ```
 
@@ -117,13 +122,13 @@ The rule `⟶*-refl` postulates that `⟶*` is reflexive; the rule `⟶*-incl` s
 by putting a one-step reduction `⦅ c1 , s1 ⦆ ⟶ ⦅ c2 , s2 ⦆` in front of the
 multi-step reduction `⦅ c2 , s2 ⦆ ⟶* ⦅ c3 , s3 ⦆` one obtains the new reduction
 `⦅ c1 , s1 ⦆ ⟶* ⦅ c3 , s3 ⦆`; not surprisingly the definition
-of `→*-incl` reminds that of `cons` for lists. The effect of this rule is that
+of `->*-incl` reminds that of `cons` for lists. The effect of this rule is that
 the relation `⟶*` is transitive, as shown below.
 
 ```
-⟶*-tran : ∀ {c1 s1 c2 s2 c3 s3} →
-                 ⦅ c1 , s1 ⦆ ⟶* ⦅ c2 , s2 ⦆ →
-                 ⦅ c2 , s2 ⦆ ⟶* ⦅ c3 , s3 ⦆ →
+⟶*-tran : ∀ {c1 s1 c2 s2 c3 s3} ->
+                 ⦅ c1 , s1 ⦆ ⟶* ⦅ c2 , s2 ⦆ ->
+                 ⦅ c2 , s2 ⦆ ⟶* ⦅ c3 , s3 ⦆ ->
                  ⦅ c1 , s1 ⦆ ⟶* ⦅ c3 , s3 ⦆
 
 ⟶*-tran ⟶*-refl hyp2 = hyp2
@@ -136,18 +141,18 @@ multi-step reductions. They are some sort of *macros*
 in the same style of the function `_==⟨_⟩` for equational reasoning:
 
 ```
-⦅_,_⦆∎ : ∀ c s → ⦅ c , s ⦆ ⟶* ⦅ c , s ⦆
+⦅_,_⦆∎ : ∀ c s -> ⦅ c , s ⦆ ⟶* ⦅ c , s ⦆
 ⦅ c , s ⦆∎ = ⟶*-refl
 
-⦅_,_⦆⟶⟨_⟩_ : ∀ c s {c' c'' s' s''} →
-             ⦅ c , s ⦆ ⟶ ⦅ c' , s' ⦆ →
-             ⦅ c' , s' ⦆ ⟶* ⦅ c'' , s'' ⦆ →
+⦅_,_⦆⟶⟨_⟩_ : ∀ c s {c' c'' s' s''} ->
+             ⦅ c , s ⦆ ⟶ ⦅ c' , s' ⦆ ->
+             ⦅ c' , s' ⦆ ⟶* ⦅ c'' , s'' ⦆ ->
              ⦅ c , s ⦆ ⟶* ⦅ c'' , s'' ⦆
 ⦅ c , s ⦆⟶⟨ x ⟩ y = ⟶*-incl x y
 
-⦅_,_⦆⟶*⟨_⟩_ : ∀ c s {c' c'' s' s''} →
-             ⦅ c , s ⦆ ⟶* ⦅ c' , s' ⦆ →
-             ⦅ c' , s' ⦆ ⟶* ⦅ c'' , s'' ⦆ →
+⦅_,_⦆⟶*⟨_⟩_ : ∀ c s {c' c'' s' s''} ->
+             ⦅ c , s ⦆ ⟶* ⦅ c' , s' ⦆ ->
+             ⦅ c' , s' ⦆ ⟶* ⦅ c'' , s'' ⦆ ->
              ⦅ c , s ⦆ ⟶* ⦅ c'' , s'' ⦆
 
 ⦅ c , s ⦆⟶*⟨ x ⟩ y = ⟶*-tran x y
@@ -174,9 +179,9 @@ if a configuration reduces in one step to a second one which converges to a
 state, then the former converges to the same state.
 
 ```
-lemma-small-big : ∀ {c1 s1 c2 s2 t} →
-                 ⦅ c1 , s1 ⦆ ⟶ ⦅ c2 , s2 ⦆ →
-                 ⦅ c2 , s2 ⦆ ⇒ t →
+lemma-small-big : ∀ {c1 s1 c2 s2 t} ->
+                 ⦅ c1 , s1 ⦆ ⟶ ⦅ c2 , s2 ⦆ ->
+                 ⦅ c2 , s2 ⦆ ⇒ t ->
                  ⦅ c1 , s1 ⦆ ⇒ t
 
 lemma-small-big Loc Skip = Loc
@@ -194,8 +199,8 @@ lemma-small-big While (IfFalse x Skip) = WhileFalse x
 Given the lemma, the proof of `theorem-small-big` is a simple induction
 over the definition of `⟶*`.
 ```
-theorem-small-big : ∀ {c s t} →
-          ⦅ c , s ⦆ ⟶* ⦅ SKIP , t ⦆ → ⦅ c , s ⦆ ⇒ t
+theorem-small-big : ∀ {c s t} ->
+          ⦅ c , s ⦆ ⟶* ⦅ SKIP , t ⦆ -> ⦅ c , s ⦆ ⇒ t
 
 theorem-small-big ⟶*-refl = Skip
 theorem-small-big (⟶*-incl x hyp) = lemma-small-big x indHyp
@@ -210,8 +215,8 @@ execution of the `c` command while executing `c :: c''`.
 This will be of help in the theorem proof when treating the case of sequential composition.
 
 ```
-lemma-big-small : ∀ {c c' c'' s s'} →
-                    ⦅ c , s ⦆ ⟶* ⦅ c' , s' ⦆ →
+lemma-big-small : ∀ {c c' c'' s s'} ->
+                    ⦅ c , s ⦆ ⟶* ⦅ c' , s' ⦆ ->
                     ⦅ c :: c'' , s ⦆ ⟶* ⦅ c' :: c'' , s' ⦆
                     
 lemma-big-small ⟶*-refl = ⟶*-refl
@@ -223,8 +228,8 @@ Then we prove `theorem-small-big` by induction over the derivation
 of `⦅ c , s ⦆ ⇒ t`. In this proof we profit of the macros for reasoning
 about reductions, hopefully making the argument more readable. 
 ```
-theorem-big-small : ∀ {c s t} →
-          ⦅ c , s ⦆ ⇒ t → ⦅ c , s ⦆ ⟶* ⦅ SKIP , t ⦆
+theorem-big-small : ∀ {c s t} ->
+          ⦅ c , s ⦆ ⇒ t -> ⦅ c , s ⦆ ⟶* ⦅ SKIP , t ⦆
 
 theorem-big-small (Skip {s}) =
            ⦅ SKIP , s ⦆∎
@@ -286,7 +291,7 @@ swapping the values of `X` and `Y` using `Z` to temporarily save the value of `X
 Consider the following states:
 ```
 st07 : State
-st07 = ((λ z → 0) [ X ::= 1 ]) [ Y ::= 2 ]
+st07 = ((λ z -> 0) [ X ::= 1 ]) [ Y ::= 2 ]
 
 st08 : State
 st08 = st07 [ Z ::= aval (V X) st07 ]

@@ -1,13 +1,22 @@
 ---
 title: "Arithmetic and boolean expressions"
+prev:  Chapter.Imp.Introduction 
+next:  Chapter.Imp.BigStep 
 ---
 
-
+<!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
+```
+-->
 
+```
 module Chapter.Imp.AexpBexp where
+```
 
+## Imports
+
+```
 open import Library.Bool
 open import Library.Nat
 open import Library.Nat.Properties
