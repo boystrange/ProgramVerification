@@ -42,7 +42,7 @@ import Chapter.Logic.LessThan
 ```
 
 ## Verification of functional programs
-
+ 
 ```
 import Chapter.Fun.SortedLists
 import Chapter.Fun.ExtrinsicInsertionSort

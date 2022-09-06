@@ -54,6 +54,7 @@ import Chapter.Fun.QuickSort
 ### Verification of imperative programs
 
 ```
+import Chapter.Imp.Introduction
 import Chapter.Imp.AexpBexp
 import Chapter.Imp.BigStep
 import Chapter.Imp.SmallStep

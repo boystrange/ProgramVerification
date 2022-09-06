@@ -2,7 +2,7 @@
 title: "Hoare Logic for verification of IMP programs" 
 ---
 
- 
+
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
