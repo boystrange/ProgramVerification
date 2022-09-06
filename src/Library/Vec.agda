@@ -1,10 +1,10 @@
-module Vec where
+module Library.Vec where
 
-open import Fun using (_∘_)
-open import Nat
-open import Nat.Properties
-open import Fin
-open import Equality
+open import Library.Fun using (_∘_)
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.Fin
+open import Library.Equality
 
 data Vec (A : Set) : ℕ -> Set where
   []   : Vec A zero

@@ -4,12 +4,12 @@
 ```agda
 module Chapter.Fun.RegularExpressions where
 
-open import Nat using (ℕ)
-open import Nat.Properties using (_=?_)
-open import List
-open import Equality
-open import Logic
-open import Logic.Laws
+open import Library.Nat using (ℕ)
+open import Library.Nat.Properties using (_=?_)
+open import Library.List
+open import Library.Equality
+open import Library.Logic
+open import Library.Logic.Laws
 
 infixr 7 _+_
 infixr 8 _·_

@@ -1,7 +1,7 @@
-module LessThan.Alternative where
+module Library.LessThan.Alternative where
 
-open import Nat
-open import LessThan
+open import Library.Nat
+open import Library.LessThan
 
 infix 4 _<='_ _<'_
 

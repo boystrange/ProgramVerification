@@ -4,15 +4,15 @@
 ```agda
 module Chapter.Fun.Division where
 
-open import Nat
-open import Nat.Properties
-open import List
-open import Logic
-open import Equality
-open import Equality.Reasoning
-open import LessThan
-open import LessThan.Reasoning renaming (begin_ to <=begin_; _end to _<=end) hiding (_==⟨_⟩_)
-open import WellFounded
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.List
+open import Library.Logic
+open import Library.Equality
+open import Library.Equality.Reasoning
+open import Library.LessThan
+open import Library.LessThan.Reasoning renaming (begin_ to <=begin_; _end to _<=end) hiding (_==⟨_⟩_)
+open import Library.WellFounded
 
 +-minus-assoc : (x y z : ℕ) -> z <= y -> x + (y - z) == (x + y) - z
 +-minus-assoc x y 0 le-zero =
@@ -51,7 +51,7 @@ nt-division x y 0<y with x <? y
 ```
 
 ```agda
-open import LessThan.Alternative
+open import Library.LessThan.Alternative
 
 accessible<' : (x y : ℕ) -> y <' x -> Accessible _<'_ y
 accessible<' (succ y) _ le-refl'      = acc (accessible<' y)

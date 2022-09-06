@@ -1,10 +1,10 @@
-module LessThan where
+module Library.LessThan where
 
-open import Nat
-open import Nat.Properties
-open import Logic
-open import Logic.Laws
-open import Equality
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.Logic
+open import Library.Logic.Laws
+open import Library.Equality
 
 infix 4 _<=_ _>=_ _<_ _>_
 

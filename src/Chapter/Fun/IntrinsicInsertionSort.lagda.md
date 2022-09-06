@@ -2,10 +2,10 @@
 ---
 
 ```agda
-open import Logic
-open import List
-open import List.Properties
-open import List.Permutation
+open import Library.Logic
+open import Library.List
+open import Library.List.Properties
+open import Library.List.Permutation
 
 module Chapter.Fun.IntrinsicInsertionSort
   (A : Set)
@@ -14,7 +14,7 @@ module Chapter.Fun.IntrinsicInsertionSort
   (≼-total : (x y : A) -> x ≼ y ∨ y ≼ x)
   where
 
-open import List.Sorted A _≼_
+open import Library.List.Sorted A _≼_
 
 insert : (x : A) (xs : List A) -> Sorted xs -> ∃[ ys ] x :: xs # ys ∧ Sorted ys
 insert x [] psorted = [ x ] , #refl , <> , <>

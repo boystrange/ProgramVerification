@@ -4,14 +4,14 @@ title: Existential quantification
 
 <!--
 ```
-open import Fun
-open import Bool
-open import Nat
-open import Nat.Properties
-open import List
-open import Equality
-open import Logic hiding (fst; snd)
-open import Logic.Laws
+open import Library.Fun
+open import Library.Bool
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.List
+open import Library.Equality
+open import Library.Logic hiding (fst; snd)
+open import Library.Logic.Laws
 
 module Chapter.Logic.Existential where
 ```

@@ -1,4 +1,4 @@
-module Nat where
+module Library.Nat where
 
 data ℕ : Set where
   zero : ℕ

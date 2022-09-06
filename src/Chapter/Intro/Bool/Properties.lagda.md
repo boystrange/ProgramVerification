@@ -31,7 +31,7 @@ inherit the definition of `Bool` and the functions on boolean
 values.
 
 ```
-open import Equality
+open import Library.Equality
 open import Chapter.Intro.Bool
 ```
 

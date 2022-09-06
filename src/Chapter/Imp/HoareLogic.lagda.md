@@ -8,13 +8,13 @@ title: "Hoare Logic for verification of IMP programs"
 
 module Chapter.Imp.HoareLogic where
 
-open import Bool
-open import Nat
-open import Nat.Properties
-open import Logic
-open import Logic.Laws
-open import Equality
-open import Equality.Reasoning
+open import Library.Bool
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.Logic
+open import Library.Logic.Laws
+open import Library.Equality
+open import Library.Equality.Reasoning
 
 open import Chapter.Imp.AexpBexp
 open import Chapter.Imp.BigStep

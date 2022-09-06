@@ -1,4 +1,4 @@
-module Fun where
+module Library.Fun where
 
 id : {A : Set} -> A -> A
 id x = x

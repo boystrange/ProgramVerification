@@ -1,8 +1,8 @@
-module LessThan.Reasoning where
+module Library.LessThan.Reasoning where
 
-open import Nat
-open import LessThan
-open import Equality
+open import Library.Nat
+open import Library.LessThan
+open import Library.Equality
 
 infix  1 begin_
 infixr 2 _<=⟨⟩_ _<=⟨_⟩_ _==⟨_⟩_ _<⟨_⟩_ _<⟨⟩_

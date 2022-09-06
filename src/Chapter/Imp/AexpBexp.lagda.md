@@ -8,12 +8,12 @@ title: "Arithmetic and boolean expressions"
 
 module Chapter.Imp.AexpBexp where
 
-open import Bool
-open import Nat
-open import Nat.Properties
-open import Logic
-open import Equality
-open import Equality.Reasoning
+open import Library.Bool
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.Logic
+open import Library.Equality
+open import Library.Equality.Reasoning
 
 ```
 -->

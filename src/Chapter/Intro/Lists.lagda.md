@@ -7,10 +7,10 @@ prev:  Chapter.Intro.Polymorphism
 ```
 module Chapter.Intro.Lists where
 
-open import Fun
-open import Equality
-open import Equality.Reasoning
-open import Nat
+open import Library.Fun
+open import Library.Equality
+open import Library.Equality.Reasoning
+open import Library.Nat
 ```
 -->
 

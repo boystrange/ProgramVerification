@@ -65,21 +65,21 @@ import Chapter.Imp.HoareLogicSoundness
 ## Mini Agda library
 
 ```
-import Bool
-import Equality
-import Equality.Reasoning
-import Fun
-import LessThan
-import LessThan.Alternative
-import LessThan.Reasoning
-import List
-import List.Permutation
-import List.Properties
-import List.Sorted
-import Logic
-import Logic.Laws
-import Nat
-import Nat.Properties
-import WellFounded
+import Library.Bool
+import Library.Equality
+import Library.Equality.Reasoning
+import Library.Fun
+import Library.LessThan
+import Library.LessThan.Alternative
+import Library.LessThan.Reasoning
+import Library.List
+import Library.List.Permutation
+import Library.List.Properties
+import Library.List.Sorted
+import Library.Logic
+import Library.Logic.Laws
+import Library.Nat
+import Library.Nat.Properties
+import Library.WellFounded
 ```
 

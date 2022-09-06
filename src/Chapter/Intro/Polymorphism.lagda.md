@@ -8,8 +8,8 @@ prev:  Chapter.Intro.NaturalNumbers
 ```
 module Chapter.Intro.Polymorphism where
 
-open import Bool
-open import Nat
+open import Library.Bool
+open import Library.Nat
 ```
 -->
 

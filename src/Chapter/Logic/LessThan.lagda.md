@@ -4,10 +4,10 @@ title: Inequality
 
 <!--
 ```
-open import Bool
-open import Nat
-open import Logic
-open import Equality
+open import Library.Bool
+open import Library.Nat
+open import Library.Logic
+open import Library.Equality
 
 module Chapter.Logic.LessThan where
 ```

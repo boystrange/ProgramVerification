@@ -1,7 +1,7 @@
-module List where
+module Library.List where
 
-open import Nat
-open import Logic
+open import Library.Nat
+open import Library.Logic
 
 data List (A : Set) : Set where
   []   : List A

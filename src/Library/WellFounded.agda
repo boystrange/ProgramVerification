@@ -1,4 +1,4 @@
-module WellFounded where
+module Library.WellFounded where
 
 data Accessible {A : Set} (_<_ : A -> A -> Set) (x : A) : Set where
   acc : ((y : A) -> y < x -> Accessible _<_ y) -> Accessible _<_ x

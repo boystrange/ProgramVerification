@@ -6,10 +6,10 @@ title: Equality
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
 
-open import Bool
-open import Nat
-open import List
-open import Logic
+open import Library.Bool
+open import Library.Nat
+open import Library.List
+open import Library.Logic
 
 module Chapter.Logic.Equality where
 ```

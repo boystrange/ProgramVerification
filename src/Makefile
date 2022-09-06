@@ -1,14 +1,10 @@
 
 NULL =
 
-ROOTS = \
-  Main.lagda.md \
-  $(NULL)
-
 HTMLDIR = ../pages
 
-all: $(ROOTS)
-	for i in $^; do agda --html-dir=$(HTMLDIR) --html --html-highlight=auto $$i; done
+all: Main.lagda.md
+	agda --html-dir=$(HTMLDIR) --html --html-highlight=auto $^
 
 dependencies.dot: Main.lagda.md
 	agda --dependency-graph=$@ Main.lagda.md

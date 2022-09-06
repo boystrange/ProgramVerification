@@ -1,4 +1,4 @@
-module Logic where
+module Library.Logic where
 
 infixr 1 _=>_ _<=>_
 infix  2 _∨_ Σ-syntax ∃-syntax

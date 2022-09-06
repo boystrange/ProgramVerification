@@ -6,7 +6,7 @@ title: Logical connectives
 ```
 module Chapter.Logic.Connectives where
 
-open import Fun
+open import Library.Fun
 ```
 -->
 

@@ -1,11 +1,11 @@
-module List.Properties where
+module Library.List.Properties where
 
-open import Fun
-open import Nat
-open import List
-open import Equality
-open import Equality.Reasoning
-open import Logic
+open import Library.Fun
+open import Library.Nat
+open import Library.List
+open import Library.Equality
+open import Library.Equality.Reasoning
+open import Library.Logic
 
 ::-injective : ∀{A : Set} {x y : A} {xs ys : List A} -> x :: xs == y :: ys -> x == y ∧ xs == ys
 ::-injective refl = refl , refl

@@ -12,10 +12,10 @@ explain...
 ## Imports
 
 ```
-open import Equality
-open import Equality.Reasoning
-open import Nat
-open import Nat.Properties
+open import Library.Equality
+open import Library.Equality.Reasoning
+open import Library.Nat
+open import Library.Nat.Properties
 ```
 
 explain...

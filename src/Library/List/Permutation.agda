@@ -1,10 +1,10 @@
-module List.Permutation where
+module Library.List.Permutation where
 
-open import Nat
-open import List
-open import List.Properties
-open import Logic
-open import Equality
+open import Library.Nat
+open import Library.List
+open import Library.List.Properties
+open import Library.Logic
+open import Library.Equality
 
 infix  1 #begin_
 infixr 2 _#⟨⟩_ _#⟨_⟩_

@@ -1,9 +1,9 @@
-module Nat.Properties where
+module Library.Nat.Properties where
 
-open import Nat
-open import Logic
-open import Equality
-open import Equality.Reasoning
+open import Library.Nat
+open import Library.Logic
+open import Library.Equality
+open import Library.Equality.Reasoning
 
 succ-injective : {x y : ℕ} -> succ x == succ y -> x == y
 succ-injective refl = refl

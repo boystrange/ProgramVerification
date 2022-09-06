@@ -1,7 +1,7 @@
-module List.Sorted (A : Set) (_≼_ : A -> A -> Set) where
+module Library.List.Sorted (A : Set) (_≼_ : A -> A -> Set) where
 
-open import List
-open import Logic
+open import Library.List
+open import Library.Logic
 
 -- infix 4 _≼*_ _*≼_
 

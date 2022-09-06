@@ -1,8 +1,8 @@
-module Fin where
+module Library.Fin where
 
-open import Nat using (ℕ; zero; succ)
-open import Logic
-open import Equality
+open import Library.Nat using (ℕ; zero; succ)
+open import Library.Logic
+open import Library.Equality
 
 data Fin : ℕ -> Set where
   zero : ∀{n : ℕ} -> Fin (succ n)

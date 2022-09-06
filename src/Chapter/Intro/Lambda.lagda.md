@@ -18,7 +18,7 @@ simply import the module and make its content accessible by means of
 the following clause.
 
 ```
-open import Nat
+open import Library.Nat
 ```
 
 ## Simple types

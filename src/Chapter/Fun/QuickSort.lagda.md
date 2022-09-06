@@ -2,17 +2,17 @@
 ---
 
 ```agda
-open import Nat
-open import Nat.Properties
-open import Equality
-open import List
-open import List.Properties
-open import List.Permutation
-open import LessThan
-open import LessThan.Reasoning
-open import LessThan.Alternative
-open import Logic
-open import WellFounded
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.Equality
+open import Library.List
+open import Library.List.Properties
+open import Library.List.Permutation
+open import Library.LessThan
+open import Library.LessThan.Reasoning
+open import Library.LessThan.Alternative
+open import Library.Logic
+open import Library.WellFounded
 
 module Chapter.Fun.QuickSort
   (A : Set)
@@ -21,7 +21,7 @@ module Chapter.Fun.QuickSort
   (≼-total : (x y : A) -> x ≼ y ∨ y ≼ x)
   where
 
-open import List.Sorted A _≼_
+open import Library.List.Sorted A _≼_
 
 partition :
   (x : A) (xs : List A) -> ∃[ ys ] ∃[ zs ] xs # ys ++ zs ∧ All (_≼ x) ys ∧ All (x ≼_) zs

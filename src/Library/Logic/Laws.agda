@@ -1,6 +1,6 @@
-module Logic.Laws where
+module Library.Logic.Laws where
 
-open import Logic
+open import Library.Logic
 
 ex-falso : {A : Set} -> ⊥ -> A
 ex-falso ()

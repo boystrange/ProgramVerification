@@ -10,9 +10,9 @@ prev:  Chapter.Intro.Bool.Properties
 
 module Chapter.Intro.NaturalNumbers where
 
-open import Nat using (ℕ; zero; succ)
-open import Equality
-open import Equality.Reasoning
+open import Library.Nat using (ℕ; zero; succ)
+open import Library.Equality
+open import Library.Equality.Reasoning
 ```
 -->
 

@@ -1,6 +1,6 @@
-module Equality where
+module Library.Equality where
 
-open import Logic
+open import Library.Logic
 
 infix 4 _==_ _!=_
 

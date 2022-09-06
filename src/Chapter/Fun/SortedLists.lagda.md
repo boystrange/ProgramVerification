@@ -9,11 +9,11 @@ correctness of some sorting algorithms.
 
 <!--
 ```
-open import Fun
-open import Logic
-open import Equality
-open import List using (List; []; _::_; [_]; reverse; _++_)
-open import List.Properties
+open import Library.Fun
+open import Library.Logic
+open import Library.Equality
+open import Library.List using (List; []; _::_; [_]; reverse; _++_)
+open import Library.List.Properties
 ```
 -->
 

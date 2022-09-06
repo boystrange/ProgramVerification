@@ -1,4 +1,4 @@
-module Bool where
+module Library.Bool where
 
 data Bool : Set where
   true false : Bool

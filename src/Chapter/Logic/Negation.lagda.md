@@ -3,11 +3,11 @@ title: Negation and decidability
 ---
 
 ```
-open import Bool
-open import Nat
-open import List
-open import Fun
-open import Equality
+open import Library.Bool
+open import Library.Nat
+open import Library.List
+open import Library.Fun
+open import Library.Equality
 open import Chapter.Logic.Connectives
 
 module Chapter.Logic.Negation where

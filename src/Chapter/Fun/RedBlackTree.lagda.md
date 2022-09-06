@@ -14,12 +14,12 @@ The combination of these properties makes sure that the depth of a red black tre
 ```agda
 module Chapter.Fun.RedBlackTree (A : Set) (_≼_ : A -> A -> Set) where
 
-open import Nat
-open import Nat.Properties
-open import Logic
-open import LessThan
-open import LessThan.Reasoning
-open import Equality
+open import Library.Nat
+open import Library.Nat.Properties
+open import Library.Logic
+open import Library.LessThan
+open import Library.LessThan.Reasoning
+open import Library.Equality
 
 data Order : Set where
   LT EQ GT : Order
