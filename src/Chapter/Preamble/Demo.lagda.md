@@ -7,9 +7,15 @@ next:  Chapter.Preamble.Setup
 module Chapter.Preamble.Demo where
 ```
 
-explain...
-
 ## Imports
+
+The program described in this chapter makes use of natural numbers
+and of the equality predicate, which must be suitably defined and
+imported for this program to correctly type check and compile. The
+directives shown below import the necessary definitions from the
+Agda library used in this course. For the time being, we will use
+natural numbers and equality as black boxes, will see how they can
+be defined in Agda later on.
 
 ```
 open import Library.Equality
@@ -17,8 +23,6 @@ open import Library.Equality.Reasoning
 open import Library.Nat
 open import Library.Nat.Properties
 ```
-
-explain...
 
 ## The sequence of Fibonacci numbers
 
@@ -31,9 +35,7 @@ that starts with 0 followed by 1 and such that each subsequent
 number is the sum of the previous two. For example, we expect `fibo`
 to return 55 when it is applied to 10, since 55 is the 11th number
 in the sequence. The easiest implementation of `fibo` in Agda is
-shown below. Note that the program makes use of natural numbers,
-which must be suitably defined and imported for this program to
-correctly type check and compile.
+shown below.
 
 ```
 fibo : ℕ -> ℕ
