@@ -17,6 +17,27 @@ title: Introduction to Program Verification in Agda
 | `C-c C-b`     | Move backward to the previous goal               |
 | `C-c C-SPACE` | Fill the hole with the provided expression       |
 
+## References
+
+This course material is partially based on and inspired from the
+following courses, books and notes.
+
+* Dan Licata, [Programming and Proving in
+  Agda](https://www.cs.cmu.edu/~drl/teaching/oplss13/), Oregon
+  Programming Languages Summer School, 2013.
+* Samuel Mimram, [Program =
+  Proof](https://www.lix.polytechnique.fr/Labo/Samuel.Mimram/teaching/INF551/course.pdf),
+  independently published, 2020.
+* Peter Selinger, [Lectures on
+  Agda](https://www.mathstat.dal.ca/~selinger/agda-lectures/),
+  Dalhousie University, 2021.
+* Aaron Stump, [Verified Functional Programming in
+  Agda](http://www.morganclaypoolpublishers.com/catalog_Orig/product_info.php?cPath=24&products_id=908),
+  ACM Books, 2016.
+* Phil Wadler, Wen Kokke and Jeremy G. Siek, [Programming Language
+  Foundations in Agda](https://plfa.github.io), independently
+  published, 2019.
+
 ## Copyright
 
 The course material in this site has been posted for your personal
@@ -26,12 +47,3 @@ public website, or otherwise sharing these materials with people who
 are not part of the class) may be a violation of Copyright law. If
 you have questions regarding the use of materials from this site,
 please contact the instructor.
-
-## References
-
-* Ana Bove and Peter Dybjer, [Dependent Types at Work](https://doi.org/10.1007/978-3-642-03153-3_2), 2008.
-* David Darais, course on [Software Verification](http://david.darais.com/courses/2018-08-cs295A/), 2018.
-* Samuel Mimram, [Program = Proof](https://www.lix.polytechnique.fr/Labo/Samuel.Mimram/teaching/INF551/course.pdf), 2020.
-* Peter Selinger, [lectures on Agda](https://www.mathstat.dal.ca/~selinger/agda-lectures/), 2021.
-* Aaron Stump, [Verified Functional Programming in Agda](http://www.morganclaypoolpublishers.com/catalog_Orig/product_info.php?cPath=24&products_id=908), 2016.
-* Phil Wadler, Wen Kokke and Jeremy G. Siek, [Programming Language Foundations in Agda](https://plfa.github.io), 2019.
