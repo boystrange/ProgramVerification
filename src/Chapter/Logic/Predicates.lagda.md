@@ -1,5 +1,7 @@
 ---
 title: Defining predicates
+prev:  Chapter.Logic.Existential
+next:  Chapter.Logic.Equality
 ---
 
 <!--

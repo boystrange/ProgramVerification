@@ -1,5 +1,7 @@
 ---
-title: Negation and decidability
+title: Negation
+prev:  Chapter.Logic.Connectives
+next:  Chapter.Logic.Existential
 ---
 
 ```

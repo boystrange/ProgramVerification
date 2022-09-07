@@ -1,5 +1,6 @@
 ---
 title: Inequality
+prev:  Chapter.Logic.Equality
 ---
 
 <!--

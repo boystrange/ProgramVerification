@@ -1,5 +1,6 @@
 ---
 title: Logical connectives
+next:  Chapter.Logic.Negation
 ---
 
 <!--

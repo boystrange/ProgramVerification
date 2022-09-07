@@ -1,5 +1,7 @@
 ---
 title: Equality
+prev:  Chapter.Logic.Predicates
+next:  Chapter.Logic.LessThan
 ---
 
 <!--

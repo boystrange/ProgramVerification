@@ -1,5 +1,7 @@
 ---
 title: Existential quantification
+prev:  Chapter.Logic.Negation
+next:  Chapter.Logic.Predicates
 ---
 
 <!--
