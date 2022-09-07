@@ -243,7 +243,7 @@ _ = #begin
 
 We do not discuss the definition of these operators here, the
 interested reader may found in the source code of the [Mini Agda
-Library]({% link pages/List.Permutation.html %}).
+Library](List.Permutation.html).
 
 ## Putting it all together
 

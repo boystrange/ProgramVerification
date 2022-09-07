@@ -26,8 +26,7 @@ the following rules.
     [le-zero] ------    [le-succ] --------------
               0 <= x              1 + x <= 1 + y
 
-As we will see in a [later chapter]({% link
-pages/Chapter.Fun.Division.md %}), this is not the only conceivable
+As we will see in a [later chapter](Chapter.Fun.Division.html), this is not the only conceivable
 inference system that defines non-strict inequality. However, it
 turns out to be a convenient one in most situations.
 
