@@ -1,4 +1,4 @@
-{%- if page.title != 'Summary' -%}
+{%- if page.name != 'index.md' and page.name != 'Main.md' -%}
 <ul class="menu">
   <li>
     {%- if page.prev -%}
@@ -6,7 +6,7 @@
     {%- endif -%}
   </li>
   <li>
-    <a href="index.html">Summary</a>
+    <a href="Main.html">Summary</a>
   </li>
   <li>
     {%- if page.next -%}
