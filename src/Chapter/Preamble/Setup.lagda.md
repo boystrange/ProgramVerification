@@ -12,11 +12,11 @@ module Chapter.Preamble.Setup where
 In order to use Agda it is necessary to install a suitable
 combination of tools, including at least Agda itself and an
 editor. The procedure varies substantially depending on the
-Operating System. Below are some instructions originally written by
-[Peter Selinger and Frank
-Fu](https://www.mathstat.dal.ca/~selinger/agda-lectures/) to install
-Agda and Emacs on [Linux](#linux), [Mac OS](#mac-os) and [Windows
-10](#windows-10). While I am reasonably sure that the given
+Operating System and, unfortunately, may be quite involved.  Below
+are some instructions originally written by [Peter Selinger and
+Frank Fu](https://www.mathstat.dal.ca/~selinger/agda-lectures/) to
+install Agda and Emacs on [Linux](#linux), [Mac OS](#mac-os) and
+[Windows 10](#windows-10). While I am reasonably sure that the given
 instructions for Linux and Mac OS are still valid, I have no
 experience at all on installing Agda on Windows. At the bottom of
 the page is a simple [sanity check](#sanity-check) to verify whether
@@ -31,10 +31,19 @@ to work reasonably well also in combination with [Visual Studio
 Code](https://code.visualstudio.com), which is a more
 "modern-looking" editor compared to Emacs.
 
-There is also an [online service](https://agdapad.quasicoherent.io/)
-that can be used to try Agda without installing it. Note that the
-availability of this service may not be guaranteed and that its use
-may be limited to "simple" Agda programs.
+There are also two faster ways of getting started using Agda out of
+the box without installing it, but both have shortcomings. One is to
+use [this online service](https://agdapad.quasicoherent.io/). The
+problems of this service are that its availability may not be
+guaranteed in the future and its use may be limited to "simple" Agda
+programs. Another way is to use a [Virtual Box
+image](https://zenodo.org/record/4527309) of Ubuntu that comes with
+pre-installed and pre-configured Agda, Emacs and Visual Studio
+Code. Using this image requires a one-time installation of [Virtual
+Box](https://www.virtualbox.org). Installing the image guarantees
+persistent availability of Agda on your machine, but its execution
+may be occasionally slow and/or stuttering because of the
+virtualization.
 
 ## Linux
 
