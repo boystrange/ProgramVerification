@@ -49,8 +49,7 @@ double-negation x p = p x
 
 In classical logic it is common to assume the validity of the
 *excluded middle* principle, namely that `¬ A ∨ A` is true for every
-proposition `A`. As we know from the [previous chapter]({% link
-pages/Chapter.Logic.Connectives.md %}), in constructive logic, a proof of
+proposition `A`. As we know from the [previous chapter](Chapter.Logic.Connectives.html), in constructive logic, a proof of
 a disjunction `¬ A ∨ A` embeds either a proof of `¬ A` or a proof of
 `A`, hence it may very well be the case that we are unable to prove
 `¬ A ∨ A` if we cannot find either a proof of `¬ A` or a proof of

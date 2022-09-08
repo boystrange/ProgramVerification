@@ -28,8 +28,7 @@ example of **dependent pair** where the type of the second component
 depends on the value $x$ of the first one. The data type that we use
 to represent dependent pairs is traditionally called "sigma type"
 and is a refinement of the type `_∧_` we have defined in the
-[previous chapter]({% link pages/Chapter.Logic.Connectives.md
-%}#conjunction).
+[previous chapter](Chapter.Logic.Connectives.html#conjunction).
 
     data Σ (A : Set) (B : A -> Set) : Set where
       _,_ : (x : A) -> B x -> Σ A B

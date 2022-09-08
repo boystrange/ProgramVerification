@@ -45,9 +45,8 @@ itself. In general, since Agda considers two terms to be "the same"
 if they have the same normal form, we can use `refl` to construct
 equality proofs for any two terms `x` and `y` that have the same
 normal form. We have already seen a few examples of this when
-proving [properties of boolean values]({% link
-pages/Chapter.Intro.BoolProperties.md %}) and when introducing
-[natural numbers]({% link pages/Chapter.Intro.NaturalNumbers.md %}).
+proving [properties of boolean values](Chapter.Intro.BoolProperties.html) and when introducing
+[natural numbers](Chapter.Intro.NaturalNumbers.html).
 
 ```
 _ : not true == false
@@ -129,8 +128,7 @@ trans₁ refl refl = refl
 
 ## Congruence and substitution
 
-In the chapter on [natural numbers]({% link
-pages/Chapter.Intro.NaturalNumbers.md %}) we have used the congruence
+In the chapter on [natural numbers](Chapter.Intro.NaturalNumbers.html) we have used the congruence
 property of function application, namely the property that, if `x ==
 y`, then `f x == f y`. We can now see how this theorem is proved.
 
