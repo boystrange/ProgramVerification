@@ -47,3 +47,17 @@ public website, or otherwise sharing these materials with people who
 are not part of the class) may be a violation of Copyright law. If
 you have questions regarding the use of materials from this site,
 please contact the instructor.
+
+{% assign section = "Chapter.Intro.Lambda" %}
+
+{% capture section_path -%}
+pages/{{ section }}.md
+{%- endcapture %}
+
+{% assign mypage = site.pages | where: "path", section_path | first %}
+
+{{ section_path }}
+{{ mypage.title }}
+
+cazzo
+
