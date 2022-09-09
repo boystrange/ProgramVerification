@@ -8,16 +8,14 @@ module Main where
 ```
 -->
 
-## Chapters
-
-### Preamble
+## Preamble
 
 ```
 import Chapter.Preamble.Demo
 import Chapter.Preamble.Setup
 ```
 
-### Functions and data
+## Functions and data
 
 ```
 import Chapter.Intro.Lambda
@@ -28,7 +26,7 @@ import Chapter.Intro.Polymorphism
 import Chapter.Intro.Lists
 ```
 
-### Constructive logic
+## Constructive logic
 
 ```
 import Chapter.Logic.Connectives
@@ -39,7 +37,7 @@ import Chapter.Logic.Equality
 import Chapter.Logic.LessThan
 ```
 
-### Verification of functional programs
+## Verification of functional programs
 
 ```
 import Chapter.Fun.SortedLists
@@ -51,7 +49,7 @@ import Chapter.Fun.Division
 import Chapter.Fun.QuickSort
 ```
 
-### Verification of imperative programs
+## Verification of imperative programs
 
 ```
 import Chapter.Imp.Introduction
@@ -63,7 +61,7 @@ import Chapter.Imp.HoareLogicExample
 import Chapter.Imp.HoareLogicSoundness
 ```
 
-## Mini Agda library
+## Appendix: mini Agda library
 
 ```
 import Library.Bool
