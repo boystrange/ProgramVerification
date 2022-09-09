@@ -4,26 +4,28 @@ next:  Chapter.Intro.Lists
 prev:  Chapter.Intro.NaturalNumbers
 ---
 
-<!--
 ```
 module Chapter.Intro.Polymorphism where
-
-open import Library.Bool
-open import Library.Nat
 ```
--->
 
 In this chapter we study Agda's support for **polymorphism**, namely
 the ability of some functions to be applied to arguments of
 different types.
 
+## Imports
+
+```
+open import Library.Bool
+open import Library.Nat
+```
+
 ## Polymorphic functions
 
-The behavior of some functions does not depend in any way on any
-particular property of their argument. The simplest example of this
-property is that of the **identity function**, which always yields
-the value of its argument. We may conceive several versions of the
-identity function, depending on the type of its argument.
+The behavior of some functions does not depend on any particular
+property of their argument. The simplest example of function with
+such property is that of the **identity function**, which always
+yields the value of its argument. We may conceive several versions
+of the identity function, depending on the type of its argument.
 
 ```
 id₁ : Bool -> Bool
@@ -57,7 +59,7 @@ once and for all, and make it applicable to arguments of different
 types. In Agda this is made possible by the dependent arrow type.
 
 ```
-id₄ : (A : Set) -> A -> A
+id₄ : ∀(A : Set) -> A -> A
 id₄ A x = x
 ```
 
@@ -116,7 +118,7 @@ polymorphic identity function with implicit arguments is the
 following.
 
 ```
-id : {A : Set} -> A -> A
+id : ∀{A : Set} -> A -> A
 id x = x
 ```
 
@@ -148,41 +150,40 @@ Similarly, we can name the implicit argument when defining the
 function, in case it is needed in the body of the function.
 
 ```
-id₅ : {A : Set} -> A -> A
+id₅ : ∀{A : Set} -> A -> A
 id₅ {A} x = x
 ```
 
 There is no general guideline to establish whether an argument
 should be explicit or implicit. As a rule of thumb, an argument can
-be declared implicit if either it is (part of) the type of some
-subsequent argument. We will see systematic applications of this
-rule in the next chapters, as we make greater use of dependent
-types.
+be declared implicit if it also occurs later in the same type. We
+will see systematic applications of this rule in the next chapters,
+as we make greater use of dependent types.
 
 ## Exercises
 
-1. Implement the function `flip : {A B C : Set} -> (A -> B -> C) -> B -> A -> C`.
-2. Implement the function `_∘_ : {A B C : Set} -> (B -> C) -> (A -> B) -> A -> C`.
+1. Implement the function `flip : ∀{A B C : Set} -> (A -> B -> C) -> B -> A -> C`.
+2. Implement the function `_∘_ : ∀{A B C : Set} -> (B -> C) -> (A -> B) -> A -> C`.
 3. Provide two syntactically different (but equivalent)
-   implementations of the function `apply : {A B : Set} -> (A -> B) -> A -> B`.
+   implementations of the function `apply : ∀{A B : Set} -> (A -> B) -> A -> B`.
 
 ```agda
-flip : {A B C : Set} -> (A -> B -> C) -> B -> A -> C
+flip : ∀{A B C : Set} -> (A -> B -> C) -> B -> A -> C
 flip = λ f x y -> f y x
 
-_∘_ : {A B C : Set} -> (B -> C) -> (A -> B) -> A -> C
+_∘_ : ∀{A B C : Set} -> (B -> C) -> (A -> B) -> A -> C
 f ∘ g = λ x -> f (g x)
 
 -- the first version of apply follows from the definition of
 -- function application
 
-apply₁ : {A B : Set} -> (A -> B) -> A -> B
+apply₁ : ∀{A B : Set} -> (A -> B) -> A -> B
 apply₁ f x = f x
 
 -- the second version of apply is just a specialized identity
 -- function
 
-apply₂ : {A B : Set} -> (A -> B) -> A -> B
+apply₂ : ∀{A B : Set} -> (A -> B) -> A -> B
 apply₂ x = x
 ```
 {:.solution}
