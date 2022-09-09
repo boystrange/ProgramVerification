@@ -3,28 +3,33 @@ title: Programming with lists
 prev:  Chapter.Intro.Polymorphism
 ---
 
-<!--
 ```
 module Chapter.Intro.Lists where
+```
 
+Lists are a fundamental data structure for the representation of
+**finite sequences** of elements. In this section we define the
+`List` data type and prove a few properties of functions that
+manipulate lists.
+
+## Imports
+
+```
 open import Library.Fun
 open import Library.Equality
 open import Library.Equality.Reasoning
 open import Library.Nat
 ```
--->
 
-Lists are a fundamental data structure for the representation of
-**finite sequences** of elements. It is easy to define an Agda data
-type of lists, observing that every list of elements of type `A` can
-be either
+## Data types with parameters
+
+It is easy to define an Agda data type of lists, observing that
+every list of elements of type `A` can be either
 
 * the **empty list**, or
 * a non empty list with a **head** of type `A` (the first element of
   the list) and a **tail** which is itself a list of elements of
   type `A`.
-
-## Data types with parameters
 
 We would like to define the list data type once and for all,
 independently of the type `A` of its elements. For this, we
@@ -38,12 +43,13 @@ data List (A : Set) : Set where
 
 According to this definition, `List` by itself is not a
 type. Rather, it is a function that, when applied to an arbitrary
-type `A`, yields the type of lists with elements of type `A`. Notice
-that the parameter `A` is declared right after the name of the data
-type and its scope covers all the constructors of the data type, in
-which it becomes an implicit argument. In line with the syntax
-adopted in many functional languages, we have chosen to write `[]`
-for the empty list and `x :: xs` for the list with head `x` and tail
+type `A`, yields the type of lists with elements of type `A`. You
+can verify this claim by entering `C-c C-d List`. Notice that the
+parameter `A` is declared right after the name of the data type and
+its scope covers all the constructors of the data type, in which it
+becomes an implicit argument. In line with the syntax adopted in
+many functional languages, we have chosen to write `[]` for the
+empty list and `x :: xs` for the list with head `x` and tail
 `xs`. We declare `::` as a right associative operator so as to make
 it easy to write lists by repeated applications of `::`.
 
@@ -68,12 +74,12 @@ functions that manipulate lists. For example, the following function
 creates a list containing a single element.
 
 ```
-[_] : {A : Set} -> A -> List A
+[_] : ∀{A : Set} -> A -> List A
 [_] = _:: []
 ```
 
-We can write `[ 0 ]` for the list consisting of the sole element `0`
-or `[ true ]` for the list consisting of the sole element
+Now we can write `[ 0 ]` for the list consisting of the sole element
+`0` or `[ true ]` for the list consisting of the sole element
 `true`. The type of the elements of these lists is inferred
 automatically by Agda. If we want to write the implicit argument
 explicitly, we have to resort to the prefix notation: `[_] {ℕ} 0` is
@@ -84,7 +90,7 @@ As another example, below is the function that computes the length
 of a list.
 
 ```
-length : {A : Set} -> List A -> ℕ
+length : ∀{A : Set} -> List A -> ℕ
 length []        = 0
 length (_ :: xs) = succ (length xs)
 ```
@@ -97,7 +103,7 @@ operator `++`, is defined by structural recursion on the left
 operand.
 
 ```
-_++_ : {A : Set} -> List A -> List A -> List A
+_++_ : ∀{A : Set} -> List A -> List A -> List A
 []        ++ ys = ys
 (x :: xs) ++ ys = x :: (xs ++ ys)
 ```
@@ -115,7 +121,7 @@ concatenation of two lists is the sum of the lengths of the two
 lists.
 
 ```
-length-++ : {A : Set} (xs ys : List A) -> length (xs ++ ys) == length xs + length ys
+length-++ : ∀{A : Set} (xs ys : List A) -> length (xs ++ ys) == length xs + length ys
 length-++ []        ys = refl
 length-++ (_ :: xs) ys = cong succ (length-++ xs ys)
 ```
@@ -123,7 +129,7 @@ length-++ (_ :: xs) ys = cong succ (length-++ xs ys)
 Also, list concatenation is associative.
 
 ```
-++-assoc : {A : Set} (xs ys zs : List A) -> xs ++ (ys ++ zs) == (xs ++ ys) ++ zs
+++-assoc : ∀{A : Set} (xs ys zs : List A) -> xs ++ (ys ++ zs) == (xs ++ ys) ++ zs
 ++-assoc []        ys zs = refl
 ++-assoc (x :: xs) ys zs = cong (x ::_) (++-assoc xs ys zs)
 ```
@@ -133,14 +139,14 @@ concatenation. On the left, this property follows from the very
 definition of list concatenation.
 
 ```
-++-unit-l : {A : Set} (xs : List A) -> xs == [] ++ xs
+++-unit-l : ∀{A : Set} (xs : List A) -> xs == [] ++ xs
 ++-unit-l _ = refl
 ```
 
 On the right, we prove the result by structural induction on the list.
 
 ```
-++-unit-r : {A : Set} (xs : List A) -> xs == xs ++ []
+++-unit-r : ∀{A : Set} (xs : List A) -> xs == xs ++ []
 ++-unit-r [] = refl
 ++-unit-r (x :: xs) =
   begin
@@ -160,7 +166,7 @@ of defining this function and the version we show here is simple but
 also inefficient.
 
 ```
-reverse : {A : Set} -> List A -> List A
+reverse : ∀{A : Set} -> List A -> List A
 reverse []        = []
 reverse (x :: xs) = reverse xs ++ [ x ]
 ```
@@ -169,7 +175,9 @@ Intuitively, reversing the empty list yields the empty list and
 reversing a list with head `x` and tail `xs` yields a list whose
 prefix is the reverse of `xs` and whose last element is `x`. Note
 the use of the operator `[_]` which is necessary as concatenation is
-defined on lists, not on single elements of lists.
+defined on lists, not on single elements of lists. As an example,
+entering `C-c C-n reverse (0 :: 1 :: 2 :: 3 :: [])` yields `3 :: 2
+:: 1 :: 0 :: []`.
 
 We expect `reverse` to be an *involution*, namely a function that is
 the inverse of itself. Before proving this property, it is necessary
@@ -178,7 +186,7 @@ surprisingly, reversing the concatenation of two lists yields the
 concatenation of the two lists reversed, but in the *reverse order*!
 
 ```
-reverse-++ : {A : Set} (xs ys : List A) -> reverse (xs ++ ys) == reverse ys ++ reverse xs
+reverse-++ : ∀{A : Set} (xs ys : List A) -> reverse (xs ++ ys) == reverse ys ++ reverse xs
 reverse-++ [] ys        = ++-unit-r (reverse ys)
 reverse-++ (x :: xs) ys =
   begin
@@ -194,7 +202,7 @@ reverse-++ (x :: xs) ys =
 We can now show that `reverse` is an involution.
 
 ```
-reverse-inv : {A : Set} (xs : List A) -> reverse (reverse xs) == xs
+reverse-inv : ∀{A : Set} (xs : List A) -> reverse (reverse xs) == xs
 reverse-inv [] = refl
 reverse-inv (x :: xs) =
   begin
@@ -220,20 +228,19 @@ front of another list. Since the elements are moved one by one, the
 effect is that of reversing the first list "onto" the second one.
 
 ```
-reverse-onto : {A : Set} -> List A -> List A -> List A
+reverse-onto : ∀{A : Set} -> List A -> List A -> List A
 reverse-onto []        ys = ys
 reverse-onto (x :: xs) ys = reverse-onto xs (x :: ys)
 ```
 
-For exampe, using `C-c C-n` we can verify that `reverse-onto (1 :: 2
-:: 3 :: []) [ 4 ]` normalizes to `3 :: 2 :: 1 :: 4 :: []`. In
-particular, we can obtain an alternative way of computing `reverse
-xs` as `reverse-onto xs []`. The advantage of this approach is that
-`reverse-onto` is only defined in terms of `::`, whose complexity is
-constant.
+For exampe, entering `C-c C-n reverse-onto (1 :: 2 :: 3 :: []) [ 4
+]` yields `3 :: 2 :: 1 :: 4 :: []`. In particular, we can obtain an
+alternative way of computing `reverse xs` as `reverse-onto xs
+[]`. The advantage of this approach is that `reverse-onto` is only
+defined in terms of `::`, whose complexity is constant.
 
 ```
-fast-reverse : {A : Set} -> List A -> List A
+fast-reverse : ∀{A : Set} -> List A -> List A
 fast-reverse xs = reverse-onto xs []
 ```
 
@@ -242,7 +249,7 @@ different implementations of the same function we need the following
 auxiliary result, relating `reverse-onto` and `reverse`.
 
 ```
-lemma-reverse-onto : {A : Set} (xs ys : List A) -> reverse-onto xs ys == reverse xs ++ ys
+lemma-reverse-onto : ∀{A : Set} (xs ys : List A) -> reverse-onto xs ys == reverse xs ++ ys
 lemma-reverse-onto [] ys = refl
 lemma-reverse-onto (x :: xs) ys =
   begin
@@ -258,7 +265,7 @@ lemma-reverse-onto (x :: xs) ys =
 We can now complete the proof of `fast-reverse xs == reverse xs`.
 
 ```
-fast-reverse-correct : {A : Set} (xs : List A) -> fast-reverse xs == reverse xs
+fast-reverse-correct : ∀{A : Set} (xs : List A) -> fast-reverse xs == reverse xs
 fast-reverse-correct xs =
   begin
     fast-reverse xs    ==⟨ refl ⟩
@@ -273,7 +280,7 @@ fast-reverse-correct xs =
 Let `map` be the function defined below.
 
 ```
-map : {A B : Set} -> (A -> B) -> List A -> List B
+map : ∀{A B : Set} -> (A -> B) -> List A -> List B
 map f []        = []
 map f (x :: xs) = f x :: map f xs
 ```
@@ -284,15 +291,15 @@ map f (x :: xs) = f x :: map f xs
 4. Prove that `(map f ∘ map g) xs == map (f ∘ g) xs`
 
 ```
-map-length : {A B : Set} (f : A -> B) (xs : List A) -> length (map f xs) == length xs
+map-length : ∀{A B : Set} (f : A -> B) (xs : List A) -> length (map f xs) == length xs
 map-length f [] = refl
 map-length f (x :: xs) = cong succ (map-length f xs)
 
-map-++ : {A B : Set} (f : A -> B) (xs ys : List A) -> map f (xs ++ ys) == map f xs ++ map f ys
+map-++ : ∀{A B : Set} (f : A -> B) (xs ys : List A) -> map f (xs ++ ys) == map f xs ++ map f ys
 map-++ f []        ys = refl
 map-++ f (x :: xs) ys = cong (f x ::_) (map-++ f xs ys)
 
-map-reverse : {A B : Set} (f : A -> B) (xs : List A) -> map f (reverse xs) == reverse (map f xs)
+map-reverse : ∀{A B : Set} (f : A -> B) (xs : List A) -> map f (reverse xs) == reverse (map f xs)
 map-reverse f [] = refl
 map-reverse f (x :: xs) =
   begin
@@ -305,7 +312,7 @@ map-reverse f (x :: xs) =
     reverse (map f (x :: xs))
   end
 
-map-∘ : {A B C : Set} (f : B -> C) (g : A -> B) (xs : List A) ->
+map-∘ : ∀{A B C : Set} (f : B -> C) (g : A -> B) (xs : List A) ->
   (map f ∘ map g) xs == map (f ∘ g) xs
 map-∘ f g [] = refl
 map-∘ f g (x :: xs) =
@@ -319,6 +326,7 @@ map-∘ f g (x :: xs) =
     map (f ∘ g) (x :: xs)
   end
 ```
+{:.solution}
 
 <!--
 Let `foldl` and `foldr` be the functions defined
