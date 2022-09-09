@@ -14,39 +14,44 @@ prev:  Chapter.Intro.Bool
 module Chapter.Intro.Bool.Properties where
 ```
 
-## Propositional equality
-
 In this section we start exploring the use of Agda not only as a
 language for writing programs, but also as a language for writing
-**proofs** about programs. To this aim, we must use some features of
-the language that allow us to express **propositions**, namely
-assertions that can be either "true" (if we are able to come up with
-a proof for them) or "false" (if we are able to show that every
-proof of them leads to a contradiction). In this chapter we will use
+**proofs** about programs.
+
+## Imports
+
+We must be able to express **propositions**, namely assertions that
+can be either "true" (if we are able to come up with a proof for
+them) or "false" (if we are able to show that every proof of them
+leads to a contradiction). In this chapter we will use
 **propositional equality**. This relation is not built into Agda,
-but is actually [definable as a data type](Chapter.Logic.Equality.html). For the time being, we simply *use*
-the definition of propositional equality from the library without
-pretending to understand how it works. To this aim, we *import* the
-`Equality` module, along with the previous chapter from which we
-inherit the definition of `Bool` and the functions on boolean
-values.
+but is actually [definable as a data
+type](Chapter.Logic.Equality.html). For the time being, we simply
+*use* the definition of propositional equality from the library
+without pretending to understand how it works. To this aim, we
+*import* the `Equality` module, along with the previous section from
+which we inherit the definition of `Bool` and the functions on
+boolean values.
 
 ```
 open import Library.Equality
 open import Chapter.Intro.Bool
 ```
 
+## Propositional equality
+
 The first aspect we have to familiarize with is that, unlike the
 equality operator that is commonly found in ordinary programming
-languages, Agda's propositional equality `==` is a *type*. More
-precisely, we can write types such as `true == true` and `true ==
-false` or, equivalently, `_==_ true true` and `_==_ true false`. An
-expression of type `true == true` is meant to present a *proof* that
-`true` is equal to `true`, just like an expression of type `false ==
-false` is meant to represent a *proof* that `false` is equal to
-`false`. Understandably, we should be unable to write expressions of
-type `true == false` or `false == true`, since `true` and `false`
-are distinct values of type `Bool` which should be never identified.
+languages, Agda's propositional equality `==` allows us to build
+*types*. More precisely, we can write types such as `true == true`
+and `true == false` or, equivalently, `_==_ true true` and `_==_
+true false`. An expression of type `true == true` is meant to
+represent a *proof* that `true` is equal to `true`, just like an
+expression of type `false == false` is meant to represent a *proof*
+that `false` is equal to `false`. Understandably, we should be
+unable to write expressions of type `true == false` or `false ==
+true`, since `true` and `false` are distinct values of type `Bool`
+which should be never identified.
 
 The question now is what *is* a proof that `true` is equal to `true`
 and, similarly, what is a proof that `false` is equal to
@@ -115,7 +120,7 @@ the arrow types that we have used until now, this is an example of
 **dependent function type** because the type of the codomain of the
 function -- `not (not x) == x` -- *depends* the argument `x` to
 which the function is applied. The `∀` symbol is purely cosmetic and
-will be omitted from now on.
+may be omitted. We will use it merely for readability.
 
 Going back to our goal, proving that `not` is an involution is the
 same as finding a function that has type `(x : Bool) -> not (not x)
@@ -123,7 +128,7 @@ same as finding a function that has type `(x : Bool) -> not (not x)
 partial definition:
 
 ```
-not-inv : (x : Bool) -> not (not x) == x
+not-inv : ∀(x : Bool) -> not (not x) == x
 not-inv x = {!!}
 ```
 
@@ -136,13 +141,13 @@ an error message saying that `not (not x)` and `x` are not the
 same. What happens here is that Agda tries to evaluate `not (not x)`
 and `x` to see if they have the same normal form. However, since
 both contain a variable `x`, which stands for an unknown boolean
-value, Agda is unable to reduce these terms any further: `x` is its
-own normal form and so is `not (not x)`. For Agda, these terms are
-far from being the same.  If `not` is applied to `true`, then Agda
-knows that the result is `false`, and if `not` is applied to
-`false`, then Agda knows that the result is `true`, but if `not` is
-applied to some unknown boolean value `x`, the evaluation of `not x`
-(and thus of `not (not x)` as well) is simply stuck.
+value, Agda is unable to reduce these terms any further: `x` is in
+normal form, `not (not x)` is in normal form and, for Agda, these
+terms are far from being the same.  If `not` is applied to `true`,
+then Agda knows that the result is `false`, and if `not` is applied
+to `false`, then Agda knows that the result is `true`, but if `not`
+is applied to some unknown boolean value `x`, the evaluation of `not
+x` (and thus of `not (not x)` as well) is simply stuck.
 
 To make some progress from here we have to recall that `not` has
 been defined *by cases* on its argument. The idea then is to proceed
@@ -150,7 +155,7 @@ in a similar fashion also for the definition of `not-inv` by
 performing a case analysis on `x`.
 
 ```
-not-inv₁ : (x : Bool) -> not (not x) == x
+not-inv₁ : ∀(x : Bool) -> not (not x) == x
 not-inv₁ true  = {!!}
 not-inv₁ false = {!!}
 ```
@@ -164,17 +169,21 @@ x)`. What has happened here is that the first hole corresponds to
 the case in which `x` is `true`. In this case, Agda is able to
 evaluate `not (not x)` to `true` using the definition of `not`. The
 good news is that we are now able to provide the proof that `true`
-is equal to `true`, that is just `refl` as in `true-eq`. A similar
-thing happens for the second hole. In this case, Agda knows that `x`
-is `false`, so the goal simplifies to `false == false` for which
-`refl` is a perfectly valid proof. We have thus completed our first
-proper theorem in Agda:
+is equal to `true`, that is just `true-eq`. A similar thing happens
+for the second hole. In this case, Agda knows that `x` is `false`,
+so the goal simplifies to `false == false` for which `false-eq` is a
+perfectly valid proof. We have thus completed our first proper
+theorem in Agda:
 
 ```
-not-inv₂ : (x : Bool) -> not (not x) == x
-not-inv₂ true  = refl
-not-inv₂ false = refl
+not-inv₂ : ∀(x : Bool) -> not (not x) == x
+not-inv₂ true  = true-eq
+not-inv₂ false = false-eq
 ```
+
+Note that, since `true-eq` and `false-eq` are definitionally equal
+to `refl`, we could have equivalently written `refl` on the right
+hand side of the two equations in the definition of `not-inv₂`.
 
 ## Commutativity of `&&` and telescopes
 
@@ -183,7 +192,7 @@ fact that `&&` is commutative, namely that `x && y == y && x` for
 every `x` and `y`.
 
 ```
-&&-comm : (x : Bool) -> (y : Bool) -> x && y == y && x
+&&-comm : ∀(x : Bool) -> ∀(y : Bool) -> x && y == y && x
 &&-comm true  true  = refl
 &&-comm true  false = refl
 &&-comm false true  = refl
@@ -207,13 +216,13 @@ necessary to write the `->` symbol to separate subsequent arguments
 in a dependent function type. That is, the type of `&&-comm` can be
 equivalently written as
 
-    &&-comm : (x : Bool) (y : Bool) -> x && y == y && x
+    &&-comm : ∀(x : Bool) (y : Bool) -> x && y == y && x
 
 Also, where there are multiple subsequent arguments of the same type
 in a dependent function type we can collapse them together, like
 this:
 
-    &&-comm : (x y : Bool) -> x && y == y && x
+    &&-comm : ∀(x y : Bool) -> x && y == y && x
 
 This is sometimes referred to as Agda's "telescopic notation". Note
 that these types are totally equivalent and therefore
@@ -238,26 +247,27 @@ interchangeable.
 -- perform a case analysis on x because, according to the definition
 -- of &&, true && x is the same as x
 
-&&-unit-l : (x : Bool) -> true && x == x
+&&-unit-l : ∀(x : Bool) -> true && x == x
 &&-unit-l x = refl
 
-&&-unit-r : (x : Bool) -> x && true == x
+&&-unit-r : ∀(x : Bool) -> x && true == x
 &&-unit-r true  = refl
 &&-unit-r false = refl
 
 -- EXERCISE 2
 
-&&-assoc : (x y z : Bool) -> x && (y && z) == (x && y) && z
+&&-assoc : ∀(x y z : Bool) -> x && (y && z) == (x && y) && z
 &&-assoc true y z = refl
 &&-assoc false y z = refl
 
 -- EXERCISE 3
 
-not-&& : (x y : Bool) -> not (x && y) == not x || not y
+not-&& : ∀(x y : Bool) -> not (x && y) == not x || not y
 not-&& true  _ = refl
 not-&& false _ = refl
 
-not-|| : (x y : Bool) -> not (x || y) == not x && not y
+not-|| : ∀(x y : Bool) -> not (x || y) == not x && not y
 not-|| true  _ = refl
 not-|| false _ = refl
 ```
+{:.solution}
