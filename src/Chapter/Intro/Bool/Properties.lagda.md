@@ -7,10 +7,12 @@ prev:  Chapter.Intro.Bool
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
-
-module Chapter.Intro.Bool.Properties where
 ```
 -->
+
+```
+module Chapter.Intro.Bool.Properties where
+```
 
 ## Propositional equality
 

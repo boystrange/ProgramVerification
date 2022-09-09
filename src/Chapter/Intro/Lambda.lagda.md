@@ -126,9 +126,9 @@ definition).
 By loading the program using `C-c C-l`, Agda verifies that `f` is
 well typed and that its type is consistent with the one provided in
 its signature.  We can verify the behavior of `f` by applying it to
-some natural numbers. For example, if we hit `C-c C-n` and enter `f
-2` we obtain `5` as result. The command `C-c C-n` asks Agda to
-*evaluate* (technically, to *normalize*), the provided expression.
+some natural numbers. For example, if we enter `C-c C-n f 2` we
+obtain `5` as result. The command `C-c C-n` asks Agda to *evaluate*
+(technically, to *normalize*), the provided expression.
 
 When defining abstractions, Agda provides an alternative, more
 convenient notation with which argument and body of the function are

@@ -7,10 +7,12 @@ prev:  Chapter.Intro.Lambda
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
-
-module Chapter.Intro.Bool where
 ```
 -->
+
+```
+module Chapter.Intro.Bool where
+```
 
 In this chapter we start looking at the constructs for defining and
 using new data types in Agda.
@@ -46,6 +48,11 @@ expressions that are different from `true` and `false` and yet that
 happen to have type `Bool` because, once evaluated, they yield a
 value that is either `true` or `false`.
 
+We can verify these claims asking Agda to type all the entities
+introduced by the above definition: the command `C-c C-d Bool`
+yields `Set`, and the commands `C-c C-d true` and `C-c C-d false`
+both yield `Bool`.
+
 ## Defining functions using pattern matching
 
 Let us now define the function that *negates* a boolean value. Its
@@ -68,8 +75,10 @@ expression (on the right hand side of the `=` sign) showing what the
 function yields when applied to a particular boolean value. As
 always when we use the symbol `=`, we are telling Agda that `not
 true` is definitionally equal to `false` and that `not false` is
-definitionally equal to `true`. These terms are interchangeable and
-one may be used where the other is expected.
+definitionally equal to `true`. By "definitionally equal" we mean
+that these terms are interchangeable in the sense that one may be
+used where the other is expected without Agda noticing any
+difference.
 
 We can ask Agda to *infer* the type of an application such as `not
 true` or `not false` by hitting `C-c C-d`. In both cases Agda
@@ -86,12 +95,12 @@ We will extensively use this style of defining functions by case
 analysis on their arguments. In fact, Agda provides a convenient
 facility for generating all the cases we have to consider in an
 interactive way by starting from an *incomplete* definition of `not`
-(as usual, we use indices such as ₁ and ₂ to distinguish multiple
-definitions of the same function so that they are not in conflict
-with each other).
+(as usual, we use indices such as `₁` and `₂` to distinguish
+multiple definitions of the same function so that they are not in
+conflict with each other).
 
-   not₁ : Bool -> Bool
-   not₁ x = ?
+    not₁ : Bool -> Bool
+    not₁ x = ?
 
 We can place the question mark `?` anywhere an expression is
 expected and we do not know yet which expression it should be. Once
@@ -109,10 +118,10 @@ supposed to fill the hole with an expression of type `Bool` and also
 that, in order to do so, we have at our disposal a value `x`, the
 argument of `not₁`, which is also of type `Bool`. Since the result
 of `not₁` *depends* on `x`, we have to perform a case analysis on it
-by hitting `C-c C-c` and entering `x`. Agda knows that `x` is of
-type `Bool` and that the only values of that type are `true` and
-`false`, so Agda will create two equations corresponding to the two
-cases we have to handle.
+by entering `C-c C-c x`. Agda knows that `x` is of type `Bool` and
+that the only values of that type are `true` and `false`, so Agda
+will create two equations corresponding to the two cases we have to
+handle.
 
 ```
 not₂ : Bool -> Bool
@@ -141,17 +150,17 @@ Since `true` is the unit of boolean conjunction, when the first
 argument of `and` is `true` the result is just the second
 argument. Since `false` is the absorbing element of the boolean
 conjunction, when the first argument of `and` is `false` the result
-is simply `false` regardless of the second argument. Since the
-second argument is not used in the second equation, we replace it
-with an undeerscore `_`. It is not necessary to do so, but using
-underscores on the left hand side of equations sometimes helps us
-keeping the code clean and easier to read, highlighting the fact
-that some arguments are not used in some cases.
+is simply `false` regardless of the second argument. When an
+argument is not used in an equation, we can replace it with an
+undeerscore `_`. It is not necessary to do so, but using underscores
+on the left hand side of equations sometimes helps us keeping the
+code clean and easier to read, highlighting the fact that some
+arguments are not used in some cases.
 
 We can ask Agda to evaluate `and` applied to some inputs to convince
-ourseleves that the function behaves as expected. For example, `and
-true true` evaluates to `true`, whereas `and false true` evaluates
-to `false`.
+ourseleves that the function behaves as expected. For example, `C-c
+C-n and true true` yields `true` whereas C-c C-n and false true`
+yields `false`.
 
 Note that the above definition of `and` is not the only way to
 define boolean conjunction. In fact, we could as well provide four
@@ -166,9 +175,9 @@ and₁ false false = false
 ```
 
 As usual, there are many different ways in which functions can be
-defined. However, in Agda this is more important than ever because
-the way functions are defined may heavily affect how we prove
-properties about them, as we will see shortly.
+defined. However, in Agda the definition we choose for a function is
+more important than ever because it may heavily affect how we prove
+properties about it as we will see shortly.
 
 ## Infix notation
 
@@ -177,7 +186,7 @@ express the conjunction of `true` with the result of the conjunction
 of `true` and `false` by means of the expression `and true (and true
 false)` which evaluates to `false`. This notation, in which a
 function application is denoted by the function *followed by* its
-arguments, is sometimes called **prefix** notation and is widespread
+arguments, is sometimes called **prefix notation** and is widespread
 in most programming languages. However, it is occasionally desirable
 to introduce a more lightweight and possibly more familiar notation
 for function applications whereby a function with two arguments is
@@ -218,7 +227,9 @@ telling Agda that `&&` is meant to be interpreted as a
 for declaring *right-associative* operators and just `infix` for
 declaring operators that are neither left- nor right-associative
 (typically, these will be operators with one or more than two
-operands).
+operands). The priority becomes important as soon as more than one
+operator is defined to tell Agda what is the intended priority among
+them.
 
 ## Exercises
 

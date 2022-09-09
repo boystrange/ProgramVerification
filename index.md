@@ -6,16 +6,21 @@ title: Introduction to Program Verification in Agda
 
 ## Summary of Emacs shortcuts
 
-| Command       | Action                                           |
-|---------------|--------------------------------------------------|
-| `C-c C-l`     | Load the current file                            |
-| `C-c C-d`     | Enter an expression and show its type            |
-| `C-c C-n`     | Enter an expression and normalize it             |
-| `C-c C-c`     | Enter an argument an perform case analysis on it |
-| `C-c C-,`     | Show goal and context                            |
-| `C-c C-f`     | Move forward to the next goal                    |
-| `C-c C-b`     | Move backward to the previous goal               |
-| `C-c C-SPACE` | Fill the hole with the provided expression       |
+| Command              | Action                                     |
+|----------------------|--------------------------------------------|
+| `C-c C-l`            | Load the current file                      |
+| `C-c C-d expression` | Show the type of `expression`              |
+| `C-c C-n expression` | Normalize `expression`                     |
+| `C-c C-c argument`   | Perform case analysis on `argument`        |
+| `C-c C-,`            | Show goal and context                      |
+| `C-c C-f`            | Move forward to the next goal              |
+| `C-c C-b`            | Move backward to the previous goal         |
+| `C-c C-r`            | Refine the current hole                    |
+| `C-c C-SPACE`        | Fill the hole with the provided expression |
+
+## Fira Code and ligatures
+
+latex sequences
 
 ## References
 
