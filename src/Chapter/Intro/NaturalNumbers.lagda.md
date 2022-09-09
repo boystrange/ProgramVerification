@@ -7,18 +7,31 @@ prev:  Chapter.Intro.Bool.Properties
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
-
-module Chapter.Intro.NaturalNumbers where
-
-open import Library.Nat using (ℕ; zero; succ)
-open import Library.Equality
-open import Library.Equality.Reasoning
 ```
 -->
+
+```
+module Chapter.Intro.NaturalNumbers where
+```
 
 In this chapter we define the data type of natural numbers and some
 operations on them. We then prove some fundamental properties of
 these operations.
+
+## Imports
+
+<!--
+```
+open import Library.Nat using (ℕ; zero; succ)
+```
+-->
+
+```
+open import Library.Equality
+open import Library.Equality.Reasoning
+```
+
+## Defining the natural numbers
 
 The main challenge we have to face in defining the data type of
 natural numbers is that there are infinitely many of them. So, we
@@ -51,9 +64,9 @@ The fact that every natural number, no matter how large, can be
 constructed with repeated applications of just two constructors
 `zero` and `succ` will be convenient in the following, when we will
 define functions by case analysis on arguments that have type
-`ℕ`. However, it would be helpful to make Agda recognize the
-standard positional notation using sequences of digits. We can do so
-by means of the following directive
+`ℕ`. However, it helps to make Agda recognize the standard
+positional notation using sequences of digits. We can do so by means
+of the following directive
 
     {-# BUILTIN NATURAL ℕ #-}
 
@@ -130,7 +143,7 @@ that an expression such as `1 + 2 + 3` is to be interpreted as `(1 +
 function:
 
 ```
-+-assoc : (x y z : ℕ) -> x + (y + z) == (x + y) + z
++-assoc : ∀(x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc x y z = {!!}
 ```
 
@@ -139,9 +152,9 @@ arguments and yields a proof that `x + (y + z)` and `(x + y) + z`
 are equal. As we have seen for booleans, also for natural numbers we
 usually need to perform case analysis on one or more arguments in
 order to prove a property like `+-assoc`. However, it may not be
-obvious to decide *on which* argument we should do case analysis
-on. A general rule of thumb that works in many cases is to look at
-the goal that we want to prove, `x + (y + z) == (x + y) + z`, and to
+obvious to decide *on which* argument we should do case analysis. A
+general rule of thumb that works in many cases is to look at the
+goal that we want to prove, `x + (y + z) == (x + y) + z`, and to
 rank the variables according to the number of times case analysis is
 performed on them by the operators that occur therein. We know that
 `+` performs case analysis on its left operand, so in the above type
@@ -152,7 +165,7 @@ analysis on `y` is performed only once, on the left hand side of
 never performed). By doing case analysis on `x` we obtain:
 
 ```
-+-assoc₁ : (x y z : ℕ) -> x + (y + z) == (x + y) + z
++-assoc₁ : ∀(x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc₁ zero     y z = {!!}
 +-assoc₁ (succ x) y z = {!!}
 ```
@@ -162,7 +175,7 @@ normalizing `x + (y + z) == (x + y) + z` when `x` is replaced by
 `zero`. So, this hole can be filled with `refl`.
 
 ```
-+-assoc₂ : (x y z : ℕ) -> x + (y + z) == (x + y) + z
++-assoc₂ : ∀(x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc₂ zero     y z = refl
 +-assoc₂ (succ x) y z = {!!}
 ```
@@ -183,7 +196,7 @@ provided by the `cong` function in the `Equality` module: if `x` and
 associative, thus:
 
 ```
-+-assoc₃ : (x y z : ℕ) -> x + (y + z) == (x + y) + z
++-assoc₃ : ∀(x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc₃ zero     y z = refl
 +-assoc₃ (succ x) y z = cong succ (+-assoc₃ x y z)
 ```
@@ -191,12 +204,12 @@ associative, thus:
 ## Commutativity of `+` and equational reasoning
 
 Proving that `+` is also commutative involves a little more work. As
-it turns out it is useful to first prove two auxiliary properties
+it turns out, it is useful to first prove two auxiliary properties
 that will come handy in due time. The first property asserts that
 `zero` is a right unit for `+`.
 
 ```
-+-unit-r : (x : ℕ) -> x == x + 0
++-unit-r : ∀(x : ℕ) -> x == x + 0
 +-unit-r zero     = refl
 +-unit-r (succ x) = cong succ (+-unit-r x)
 ```
@@ -206,7 +219,7 @@ the very definition of `+` since `zero + x` is definitionally equal
 to `x`.
 
 ```
-+-unit-l : (x : ℕ) -> x == 0 + x
++-unit-l : ∀(x : ℕ) -> x == 0 + x
 +-unit-l x = refl
 ```
 
@@ -215,7 +228,7 @@ in a sum can be shifted from one operand to the other without
 affecting the result.
 
 ```
-+-succ : (x y : ℕ) -> succ x + y == x + succ y
++-succ : ∀(x y : ℕ) -> succ x + y == x + succ y
 +-succ zero     y = refl
 +-succ (succ x) y = cong succ (+-succ x y)
 ```
@@ -223,7 +236,7 @@ affecting the result.
 We are now ready to prove the commutativity property of `+`.
 
 ```
-+-comm : (x y : ℕ) -> x + y == y + x
++-comm : ∀(x y : ℕ) -> x + y == y + x
 +-comm x y = {!!}
 ```
 
@@ -231,7 +244,7 @@ As usual, we proceed by performing case analysis on `x`, which
 yields the following two cases:
 
 ```
-+-comm₁ : (x y : ℕ) -> x + y == y + x
++-comm₁ : ∀(x y : ℕ) -> x + y == y + x
 +-comm₁ zero     y = {!!}
 +-comm₁ (succ x) y = {!!}
 ```
@@ -241,7 +254,7 @@ zero`. This is precisely the property that we called `+-unit-r`
 applied to the variable `y`.
 
 ```
-+-comm₂ : (x y : ℕ) -> x + y == y + x
++-comm₂ : ∀(x y : ℕ) -> x + y == y + x
 +-comm₂ zero     y = +-unit-r y
 +-comm₂ (succ x) y = {!!}
 ```
@@ -265,7 +278,7 @@ expression. Let's see how we can close the commutativity proof of
 `+` using an equational reasoning block.
 
 ```
-+-comm₃ : (x y : ℕ) -> x + y == y + x
++-comm₃ : ∀(x y : ℕ) -> x + y == y + x
 +-comm₃ zero     y = +-unit-r y
 +-comm₃ (succ x) y =
   begin
@@ -308,14 +321,14 @@ parentheses would not be necessary in this case since function
 application has higher precedence than any other operator (including
 `+`). In the following we will usually omit unnecessary parentheses.
 
-## Some properties of `*`
+## Distributivity and associativity of `*`
 
 We conclude this chapter with the proof that multiplication is
 associative. To this aim, we first prove that `*` distributes over
 `+` on the right.
 
 ```
-*-dist-r : (x y z : ℕ) -> (x + y) * z == x * z + y * z
+*-dist-r : ∀(x y z : ℕ) -> (x + y) * z == x * z + y * z
 *-dist-r zero y z = refl
 *-dist-r (succ x) y z =
   begin
@@ -348,7 +361,7 @@ abstract over the other one.
 We are now ready to prove the associativity of `*`.
 
 ```
-*-assoc : (x y z : ℕ) -> x * (y * z) == (x * y) * z
+*-assoc : ∀(x y z : ℕ) -> x * (y * z) == (x * y) * z
 *-assoc zero y z = refl
 *-assoc (succ x) y z =
   begin
@@ -408,13 +421,13 @@ fact : ℕ -> ℕ
 fact zero     = 1
 fact (succ x) = succ x * fact x
 
-*-zero-r : (x : ℕ) -> 0 == x * 0
+*-zero-r : ∀(x : ℕ) -> 0 == x * 0
 *-zero-r zero     = refl
 *-zero-r (succ x) = *-zero-r x
 
 -- EXERCISE 3
 
-*-unit-l : (x : ℕ) -> 1 * x == x
+*-unit-l : ∀(x : ℕ) -> 1 * x == x
 *-unit-l x =
   begin
     1 * x     ==⟨ refl ⟩
@@ -423,13 +436,13 @@ fact (succ x) = succ x * fact x
     x
   end
 
-*-unit-r : (x : ℕ) -> x * 1 == x
+*-unit-r : ∀(x : ℕ) -> x * 1 == x
 *-unit-r zero     = refl
 *-unit-r (succ x) = cong succ (*-unit-r x)
 
 -- EXERCISE 4
 
-*-succ : (x y : ℕ) -> x + x * y == x * succ y
+*-succ : ∀(x y : ℕ) -> x + x * y == x * succ y
 *-succ zero y = refl
 *-succ (succ x) y =
   begin
@@ -444,7 +457,7 @@ fact (succ x) = succ x * fact x
     succ x * succ y
   end
 
-*-comm : (x y : ℕ) -> x * y == y * x
+*-comm : ∀(x y : ℕ) -> x * y == y * x
 *-comm zero y     = *-zero-r y
 *-comm (succ x) y =
   begin
@@ -456,7 +469,7 @@ fact (succ x) = succ x * fact x
 
 -- EXERCISE 5
 
-*-dist-l : (x y z : ℕ) -> x * (y + z) == x * y + x * z
+*-dist-l : ∀(x y z : ℕ) -> x * (y + z) == x * y + x * z
 *-dist-l x y z =
   begin
     x * (y + z)   ==⟨ *-comm x (y + z) ⟩
@@ -476,7 +489,7 @@ x ^ succ n = x * x ^ n
 
 -- EXERCISE 7
 
-^-prop-1 : (x m n : ℕ) -> x ^ m * x ^ n == x ^ (m + n)
+^-prop-1 : ∀(x m n : ℕ) -> x ^ m * x ^ n == x ^ (m + n)
 ^-prop-1 x zero     n = *-unit-l (x ^ n)
 ^-prop-1 x (succ m) n =
   begin
@@ -488,7 +501,7 @@ x ^ succ n = x * x ^ n
 
 -- EXERCISE 8
 
-^-prop-2 : (x y n : ℕ) -> (x * y) ^ n == x ^ n * y ^ n
+^-prop-2 : ∀(x y n : ℕ) -> (x * y) ^ n == x ^ n * y ^ n
 ^-prop-2 x y zero = refl
 ^-prop-2 x y (succ n) =
   begin
@@ -505,7 +518,7 @@ x ^ succ n = x * x ^ n
 
 -- EXERCISE 9
 
-^-unit : (n : ℕ) -> 1 ^ n == 1
+^-unit : ∀(n : ℕ) -> 1 ^ n == 1
 ^-unit zero = refl
 ^-unit (succ n) =
   begin
@@ -516,7 +529,7 @@ x ^ succ n = x * x ^ n
     1
   end
 
-^-prop-3 : (x m n : ℕ) -> x ^ m ^ n == x ^ (m * n)
+^-prop-3 : ∀(x m n : ℕ) -> x ^ m ^ n == x ^ (m * n)
 ^-prop-3 x zero n = ^-unit n
 ^-prop-3 x (succ m) n =
   begin
@@ -527,5 +540,5 @@ x ^ succ n = x * x ^ n
     x ^ (n + m * n)     ==⟨ refl ⟩
     x ^ (succ m * n)
   end
-
 ```
+{:.solution}
