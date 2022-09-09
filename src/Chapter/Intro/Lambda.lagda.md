@@ -3,17 +3,17 @@ title: Types and functions
 next:  Chapter.Intro.Bool
 ---
 
-<!--
 ```
 module Chapter.Intro.Lambda where
 ```
--->
+
+## Imports
 
 To try out the examples discussed in this chapter and to solve the
-proposed exercises it is necessary to include the `Nat` module,
-which defines the natural numbers and some basic operations on
-them. We will discuss natural numbers in a [dedicated chapter]({%
-link pages/Chapter.Intro.NaturalNumbers.md %}). For the time being, we
+proposed exercises it is necessary to import the `Nat` module, which
+defines the natural numbers and some basic operations on them. We
+will see how natural numbers are defined in a [dedicated
+chapter](Chapter.Intro.NaturalNumbers.html). For the time being, we
 simply import the module and make its content accessible by means of
 the following clause.
 
@@ -52,14 +52,14 @@ their type is determined.
 * A variable of type `A` is also a term of type `A`.
 * If `x` is a variable, `A` is a type and `M` is a term of type `B`
   assuming that `x` has type `A`, then `(λ (x : A) -> M)` is a term
-  of type `A -> B` called **abstraction** and represents a function
+  of type `A -> B` called **abstraction** and representing a function
   that produces `M` when applied to `x`. We say that `x` is the
   **argument** of the function and that `M` is its **body**.
 * If `M` is a term of type `A -> B` and `N` is a term of type `A`,
-  then `(M N)` is a term of type `B` called **application** and
-  represents the application of (the function) `M` to (the argument)
-  `N`. It is useful to think of function application as of an
-  invisible operator placed in between `M` and `N`.
+  then `(M N)` is a term of type `B` called **application**
+  representing the application of (the function) `M` to (the
+  argument) `N`. It is useful to think of function application as of
+  an invisible operator placed in between `M` and `N`.
 
 We will introduce new terms in the following chapters. For the time
 being, since we have imported the `Nat` module from the library, a
@@ -71,7 +71,7 @@ number of terms defined therein are also available. In particular:
 
 The usual decimal notation for natural numbers is also available, so
 that `0` can be used as abbreviation for `zero`, `2` can be used for
-abbreviation for `succ (succ zero)` and `42` can be used for
+abbreviation for `(succ (succ zero))` and `42` can be used for
 abbreviation for 42 applications of `succ` to `zero`.
 
 As for types, also for terms we adopt some syntactic conventions to
@@ -107,17 +107,21 @@ definitions like this one must always be accompanied by a
 signature. The second line provides the **definition** of `f` with
 which we establish that `f` is **definitionally** the same as the
 abstraction `λ x - x ^ 2 + 1`. That is, for Agda the name `f` and
-the term `λ x -> x ^ 2 + 1` are definitionally the same thing. Note
-that we omit the type of the argument `x` for this abstraction: Agda
-is able to figure out that `x` has type `ℕ` from both the signature
-of `f` and the fact that the operators `^` and `+` concern natural
-numbers.
+the term `λ x -> x ^ 2 + 1` are **equal**. Note that we omit the
+type of the argument `x` for this abstraction: Agda is able to
+figure out that `x` has type `ℕ` from both the signature of `f` and
+the fact that the operators `^` and `+` concern natural
+numbers. Speaking of these operators, `^` and `+` are defined in the
+`Nat` module by means of equations analogous to the one defining
+`f`. Here, we take them for granted. Note that it is possible to
+*click* on any colored symbol to reach its definition.
 
 A note on **spacing** in Agda: unlike most programming languages,
 Agda allows almost any character to be part of an identifier. For
 example, `^` and `+` are plain Agda identifiers just like `f` and
 `ℕ`. If we write `x^2` (without spaces around `^`), Agda considers
-this a single identifier (for which we have provided no definition).
+this as a single identifier (for which we have provided no
+definition).
 
 By loading the program using `C-c C-l`, Agda verifies that `f` is
 well typed and that its type is consistent with the one provided in
@@ -136,12 +140,12 @@ f₁ : ℕ -> ℕ
 f₁ x = x ^ 2 + 1
 ```
 
-which can be read as "`f₁` applied to `x` is definitionally the same
-as `x ^ 2 + 1`". We have named this alternative definition of the
-function `f₁` instead of `f` to avoid a *name clash*: there cannot
-be two definitions with the same name in the same Agda file. Here
-and in the following chapters we will use indices when providing
-multiple versions of the same definition.
+which can be read as "`f₁` applied to `x` is equal to `x ^ 2 +
+1`". We have named this alternative definition of the function `f₁`
+instead of `f` to avoid a *name clash*: there cannot be two
+definitions with the same name in the same Agda file. Here and in
+the following we will use indices when providing multiple versions
+of the same definition.
 
 ## Multi-argument and higher-order functions
 
@@ -189,7 +193,11 @@ above yields `26`.
 
 1. Define at least six different versions of the function that
    computes the successor of a natural number.
-2. Which of the following terms are well typed? Use Agda to verify
+2. Define a function `poly₁` that, applied to a natural number $x$,
+   yields $2x^2$.
+3. Define a function `poly₂` that, applied to two natural numbers
+   $x$ and $y$, yields $2(x^3 + y^2)$.
+4. Which of the following terms are well typed? Use Agda to verify
    whether your answers are correct.
    * `λ (x : ℕ -> ℕ -> ℕ) (y : ℕ -> ℕ) -> x y`
    * `λ (x : (ℕ -> ℕ) -> ℕ) (y : ℕ) -> x y`
@@ -217,4 +225,13 @@ succ₅ x = x + 1
 
 succ₆ : ℕ -> ℕ
 succ₆ x = 1 + x
+
+-- EXERCISE 2
+
+poly₂ : ℕ -> ℕ
+poly₂ x = 2 * x ^ 2
+
+poly₃ : ℕ -> ℕ -> ℕ
+poly₃ x y = 2 * (x ^ 3 + y ^ 2)
 ```
+{:.solution}
