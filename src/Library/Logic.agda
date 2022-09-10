@@ -61,6 +61,9 @@ data _∨_ (A B : Set) : Set where
 Decidable : Set -> Set
 Decidable A = ¬ A ∨ A
 
+pattern yes x = inr x
+pattern no  x = inl x
+
 -- DOUBLE IMPLICATION
 
 _<=>_ : Set -> Set -> Set
