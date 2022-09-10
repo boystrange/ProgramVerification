@@ -5,25 +5,25 @@ open import Library.Logic
 open import Library.Equality
 open import Library.Equality.Reasoning
 
-succ-injective : {x y : ℕ} -> succ x == succ y -> x == y
+succ-injective : ∀{x y : ℕ} -> succ x == succ y -> x == y
 succ-injective refl = refl
 
-+-assoc : (x y z : ℕ) -> x + (y + z) == (x + y) + z
++-assoc : ∀(x y z : ℕ) -> x + (y + z) == (x + y) + z
 +-assoc zero y z = refl
 +-assoc (succ x) y z = cong succ (+-assoc x y z)
 
-+-succ : (x y : ℕ) -> succ x + y == x + succ y
++-succ : ∀(x y : ℕ) -> succ x + y == x + succ y
 +-succ zero y = refl
 +-succ (succ x) y = cong succ (+-succ x y)
 
-+-unit-l : (x : ℕ) -> 0 + x == x
++-unit-l : ∀(x : ℕ) -> 0 + x == x
 +-unit-l _ = refl
 
-+-unit-r : (x : ℕ) -> x + 0 == x
++-unit-r : ∀(x : ℕ) -> x + 0 == x
 +-unit-r zero = refl
 +-unit-r (succ x) = cong succ (+-unit-r x)
 
-+-comm : (x y : ℕ) -> x + y == y + x
++-comm : ∀(x y : ℕ) -> x + y == y + x
 +-comm zero y = symm (+-unit-r y)
 +-comm (succ x) y =
   begin
@@ -33,15 +33,15 @@ succ-injective refl = refl
     y + succ x
   end
 
-minus-zero : (x : ℕ) -> x - 0 == x
+minus-zero : ∀(x : ℕ) -> x - 0 == x
 minus-zero zero = refl
 minus-zero (succ _) = refl
 
-+-minus : (x y : ℕ) -> x + y - x == y
++-minus : ∀(x y : ℕ) -> x + y - x == y
 +-minus zero y = minus-zero y
 +-minus (succ x) y = +-minus x y
 
-_=?_ : (x y : ℕ) -> Decidable (x == y)
+_=?_ : ∀(x y : ℕ) -> Decidable (x == y)
 zero   =? zero   = inr refl
 zero   =? succ y = inl λ ()
 succ x =? zero   = inl (λ ())
@@ -51,18 +51,18 @@ succ x =? succ y with x =? y
 
 infix 4 _=?_
 
-*-unit-l : (x : ℕ) -> 1 * x == x
+*-unit-l : ∀(x : ℕ) -> 1 * x == x
 *-unit-l x = +-unit-r x
 
-*-unit-r : (x : ℕ) -> x * 1 == x
+*-unit-r : ∀(x : ℕ) -> x * 1 == x
 *-unit-r zero = refl
 *-unit-r (succ x) = cong succ (*-unit-r x)
 
-*-zero-r : (x : ℕ) -> 0 == x * 0
+*-zero-r : ∀(x : ℕ) -> 0 == x * 0
 *-zero-r zero     = refl
 *-zero-r (succ x) = *-zero-r x
 
-*-dist-r : (x y z : ℕ) -> (x + y) * z == x * z + y * z
+*-dist-r : ∀(x y z : ℕ) -> (x + y) * z == x * z + y * z
 *-dist-r zero y z = refl
 *-dist-r (succ x) y z =
   begin
@@ -74,7 +74,7 @@ infix 4 _=?_
     succ x * z + y * z
   end
 
-*-succ : (x y : ℕ) -> x + x * y == x * succ y
+*-succ : ∀(x y : ℕ) -> x + x * y == x * succ y
 *-succ zero y = refl
 *-succ (succ x) y =
   begin
@@ -89,7 +89,7 @@ infix 4 _=?_
     succ x * succ y
   end
 
-*-comm : (x y : ℕ) -> x * y == y * x
+*-comm : ∀(x y : ℕ) -> x * y == y * x
 *-comm zero y     = *-zero-r y
 *-comm (succ x) y =
   begin
@@ -99,7 +99,7 @@ infix 4 _=?_
     y * succ x
   end
 
-*-assoc : (x y z : ℕ) -> x * (y * z) == (x * y) * z
+*-assoc : ∀(x y z : ℕ) -> x * (y * z) == (x * y) * z
 *-assoc zero y z = refl
 *-assoc (succ x) y z =
   begin
@@ -110,7 +110,7 @@ infix 4 _=?_
     (succ x * y) * z
   end
 
-*-dist-l : (x y z : ℕ) -> x * (y + z) == x * y + x * z
+*-dist-l : ∀(x y z : ℕ) -> x * (y + z) == x * y + x * z
 *-dist-l x y z =
   begin
     x * (y + z)   ==⟨ *-comm x (y + z) ⟩
