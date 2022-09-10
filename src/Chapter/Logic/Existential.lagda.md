@@ -4,7 +4,12 @@ prev:  Chapter.Logic.Negation
 next:  Chapter.Logic.Predicates
 ---
 
-<!--
+```
+module Chapter.Logic.Existential where
+```
+
+## Imports
+
 ```
 open import Library.Fun
 open import Library.Bool
@@ -14,24 +19,22 @@ open import Library.List
 open import Library.Equality
 open import Library.Logic hiding (fst; snd)
 open import Library.Logic.Laws
-
-module Chapter.Logic.Existential where
 ```
--->
 
 ## Defining the existential quantifier
 
 In constructive logic, the proof of a predicate of the form $∃x\in
 A.P(x)$ is a **pair** consisting of a particular element $x$ of $A$
-along with a proof that $x$ satisfies the predicate $P$. This is an
-example of **dependent pair** where the type of the second component
-depends on the value $x$ of the first one. The data type that we use
-to represent dependent pairs is traditionally called "sigma type"
-and is a refinement of the type `_∧_` we have defined in the
-[previous chapter](Chapter.Logic.Connectives.html#conjunction).
+called *witness* along with a proof that $x$ satisfies the predicate
+$P$. This is an example of **dependent pair** where the type of the
+second component depends on the value $x$ of the first one. The data
+type that we use to represent dependent pairs is traditionally
+called "sigma type" and is a refinement of the type `_∧_` we have
+defined in a [previous
+chapter](Chapter.Logic.Connectives.html#conjunction).
 
     data Σ (A : Set) (B : A -> Set) : Set where
-      _,_ : (x : A) -> B x -> Σ A B
+      _,_ : ∀(x : A) -> B x -> Σ A B
 
 The *non-dependent* pair type can be defined as an instance of a
 sigma type where the type of the second component does *not* depend
@@ -48,12 +51,15 @@ particular, the type of `snd` refers to the first component of a
 dependent pair by means of `fst`.
 
 ```
-fst : {A : Set} {B : A -> Set} -> Σ A B -> A
+fst : ∀{A : Set} {B : A -> Set} -> Σ A B -> A
 fst (x , _) = x
 
-snd : {A : Set} {B : A -> Set} (p : Σ A B) -> B (fst p)
+snd : ∀{A : Set} {B : A -> Set} (p : Σ A B) -> B (fst p)
 snd (_ , y) = y
 ```
+
+Sigma types have plenty of uses in the specification and
+verification of programs. Below we see a few examples.
 
 ## Refined types
 
@@ -91,11 +97,11 @@ non-null divisors, and the functions `head` and `tail` that
 respectively return the head and the tail of a non-empty list.
 
 ```
-head : {A : Set} -> List⁺ A -> A
+head : ∀{A : Set} -> List⁺ A -> A
 head ([]      , nempty) = ex-falso (nempty refl)
 head (x :: _  , _     ) = x
 
-tail : {A : Set} -> List⁺ A -> List A
+tail : ∀{A : Set} -> List⁺ A -> List A
 tail ([]      , nempty) = ex-falso (nempty refl)
 tail (_ :: xs , _     ) = xs
 ```
@@ -107,8 +113,8 @@ structure of the list. Agda is not able to automatically rule out
 the case in which the list is `[]`. However, this case is made
 impossible by the proof `nempty` that the list is not empty, hence
 we can honor our obligation to yield a result of the desired type by
-invoking `absurd`. When the list is not empty, we simply return the
-right component.
+invoking `ex-falso`. When the list is not empty, we simply return
+the right component.
 
 ## Intrinsic verification
 
@@ -139,7 +145,7 @@ pair, which can be automatically inferred by Agda in many
 cases. With the help of this syntax we define `pred` thus.
 
 ```
-pred : (p : ℕ⁺) -> ∃[ x ] fst p == succ x
+pred : ∀(p : ℕ⁺) -> ∃[ x ] fst p == succ x
 pred (zero   , nzero) = ex-falso (nzero refl)
 pred (succ x , _    ) = x , refl
 ```
@@ -153,7 +159,7 @@ result.
 
 The definition of functions whose type specifies their behavior in
 detail is called *intrinsic verification*. We will see more
-substantial examples of this technique in later chapters.
+substantial examples of this technique in later sections.
 
 ## Defining predicates
 
@@ -188,7 +194,7 @@ transitive. Reflexivity is shown by taking `1` as witness along with
 the proof that `1` is the left unit of multiplication.
 
 ```
-∣-refl : {x : ℕ} -> x ∣ x
+∣-refl : ∀{x : ℕ} -> x ∣ x
 ∣-refl {x} = 1 , *-unit-l x
 ```
 
@@ -200,7 +206,7 @@ into `(v * u) * x` in order to show that it serves the desired
 purpose.
 
 ```
-∣-trans : {x y z : ℕ} -> x ∣ y -> y ∣ z -> x ∣ z
+∣-trans : ∀{x y z : ℕ} -> x ∣ y -> y ∣ z -> x ∣ z
 ∣-trans (u , refl) (v , refl) = v * u , symm (*-assoc v u _)
 ```
 
@@ -210,18 +216,20 @@ showing that adding a non-null number `succ y` to `x` cannot yield
 `x` and multiplying zero to `x` cannot yield `1`.
 
 ```
-+-succ-neq : {x y : ℕ} -> x + succ y != x
++-succ-neq : ∀{x y : ℕ} -> x + succ y != x
 +-succ-neq {succ x} eq = +-succ-neq (succ-injective eq)
 
-*-zero-neq-one : (x : ℕ) -> x * 0 != 1
+*-zero-neq-one : ∀(x : ℕ) -> x * 0 != 1
 *-zero-neq-one (succ x) eq = *-zero-neq-one x eq
 ```
+
+WARNING `!=` HAS NOT BEEN DEFINED
 
 Next we show that if the product of two numbers yields `1`, then
 both numbers must be `1`.
 
 ```
-*-one : (x y : ℕ) -> x * y == 1 -> x == 1 ∧ y == 1
+*-one : ∀(x y : ℕ) -> x * y == 1 -> x == 1 ∧ y == 1
 *-one (succ x)        zero            eq = ex-falso (*-zero-neq-one x eq)
 *-one (succ zero)     (succ zero)     eq = refl , refl
 *-one (succ (succ x)) (succ zero)     ()
@@ -232,7 +240,7 @@ Then we prove that if the product of `x` and `y` yields `y`, then
 either `x` is `1` or `y` is `0`.
 
 ```
-*-same : (x y : ℕ) -> x * y == y -> x == 1 ∨ y == 0
+*-same : ∀(x y : ℕ) -> x * y == y -> x == 1 ∨ y == 0
 *-same x               zero     eq = inr refl
 *-same (succ zero)     (succ y) eq = inl refl
 *-same (succ (succ x)) (succ y) eq = ex-falso (+-succ-neq (succ-injective eq))
@@ -241,7 +249,7 @@ either `x` is `1` or `y` is `0`.
 We combine these results to prove that `∣` is antisymmetric.
 
 ```
-∣-antisymm : {x y : ℕ} -> x ∣ y -> y ∣ x -> x == y
+∣-antisymm : ∀{x y : ℕ} -> x ∣ y -> y ∣ x -> x == y
 ∣-antisymm {x} (u , refl) (v , q) with *-same (v * u) x (subst (_== x) (*-assoc v u x) q)
 ... | inr refl = *-zero-r u
 ... | inl eq with *-one v u eq
@@ -254,34 +262,34 @@ also find the witness `v` such that `v * y == x`. However, we are
 unable to also perform case analysis on the proof of this equality
 since the `y` has been unified with `u * x` and `q` is actually a
 proof of `v * (u * x) == x` (the unification fails in this case
-because `x` occurs on both sides of the equality). We use `subst` to
-obtain from `q` a proof of the equality `(v * u) * x == x` and now
-we use `*-same` to deduce that either `v * u` is `1` or `x` is
-`0`. In the latter case we conclude using the property that `0`
-absorbs multiplication on the right. In the former case, we use
+because `x` occurs on both sides of the equality). We use `subst`
+(WARNING) to obtain from `q` a proof of the equality `(v * u) * x ==
+x` and now we use `*-same` to deduce that either `v * u` is `1` or
+`x` is `0`. In the latter case we conclude using the property that
+`0` absorbs multiplication on the right. In the former case, we use
 `*-one` to deduce that both `u` and `v` must be `1` and we conclude
 using the property that `1` is the unit of multiplication on the
 left.
 
 ## Exercises
 
-1. Prove the theorem `pred' : (x : ℕ) -> x == 0 ∨ (∃[ y ] x == succ y)`.
+1. Prove the theorem `pred' : ∀(x : ℕ) -> x == 0 ∨ (∃[ y ] x == succ y)`.
 2. Define the type `ℕ₂` of natural numbers greater that `1`. Show
    that `2` (along with a suitable proof) is an element of `ℕ₂`. Then define
    the succesor on `ℕ₂`, namely the function `succ₂ : ℕ₂ -> ℕ₂`.
 3. Prove that if `x` divides both `y` and `z`, then `x` divides
    `y + z` as well.
 4. Prove the theorem `∣-not-total : ∃[ x ] ∃[ y ] ¬ (x ∣ y) ∧ ¬ (y ∣ x)`.
-5. Prove the theorem `last-view : {A : Set} (xs : List A) -> xs !=
+5. Prove the theorem `last-view : ∀{A : Set} (xs : List A) -> xs !=
    [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]`.
-6. Prove the theorem `half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z
+6. Prove the theorem `half : ∀(x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z
    ∧ (z == 0 ∨ z == 1)`.
 
 
 ```
 -- EXERCISE 1
 
-pred' : (x : ℕ) -> x == 0 ∨ (∃[ y ] x == succ y)
+pred' : ∀(x : ℕ) -> x == 0 ∨ (∃[ y ] x == succ y)
 pred' zero     = inl refl
 pred' (succ x) = inr (x , refl)
 
@@ -298,7 +306,7 @@ succ₂ (x , nzero , none) = succ x , (λ ()) , λ { refl -> nzero refl }
 
 -- EXERCISE 3
 
-∣-plus : {x y z : ℕ} -> x ∣ y -> x ∣ z -> x ∣ (y + z)
+∣-plus : ∀{x y z : ℕ} -> x ∣ y -> x ∣ z -> x ∣ (y + z)
 ∣-plus {x} (u , refl) (v , refl) = u + v , *-dist-r u v x
 
 -- EXERCISE 4
@@ -316,7 +324,7 @@ succ₂ (x , nzero , none) = succ x , (λ ()) , λ { refl -> nzero refl }
 
 -- EXERCISE 5
 
-last-view : {A : Set} (xs : List A) -> xs != [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]
+last-view : ∀{A : Set} (xs : List A) -> xs != [] -> ∃[ ys ] ∃[ y ] xs == ys ++ [ y ]
 last-view []             nempty = ex-falso (nempty refl)
 last-view (x :: [])      nempty = [] , x , refl
 last-view (x :: z :: xs) nempty with last-view (z :: xs) (λ ())
@@ -324,10 +332,10 @@ last-view (x :: z :: xs) nempty with last-view (z :: xs) (λ ())
 
 -- EXERCISE 6
 
-half : (x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z ∧ (z == 0 ∨ z == 1)
+half : ∀(x : ℕ) -> ∃[ y ] ∃[ z ] x == y * 2 + z ∧ (z == 0 ∨ z == 1)
 half zero            = zero , zero , refl , inl refl
 half (succ zero)     = zero , 1 , refl , inr refl
 half (succ (succ x)) with half x
 ... | y , z , eq , zr = succ y , z , cong (succ ∘ succ) eq , zr
 ```
-
+{:.solution}

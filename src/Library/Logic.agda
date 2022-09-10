@@ -17,7 +17,7 @@ data ⊤ : Set where
 -- SIGMA TYPE
 
 data Σ (A : Set) (P : A -> Set) : Set where
-  _,_ : (x : A) -> P x -> Σ A P
+  _,_ : ∀(x : A) -> P x -> Σ A P
 
 Σ-syntax : ∀(A : Set) (P : A -> Set) -> Set
 Σ-syntax = Σ
