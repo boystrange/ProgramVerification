@@ -18,10 +18,10 @@ open import Library.Logic
 ++-assoc []        ys zs = refl
 ++-assoc (x :: xs) ys zs = cong (x ::_) (++-assoc xs ys zs)
 
-++-unit-l : {A : Set} (xs : List A) -> [] ++ xs == xs
+++-unit-l : ∀{A : Set} (xs : List A) -> [] ++ xs == xs
 ++-unit-l _ = refl
 
-++-unit-r : {A : Set} (xs : List A) -> xs ++ [] == xs
+++-unit-r : ∀{A : Set} (xs : List A) -> xs ++ [] == xs
 ++-unit-r []        = refl
 ++-unit-r (x :: xs) = cong (x ::_) (++-unit-r xs)
 
@@ -85,10 +85,6 @@ all-++ : ∀{A : Set} {xs ys : List A} (P : A -> Set) -> All P xs -> All P ys ->
 all-++ {xs = []} P ps qs = qs
 all-++ {xs = x :: xs} P (px , ps) qs = px , all-++ P ps qs
 
-implies-all : {A : Set} {P Q : A -> Set} -> ({x : A} -> P x -> Q x) -> {xs : List A} -> All P xs -> All Q xs
+implies-all : ∀{A : Set} {P Q : A -> Set} -> ({x : A} -> P x -> Q x) -> {xs : List A} -> All P xs -> All Q xs
 implies-all imp {[]} <> = <>
 implies-all imp {_ :: _} (p , ps) = imp p , implies-all imp ps
-
--- all-all : ∀{A : Set} {xs : List A} (P Q : A -> Set) -> (∀{x : A} -> P x -> Q x) -> All P xs -> All Q xs
--- all-all {xs = []} P Q imp ps = <>
--- all-all {xs = x :: xs} P Q imp (px , ps) = imp px , all-all P Q imp ps

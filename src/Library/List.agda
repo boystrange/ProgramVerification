@@ -35,7 +35,7 @@ length : ∀{A : Set} -> List A -> ℕ
 length []        = 0
 length (_ :: xs) = succ (length xs)
 
-All : {A : Set} -> (A -> Set) -> List A -> Set
+All : ∀{A : Set} -> (A -> Set) -> List A -> Set
 All P [] = ⊤
 All P (x :: xs) = P x ∧ All P xs
 
