@@ -4,7 +4,15 @@ prev:  Chapter.Logic.Existential
 next:  Chapter.Logic.Equality
 ---
 
-<!--
+```
+module Chapter.Logic.Predicates where
+```
+
+In this chapter we study and compare several techniques with which
+it is possible to define *predicates* in Agda.
+
+## Imports
+
 ```
 open import Library.Fun
 open import Library.Bool
@@ -12,15 +20,12 @@ open import Library.Nat
 open import Library.Logic
 open import Library.Logic.Laws
 open import Library.Equality
-
-module Chapter.Logic.Predicates where
 ```
--->
 
-In this chapter we study and compare several techniques with which
-it is possible to define *predicates* in Agda. To illustrate these
-techniques, consider the following function which computes the
-(truncated) half of a natural number:
+## The half of a natural number
+
+Consider the following function which computes the (truncated) half
+of a natural number:
 
 ```
 half : ℕ -> ℕ
@@ -57,7 +62,7 @@ use `Even-p` as a predicate, we have to compare the result of
 theorem as follows.
 
 ```
-theorem-p : {x : ℕ} (ev : Even-p x == true) -> x == half x * 2
+theorem-p : ∀{x : ℕ} (ev : Even-p x == true) -> x == half x * 2
 theorem-p {zero}          refl = refl
 theorem-p {succ (succ x)} ev   = cong (succ ∘ succ) (theorem-p ev)
 ```
@@ -68,8 +73,8 @@ have the form `refl` for this is the only normal proof of an
 equality proof) bears no structure that helps us proving the
 theorem. Interestingly, Agda does not propose an equation for the
 case `succ zero`. This happens because `Even-p 1` yields `false`,
-which is certainly different from `true`, so Agda automatically
-realizes that this case is impossible.
+which is certainly different from `true`, so Agda realizes that this
+case is impossible.
 
 ## Being even, mathematically
 
@@ -111,7 +116,7 @@ yields `y`. For this, we need to prove an auxiliary lemma, which we
 locally define within `theorem-m` after the keyword `where`.
 
 ```
-theorem-m : {x : ℕ} (ev : Even-m x) -> x == half x * 2
+theorem-m : ∀{x : ℕ} (ev : Even-m x) -> x == half x * 2
 theorem-m (y , refl) = cong (_* 2) (lem y)
   where
     lem : (x : ℕ) -> x == half (x * 2)
@@ -146,7 +151,7 @@ reveal anything useful about `x` and we are forced to perform case
 analysis on `x` to complete our theorem.
 
 ```
-theorem-r : {x : ℕ} (ev : Even-r x) -> x == half x * 2
+theorem-r : ∀{x : ℕ} (ev : Even-r x) -> x == half x * 2
 theorem-r {zero}          <> = refl
 theorem-r {succ (succ x)} ev = cong (succ ∘ succ) (theorem-r ev)
 ```
@@ -186,7 +191,7 @@ define this inference system as an inductive data type such that
 Note that the evenness predicate `Even-i x` we are defining in this
 way depends on the natural number `x` that is claimed to be even. We
 cannot express this dependency merely using a parameter of the data
-type, since paramteres are supposed to be the same across the whole
+type, since parameters are supposed to be the same across the whole
 data type definition whereas the value of `x` varies (e.g., it is
 `0` in `[even-zero]` and it is `x` and `2 + x` in
 `[even-succ]`). For this reason, we define an **indexed data type**
@@ -224,7 +229,7 @@ analysis directly on `Even-i x`, which contains all the structure we
 need.
 
 ```
-theorem-i : {x : ℕ} (ev : Even-i x) -> x == half x * 2
+theorem-i : ∀{x : ℕ} (ev : Even-i x) -> x == half x * 2
 theorem-i even-zero      = refl
 theorem-i (even-succ ev) = cong (succ ∘ succ) (theorem-i ev)
 ```
@@ -236,53 +241,64 @@ theorem-i (even-succ ev) = cong (succ ∘ succ) (theorem-i ev)
    x`, that `Even-r x` implies `Even-i x`, that `Even-i x` implies
    `Even-m x` and that `Even-m x` implies `Even-p x == true`.
 2. Prove that `x == 1 + x /2 * 2` when `¬ Even-i x` holds.
-3. Define an indexed data type `Odd-i` analogous to `Even-i` but
+3. Prove that `Even-i` is decidable, namely the theorem `∀(x : ℕ) ->
+   Decidable (Even-i x)`.
+4. Define an indexed data type `Odd-i` analogous to `Even-i` but
    such that `Odd-i x` holds if and only if `x` is odd. Prove that
    `5` is odd and `2` is not.
-4. Prove that `Even-i x ∨ Odd-i x` holds and that `Even-i x ∧ Odd-i
+5. Prove that `Even-i x ∨ Odd-i x` holds and that `Even-i x ∧ Odd-i
    x` does not for every `x`.
-5. Prove that `Odd-i x` implies `x == 1 + x/2 * 2` without using
+6. Prove that `Odd-i x` implies `x == 1 + x/2 * 2` without using
    recursion, but reusing the results of exercises 2 and 4.
 
 
 ```
 -- EXERCISE 1
 
-p=>r : (x : ℕ) -> Even-p x == true -> Even-r x
+p=>r : ∀(x : ℕ) -> Even-p x == true -> Even-r x
 p=>r zero            eq = <>
 p=>r (succ (succ x)) eq = p=>r x eq
 
-r=>i : (x : ℕ) -> Even-r x -> Even-i x
+r=>i : ∀(x : ℕ) -> Even-r x -> Even-i x
 r=>i zero            ev = even-zero
 r=>i (succ (succ x)) ev = even-succ (r=>i x ev)
 
-i=>m : {x : ℕ} -> Even-i x -> Even-m x
+i=>m : ∀{x : ℕ} -> Even-i x -> Even-m x
 i=>m even-zero = 0 , refl
 i=>m (even-succ ev) with i=>m ev
 ... | y , refl = succ y , refl
 
-m=>p : {x : ℕ} -> Even-m x -> Even-p x == true
+m=>p : ∀{x : ℕ} -> Even-m x -> Even-p x == true
 m=>p (y , refl) = lem y
   where
-    lem : (y : ℕ) -> Even-p (y * 2) == true
+    lem : ∀(y : ℕ) -> Even-p (y * 2) == true
     lem zero     = refl
     lem (succ y) = lem y
 
 -- EXERCISE 2
 
-not-even : (x : ℕ) -> ¬ Even-i x -> x == 1 + half x * 2
+not-even : ∀(x : ℕ) -> ¬ Even-i x -> x == 1 + half x * 2
 not-even zero            nev = ex-falso (nev even-zero)
 not-even (succ zero)     nev = refl
 not-even (succ (succ x)) nev = cong (succ ∘ succ) (not-even x (lem x nev))
   where
-    lem : (x : ℕ) -> ¬ Even-i (2 + x) -> ¬ Even-i x
+    lem : ∀(x : ℕ) -> ¬ Even-i (2 + x) -> ¬ Even-i x
     lem x nev ev = nev (even-succ ev)
 
 -- EXERCISE 3
 
+Even? : ∀(x : ℕ) -> Decidable (Even-i x)
+Even? zero            = yes even-zero
+Even? (succ zero)     = no λ ()
+Even? (succ (succ x)) with Even? x
+... | yes ev = yes (even-succ ev)
+... | no nev = no λ { (even-succ ev) → nev ev }
+
+-- EXERCISE 4
+
 data Odd-i : ℕ -> Set where
   odd-one  : Odd-i 1
-  odd-succ : {x : ℕ} -> Odd-i x -> Odd-i (2 + x)
+  odd-succ : ∀{x : ℕ} -> Odd-i x -> Odd-i (2 + x)
 
 _ : Odd-i 5
 _ = odd-succ (odd-succ odd-one)
@@ -290,22 +306,23 @@ _ = odd-succ (odd-succ odd-one)
 _ : ¬ Odd-i 2
 _ = λ { (odd-succ ()) }
 
--- EXERCISE 4
+-- EXERCISE 5
 
-even-or-odd : (x : ℕ) -> Even-i x ∨ Odd-i x
+even-or-odd : ∀(x : ℕ) -> Even-i x ∨ Odd-i x
 even-or-odd zero            = inl even-zero
 even-or-odd (succ zero)     = inr odd-one
 even-or-odd (succ (succ x)) with even-or-odd x
 ... | inl ev = inl (even-succ ev)
 ... | inr od = inr (odd-succ od)
 
-even-and-odd : (x : ℕ) -> ¬ (Even-i x ∧ Odd-i x)
+even-and-odd : ∀(x : ℕ) -> ¬ (Even-i x ∧ Odd-i x)
 even-and-odd zero            (_  , ())
 even-and-odd (succ zero)     (() , _ )
 even-and-odd (succ (succ x)) (even-succ ev , odd-succ od) = even-and-odd x (ev , od)
 
--- EXERCISE 5
+-- EXERCISE 6
 
-odd : {x : ℕ} -> Odd-i x -> x == 1 + half x * 2
+odd : ∀{x : ℕ} -> Odd-i x -> x == 1 + half x * 2
 odd {x} od = not-even x (contraposition (_, od) (even-and-odd x))
 ```
+{:.solution}
