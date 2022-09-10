@@ -1,6 +1,6 @@
 module Library.Logic where
 
-infixr 1 _=>_ _<=>_
+infixr 1 _<=>_
 infix  2 _∨_ Σ-syntax ∃-syntax
 infixr 3 _∧_
 infixr 4 _,_
@@ -61,12 +61,7 @@ data _∨_ (A B : Set) : Set where
 Decidable : Set -> Set
 Decidable A = ¬ A ∨ A
 
--- IMPLICATION
-
-_=>_ : Set -> Set -> Set
-A => B = A -> B
-
 -- DOUBLE IMPLICATION
 
 _<=>_ : Set -> Set -> Set
-A <=> B = (A => B) ∧ (B => A)
+A <=> B = (A -> B) ∧ (B -> A)
