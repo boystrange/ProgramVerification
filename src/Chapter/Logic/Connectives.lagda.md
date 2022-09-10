@@ -3,35 +3,41 @@ title: Logical connectives
 next:  Chapter.Logic.Negation
 ---
 
-<!--
 ```
 module Chapter.Logic.Connectives where
-
-open import Library.Fun
 ```
--->
 
-The logic we have been using so far is based on a small set of
-operators that correspond to a limited set of Agda types:
+The logic we have been using so far is based on a limited set of
+Agda types:
 
 * **Logical implication** corresponds to the *arrow type*: a proof
   of `A -> B` is a function that, applied to a proof of `A`, yields
   a proof of `B`.
 * **Universal quantification** corresponds to the **dependent arrow
-  type**: a proof of `(x : A) -> B` is a function that, applied to
+  type**: a proof of `∀(x : A) -> B` is a function that, applied to
   an element `x` of type `A`, yields a proof of `B` (where `x` may
   occur in `B`).
 * **Equality** `E == F` is the type of proofs showing that `E` is
-  equal to `F`. We have used *reflexivity* `refl` as the only way of
-  proving equalities.
+  equal to `F`. In order to prove equalities we have used
+  *reflexivity* and equational reasoning.
 
 In general, we will need a richer set of logical connectives in
 order to prove interesting properties of programs. For example, to
 prove the correctness of a sorting function on lists we must be able
 to state that the list resulting from the function is sorted *and*
-that it is also a permutation of the original list. In this chapter
-we will develop a small library of data types representing
-**conjunction**, **disjunction**, **truth** and **falsity**.
+that it is also a permutation of the original list. This property is
+the *conjunction* of two sub-properties of lists, that is being
+sorted and being a permutation of another list. In this chapter we
+will see how to represent **conjunction**, **disjunction**,
+**truth** and **falsity** in constructive logic by means of suitably
+defined data types.
+
+## Imports
+
+```
+open import Library.Fun
+open import Library.Nat
+```
 
 ## Conjunction
 
@@ -46,21 +52,21 @@ data _∧_ (A B : Set) : Set where
   _,_ : A -> B -> A ∧ B
 ```
 
-Notice that we have chosen an infix form for both the data type and
-its only constructor: we will be able to write `A ∧ B` for the type
-of pairs whose first component has type `A` and whose second
-component has type `B`; similarly, we will be able to write `p , q`
-for the pair whose first component is `p` and whose second component
-is `q`. We specify the fixity of `∧` and `,` so that they are both
-right associative.
+Notice that we have chosen an infix form for both the data type
+`_∧_` and its constructor `_,_`. In this way, we will be able to
+write `A ∧ B` for the type of pairs whose first component has type
+`A` and whose second component has type `B`. Analogously, we will be
+able to write `p , q` for the pair whose first component is `p` and
+whose second component is `q`. We specify the fixity of `∧` and `,`
+so that they are both right associative.
 
 ```
 infixr 3 _∧_
 infixr 4 _,_
 ```
 
-This way, `A ∧ B ∧ C` and `p , q , r` must be interpreted as `A ∧ (B
-∧ C)` and `p , (q , r)`, respectively.
+For example, `A ∧ B ∧ C` means `A ∧ (B ∧ C)` and `p , q , r` means
+`p , (q , r)`.
 
 The most common way of "consuming" pairs is by performing case
 analysis on them. Since the `_∧_` data type has only one
@@ -70,10 +76,10 @@ example, we can define two projections `fst` and `snd` that allow us
 to access the two components of a pair.
 
 ```
-fst : {A B : Set} -> A ∧ B -> A
+fst : ∀{A B : Set} -> A ∧ B -> A
 fst (x , _) = x
 
-snd : {A B : Set} -> A ∧ B -> B
+snd : ∀{A B : Set} -> A ∧ B -> B
 snd (_ , y) = y
 ```
 
@@ -125,7 +131,7 @@ B`. As an example, we can formulate the elimination principle for
 disjunctions as the following function.
 
 ```
-∨-elim : {A B C : Set} -> (A -> C) -> (B -> C) -> A ∨ B -> C
+∨-elim : ∀{A B C : Set} -> (A -> C) -> (B -> C) -> A ∨ B -> C
 ∨-elim f g (inl x) = f x
 ∨-elim f g (inr x) = g x
 ```
@@ -134,7 +140,7 @@ For instance, we can use `∨-elim` to prove that disjunction is
 commutative:
 
 ```
-∨-comm : {A B : Set} -> A ∨ B -> B ∨ A
+∨-comm : ∀{A B : Set} -> A ∨ B -> B ∨ A
 ∨-comm = ∨-elim inr inl
 ```
 
@@ -164,109 +170,125 @@ to prove `⊥`, then it is possible to prove anything. Stating this
 principle in Agda requires the use of the **absurd pattern**.
 
 ```
-absurd : {A : Set} -> ⊥ -> A
-absurd ()
+ex-falso : ∀{A : Set} -> ⊥ -> A
+ex-falso ()
 ```
 
-The pattern `()` in the definition of `absurd` matches an
+The pattern `()` in the definition of `ex-falso` matches an
 hypothetical value of type `⊥`. Since no constructor is provided for
 `⊥` and no such value may exist, the equation *has no right hand
 side* (note that there is no equal sign) and we are not obliged to
-provide a proof of `A` as required by the codomain of `absurd`.
+provide a proof of `A` as required by the codomain of `ex-falso`.
 
 In other programming languages that are capable of defining a data
 type analogous to `⊥` it is possible to assign the type `⊥` to
 non-terminating expressions. If this were allowed also in Agda, the
 whole language would be useless insofar program verification is
-concerned, since `absurd` would easily allow us to prove *any*
+concerned, since `ex-falso` would easily allow us to prove *any*
 property about *any* program. For this reason, Agda has a
 *termination checker* making sure that every definition is
 *terminating*. For example, if define `loop` as follows
 
-    loop : ℕ -> ⊥
-    loop n = loop (succ n)
+<!--
+```
+{-# TERMINATING #-}
+```
+-->
+```
+loop : ℕ -> ⊥
+loop n = loop (succ n)
+```
 
 Agda reports that this definition does not pass the termination
 check. Indeed, `loop` is recursively applied to increasingly larger
 arguments. An even simpler example of non-terminating definition is
 `bottom`, shown below.
 
-    bottom : ⊥
-    bottom = bottom
+<!--
+```
+{-# TERMINATING #-}
+```
+-->
+```
+bottom : ⊥
+bottom = bottom
+```
 
 All the recursive functions we have defined until now are verified
 by Agda to be *terminating* because there is an argument that
 becomes *structurally smaller* from an application of the function
 to its recursive invocation. Structural recursion applies to a large
-family of functions, but some of them (e.g. [division](Chapter.Fun.Division.html) or [quick sort](Chapter.Fun.QuickSort.html)) cannot be easily formulated in this
-way. We will see a general technique for having these functions
-accepted by Agda in later chapters.
+family of functions, but some of them
+(e.g. [division](Chapter.Fun.Division.html) or [quick
+sort](Chapter.Fun.QuickSort.html)) cannot be easily formulated in
+this way. We will see a general technique for having these functions
+accepted by Agda in later sections.
 
 ## Exercises
 
 1. Prove that conjunction is commutative, namely the theorem
-   `∧-comm : {A B : Set} -> A ∧ B -> B ∧ A`.
+   `∧-comm : ∀{A B : Set} -> A ∧ B -> B ∧ A`.
 2. Prove that `∧` and `∨` are idempotent, namely the theorems
-   `∧-idem : {A : Set} -> A ∧ A <=> A` and `∨-idem : {A : Set} -> A
+   `∧-idem : ∀{A : Set} -> A ∧ A <=> A` and `∨-idem : ∀{A : Set} -> A
    ∨ A <=> A`.
 3. Prove that `∧` distributes over `∨` on the left, namely the
-   theorem `∧∨-dist : {A B C : Set} -> A ∧ (B ∨ C) => (A ∧ B) ∨ (A ∧
+   theorem `∧∨-dist : ∀{A B C : Set} -> A ∧ (B ∨ C) => (A ∧ B) ∨ (A ∧
    C)`.
 4. Prove that `⊤` is the unit of conjuction, namely the theorems
-   `∧-unit-l : {A : Set} -> ⊤ ∧ A <=> A` and `∧-unit-r : {A : Set}
+   `∧-unit-l : ∀{A : Set} -> ⊤ ∧ A <=> A` and `∧-unit-r : ∀{A : Set}
    -> A ∧ ⊤ <=> A`.
 5. Prove that `⊤` absorbs disjunctions, namely the theorems `∨-⊤-l :
-   {A : Set} -> ⊤ ∨ A <=> ⊤` and `∨-⊤-r : {A : Set} -> A ∨ ⊤ <=> ⊤`.
+   ∀{A : Set} -> ⊤ ∨ A <=> ⊤` and `∨-⊤-r : ∀{A : Set} -> A ∨ ⊤ <=> ⊤`.
 6. Prove that `⊥` is the unit of disjunctions, namely the theorems
-   `∨-unit-l : {A : Set} -> ⊥ ∨ A <=> A` and `∨-unit-r : {A : Set}
+   `∨-unit-l : ∀{A : Set} -> ⊥ ∨ A <=> A` and `∨-unit-r : ∀{A : Set}
    -> A ∨ ⊥ <=> A`.
 7. Prove that `⊥` absorbs conjunctions, namely the theorems `∧-⊥-l :
-   {A : Set} -> ⊥ ∧ A <=> ⊥` and `∧-⊥-r : {A : Set} -> A ∧ ⊥ <=> ⊥`.
+   ∀{A : Set} -> ⊥ ∧ A <=> ⊥` and `∧-⊥-r : ∀{A : Set} -> A ∧ ⊥ <=> ⊥`.
 
 ```
 -- EXERCISE 1
-∧-comm : {A B : Set} -> A ∧ B -> B ∧ A
+∧-comm : ∀{A B : Set} -> A ∧ B -> B ∧ A
 ∧-comm (x , y) = y , x
 
 -- EXERCISE 2
-∧-idem : {A : Set} -> A ∧ A <=> A
+∧-idem : ∀{A : Set} -> A ∧ A <=> A
 ∧-idem = fst , λ x -> (x , x)
 
-∨-idem : {A : Set} -> A ∨ A <=> A
+∨-idem : ∀{A : Set} -> A ∨ A <=> A
 ∨-idem = ∨-elim id id , inl
 
 -- EXERCISE 3
-∧∨-dist : {A B C : Set} -> A ∧ (B ∨ C) <=> (A ∧ B) ∨ (A ∧ C)
+∧∨-dist : ∀{A B C : Set} -> A ∧ (B ∨ C) <=> (A ∧ B) ∨ (A ∧ C)
 ∧∨-dist =
   (λ p -> ∨-elim (inl ∘ (fst p ,_)) (inr ∘ (fst p ,_)) (snd p)) ,
   ∨-elim (λ p -> fst p , inl (snd p)) (λ p -> fst p , inr (snd p))
 
 -- EXERCISE 4
-∧-unit-l : {A : Set} -> ⊤ ∧ A <=> A
+∧-unit-l : ∀{A : Set} -> ⊤ ∧ A <=> A
 ∧-unit-l = snd , (<> ,_)
 
-∧-unit-r : {A : Set} -> A ∧ ⊤ <=> A
+∧-unit-r : ∀{A : Set} -> A ∧ ⊤ <=> A
 ∧-unit-r = fst , (_, <>)
 
 -- EXERCISE 5
-∨-unit-l : {A : Set} -> ⊥ ∨ A <=> A
-∨-unit-l = ∨-elim absurd id , inr
+∨-unit-l : ∀{A : Set} -> ⊥ ∨ A <=> A
+∨-unit-l = ∨-elim ex-falso id , inr
 
-∨-unit-r : {A : Set} -> A ∨ ⊥ <=> A
-∨-unit-r = ∨-elim id absurd , inl
+∨-unit-r : ∀{A : Set} -> A ∨ ⊥ <=> A
+∨-unit-r = ∨-elim id ex-falso , inl
 
 -- EXERCISE 6
-∨-⊤-l : {A : Set} -> ⊤ ∨ A <=> ⊤
+∨-⊤-l : ∀{A : Set} -> ⊤ ∨ A <=> ⊤
 ∨-⊤-l = const <> , inl
 
-∨-⊤-r : {A : Set} -> A ∨ ⊤ <=> ⊤
+∨-⊤-r : ∀{A : Set} -> A ∨ ⊤ <=> ⊤
 ∨-⊤-r = const <> , inr
 
 -- EXERCISE 7
-∧-⊥-l : {A : Set} -> ⊥ ∧ A <=> ⊥
-∧-⊥-l = fst , absurd
+∧-⊥-l : ∀{A : Set} -> ⊥ ∧ A <=> ⊥
+∧-⊥-l = fst , ex-falso
 
-∧-⊥-r : {A : Set} -> A ∧ ⊥ <=> ⊥
-∧-⊥-r = snd , absurd
+∧-⊥-r : ∀{A : Set} -> A ∧ ⊥ <=> ⊥
+∧-⊥-r = snd , ex-falso
 ```
-
+{:.solution}
