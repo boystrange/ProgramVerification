@@ -1,5 +1,5 @@
 ---
-title: Logical connectives
+title: Logical connectives and constants
 next:  Chapter.Logic.Negation
 ---
 
