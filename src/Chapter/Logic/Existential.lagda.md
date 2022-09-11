@@ -263,13 +263,13 @@ unable to also perform case analysis on the proof of this equality
 since the `y` has been unified with `u * x` and `q` is actually a
 proof of `v * (u * x) == x` (the unification fails in this case
 because `x` occurs on both sides of the equality). We use `subst`
-(WARNING) to obtain from `q` a proof of the equality `(v * u) * x ==
-x` and now we use `*-same` to deduce that either `v * u` is `1` or
-`x` is `0`. In the latter case we conclude using the property that
-`0` absorbs multiplication on the right. In the former case, we use
-`*-one` to deduce that both `u` and `v` must be `1` and we conclude
-using the property that `1` is the unit of multiplication on the
-left.
+(WARNING `subst` IS DEFINED LATER) to obtain from `q` a proof of the
+equality `(v * u) * x == x` and now we use `*-same` to deduce that
+either `v * u` is `1` or `x` is `0`. In the latter case we conclude
+using the property that `0` absorbs multiplication on the right. In
+the former case, we use `*-one` to deduce that both `u` and `v` must
+be `1` and we conclude using the property that `1` is the unit of
+multiplication on the left.
 
 ## Exercises
 
