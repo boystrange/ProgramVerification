@@ -3,19 +3,21 @@ title: Inequality
 prev:  Chapter.Logic.Equality
 ---
 
-<!--
+```
+module Chapter.Logic.LessThan where
+```
+
+In this section we define the non-strict inequality relation on
+natural numbers and prove some of its fundamental properties.
+
+## Imports
+
 ```
 open import Library.Bool
 open import Library.Nat
 open import Library.Logic
 open import Library.Equality
-
-module Chapter.Logic.LessThan where
 ```
--->
-
-In this chapter we define the non-strict inequality relation on
-natural numbers and prove some of its fundamental properties.
 
 ## Non-strict inequality
 
@@ -26,16 +28,17 @@ the following rules.
     [le-zero] ------    [le-succ] --------------
               0 <= x              1 + x <= 1 + y
 
-As we will see in a [later chapter](Chapter.Fun.Division.html), this is not the only conceivable
-inference system that defines non-strict inequality. However, it
-turns out to be a convenient one in most situations.
+As we will see in a [later section](Chapter.Fun.Division.html), this
+is not the only conceivable inference system that defines non-strict
+inequality. However, it turns out to be a convenient one in most
+situations.
 
 ```
 infix 4 _<=_
 
 data _<=_ : ℕ -> ℕ -> Set where
-  le-zero : {x : ℕ} -> 0 <= x
-  le-succ : {x y : ℕ} -> x <= y -> succ x <= succ y
+  le-zero : ∀{x : ℕ} -> 0 <= x
+  le-succ : ∀{x y : ℕ} -> x <= y -> succ x <= succ y
 ```
 
 The axiom `le-zero` proves that `0` is the least element, whereas
@@ -56,7 +59,7 @@ Even though the definition of `<=` seems to make sense, one may
 wonder whether it actually characterizes the non-strict inequality
 on natural numbers. We can see that this is the case by showing that
 `<=` is correct and complete with respect to another
-characterization of such inequality given in terms of addition.
+characterization of such relation given in terms of addition.
 
 ```
 _<=ₘ_ : ℕ -> ℕ -> Set
@@ -68,7 +71,7 @@ exists some natural number `z` such that `x + z == y`. We can prove
 that `<=` implies `<=ₘ` as follows.
 
 ```
-le-correct : {x y : ℕ} -> x <= y -> x <=ₘ y
+le-correct : ∀{x y : ℕ} -> x <= y -> x <=ₘ y
 le-correct le-zero = _ , refl
 le-correct (le-succ le) with le-correct le
 ... | z , refl = z , refl
@@ -94,10 +97,10 @@ former case and `succ x + z == succ y` in the latter). In fact,
 We can also show that `<=` is complete with respect to `<=ₘ`.
 
 ```
-le-complete : {x y : ℕ} -> x <=ₘ y -> x <= y
+le-complete : ∀{x y : ℕ} -> x <=ₘ y -> x <= y
 le-complete (z , refl) = lemma
   where
-    lemma : {x y : ℕ} -> x <= x + y
+    lemma : ∀{x y : ℕ} -> x <= x + y
     lemma {zero}   = le-zero
     lemma {succ _} = le-succ lemma
 ```
@@ -112,7 +115,7 @@ Here we prove that `<=` is a **total order** on the natural
 numbers. We begin by proving **reflexivity**.
 
 ```
-le-refl : {x : ℕ} -> x <= x
+le-refl : ∀{x : ℕ} -> x <= x
 le-refl {zero}   = le-zero
 le-refl {succ x} = le-succ le-refl
 ```
@@ -121,7 +124,7 @@ If two numbers are mutually related by `<=`, then they must be
 equal. This property is called **antisymmetry** and is proved below.
 
 ```
-le-antisymm : {x y : ℕ} -> x <= y -> y <= x -> x == y
+le-antisymm : ∀{x y : ℕ} -> x <= y -> y <= x -> x == y
 le-antisymm le-zero     le-zero     = refl
 le-antisymm (le-succ p) (le-succ q) = cong succ (le-antisymm p q)
 ```
@@ -141,7 +144,7 @@ former relation is proved by `le-succ`, the second relation can only
 be proved by `le-succ` because `y` has the form `succ z`.
 
 ```
-le-trans : {x y z : ℕ} -> x <= y -> y <= z -> x <= z
+le-trans : ∀{x y z : ℕ} -> x <= y -> y <= z -> x <= z
 le-trans le-zero     q           = le-zero
 le-trans (le-succ p) (le-succ q) = le-succ (le-trans p q)
 ```
@@ -151,7 +154,7 @@ that any two natural numbers `x` and `y` are related in one way or
 another. This follows from a straightforward cases analysis on them.
 
 ```
-le-total : (x y : ℕ) -> x <= y ∨ y <= x
+le-total : ∀(x y : ℕ) -> x <= y ∨ y <= x
 le-total zero     _    = inl le-zero
 le-total (succ _) zero = inr le-zero
 le-total (succ x) (succ y) with le-total x y
@@ -161,25 +164,36 @@ le-total (succ x) (succ y) with le-total x y
 
 ## Exercises
 
-1. Show that `<=` is decidable, namely prove the theorem `_<=?_ : (x
+1. Show that `<=` is decidable, namely prove the theorem `_<=?_ : ∀(x
    y : ℕ) -> Decidable (x <= y)`.
 2. Define `min : ℕ -> ℕ -> ℕ` and `max : ℕ -> ℕ -> ℕ` and prove the theorems
-   `le-min : {x y z : ℕ} -> x <= y -> x <= z -> x <= min y z` and `le-max : {x y z : ℕ} -> x <= z -> y <= z -> max x y <= z`.
+   `le-min : ∀{x y z : ℕ} -> x <= y -> x <= z -> x <= min y z` and `le-max : ∀{x y z : ℕ} -> x <= z -> y <= z -> max x y <= z`.
 3. Strict inequality `x < y` can be defined to be the same as `succ x
    <= y`. Prove that this relation is transitive and irreflexive.
 
 ```
-_<=?_ : (x y : ℕ) -> Decidable (x <= y)
-zero   <=? y    = inr le-zero
-succ x <=? zero = inl λ ()
+-- EXERCISE 1
+
+_<=?_ : ∀(x y : ℕ) -> Decidable (x <= y)
+zero   <=? y    = yes le-zero
+succ x <=? zero = no λ ()
 succ x <=? succ y with x <=? y
-... | inl gt = inl λ { (le-succ le) -> gt le }
-... | inr le = inr (le-succ le)
+... | no  gt = no λ { (le-succ le) -> gt le }
+... | yes le = yes (le-succ le)
 
 _<_ : ℕ -> ℕ -> Set
 x < y = succ x <= y
 
-lt-irrefl : {x : ℕ} -> ¬ (x < x)
+-- EXERCISE 2
+
+-- ...
+
+-- EXERCISE 3
+
+lt-irrefl : ∀{x : ℕ} -> ¬ (x < x)
 lt-irrefl {succ zero}     (le-succ ())
 lt-irrefl {succ (succ _)} (le-succ (le-succ lt)) = lt-irrefl lt
+
+-- ...
 ```
+{:.solution}
