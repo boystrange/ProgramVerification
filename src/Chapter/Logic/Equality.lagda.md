@@ -7,20 +7,24 @@ next:  Chapter.Logic.LessThan
 <!--
 ```
 {-# OPTIONS --allow-unsolved-metas #-}
-
-open import Library.Bool
-open import Library.Nat
-open import Library.List
-open import Library.Logic
-
-module Chapter.Logic.Equality where
 ```
 -->
+
+```
+module Chapter.Logic.Equality where
+```
 
 We have now all the necessary ingredients to understand how
 propositional equality is defined in Agda.
 
-## Definitional equality?
+## Imports
+
+```
+open import Library.Bool
+open import Library.Nat
+open import Library.List
+open import Library.Logic
+```
 
 ## Propositional equality
 
@@ -70,21 +74,21 @@ Let us start with symmetry. The property that we want to prove is
 stated as follows.
 
 ```
-symm : {A : Set} {x y : A} -> x == y -> y == x
+symm : ∀{A : Set} {x y : A} -> x == y -> y == x
 symm {_} {x} {y} eq = {!!}
 ```
 
 For the sake of illustration, we have given names to the implicit
 arguments `x` and `y`, whereas we have kept `A` unnamed as it plays
-no interesting role. By inspecting the hole, we see that we have to
-provide a proof of `y == x` in a context where we have two elements
-`x` and `y` of type `A` and a term `eq` of type `x == y`. Given the
-current situation, there isn't much we can do except realize that
-equality is an inductively defined data type. As such, we can
-perform case analysis on `eq`.
+no interesting role in the proof. By inspecting the hole, we see
+that we have to provide a proof of `y == x` in a context where we
+have two elements `x` and `y` of type `A` and a term `eq` of type `x
+== y`. Given the current situation, there isn't much we can do
+except realize that equality is an inductively defined data type. As
+such, we can perform case analysis on `eq`.
 
 ```
-symm₁ : {A : Set} {x y : A} -> x == y -> y == x
+symm₁ : ∀{A : Set} {x y : A} -> x == y -> y == x
 symm₁ {_} {x} {.x} refl = {!!}
 ```
 
@@ -106,14 +110,14 @@ complete the proof, since `refl` will provide evidence of the fact
 that `x` is equal to itself.
 
 ```
-symm₂ : {A : Set} {x y : A} -> x == y -> y == x
+symm₂ : ∀{A : Set} {x y : A} -> x == y -> y == x
 symm₂ {_} {x} {.x} refl = refl
 ```
 
 The proof that equality is transitive follows a similar pattern.
 
 ```
-trans : {A : Set} {x y z : A} -> x == y -> y == z -> x == z
+trans : ∀{A : Set} {x y z : A} -> x == y -> y == z -> x == z
 trans eq1 eq2 = {!!}
 ```
 
@@ -122,7 +126,7 @@ the three (implicit) arguments `x`, `y` and `z`, so that we end up
 with having to prove `x == x`, which can be done by reflexivity.
 
 ```
-trans₁ : {A : Set} {x y z : A} -> x == y -> y == z -> x == z
+trans₁ : ∀{A : Set} {x y z : A} -> x == y -> y == z -> x == z
 trans₁ refl refl = refl
 ```
 
@@ -133,64 +137,68 @@ property of function application, namely the property that, if `x ==
 y`, then `f x == f y`. We can now see how this theorem is proved.
 
 ```
-cong : {A B : Set} (f : A -> B) {x y : A} -> x == y -> f x == f y
+cong : ∀{A B : Set} (f : A -> B) {x y : A} -> x == y -> f x == f y
 cong _ refl = refl
 ```
 
 Once again we rely on case analysis to force the unification of `x`
 and `y`, thereby turning congruence into another case of
 reflexivity. Another principle related to equality is
-*substitution*, asserting that if `x == y` and we have a term of
-type `P x`, then we can obtain a term of type `P y`.
+*substitution*, asserting that if `x == y` and we know that `x`
+satisfies some predicate `P`, then `y` also satisfies the same
+predicate.
 
 ```
-subst : {A : Set} (P : A -> Set) {x y : A} -> x == y -> P x -> P y
+subst : ∀{A : Set} (P : A -> Set) {x y : A} -> x == y -> P x -> P y
 subst _ refl p = p
 ```
 
 ## Equational reasoning
 
+TODO
+
 ## Homework
 
 1. Prove that `succ` is injective, namely the theorem
-   `succ-injective : {x y : ℕ} -> succ x == succ y -> x == y`.
+   `succ-injective : ∀{x y : ℕ} -> succ x == succ y -> x == y`.
 2. Define the relation `_!=_` as the negation of equality.
    Prove that `zero` is different from any other natural number, namely
-   the theorem `zero-succ : {x : ℕ} -> zero != succ x`
-3. Prove the theorem `ne-ne : {x y : ℕ} -> succ x != succ y -> x != y`.
+   the theorem `zero-succ : ∀{x : ℕ} -> zero != succ x`
+3. Prove the theorem `ne-ne : ∀{x y : ℕ} -> succ x != succ y -> x != y`.
 4. Prove that `_::_` is injective, namely the theorem
-   `::-injective : {A : Set} {x y : A} {xs ys : List A} -> x :: xs == y :: ys ->
+   `::-injective : ∀{A : Set} {x y : A} {xs ys : List A} -> x :: xs == y :: ys ->
    x == y ∧ xs == ys`.
 5. Prove a version of `cong` for two-argument functions, namely the
-   theorem `cong2 : {A B C : Set} (f : A -> B -> C) {x y : A} {u v :
+   theorem `cong2 : ∀{A B C : Set} (f : A -> B -> C) {x y : A} {u v :
    B} -> x == y -> u == v -> f x u == f y v`
 
 ```
 -- EXERCISE 1
 
-succ-injective : {x y : ℕ} -> succ x == succ y -> x == y
+succ-injective : ∀{x y : ℕ} -> succ x == succ y -> x == y
 succ-injective refl = refl
 
 -- EXERCISE 2
 
-_!=_ : {A : Set} -> A -> A -> Set
+_!=_ : ∀{A : Set} -> A -> A -> Set
 x != y = ¬ (x == y)
 
-zero-succ : {x : ℕ} -> zero != succ x
+zero-succ : ∀{x : ℕ} -> zero != succ x
 zero-succ ()
 
 -- EXERCISE 3
 
-ne-ne : {x y : ℕ} -> succ x != succ y -> x != y
+ne-ne : ∀{x y : ℕ} -> succ x != succ y -> x != y
 ne-ne neq refl = neq refl
 
 -- EXERCISE 4
 
-::-injective : {A : Set} {x y : A} {xs ys : List A} -> x :: xs == y :: ys -> x == y ∧ xs == ys
+::-injective : ∀{A : Set} {x y : A} {xs ys : List A} -> x :: xs == y :: ys -> x == y ∧ xs == ys
 ::-injective refl = refl , refl
 
 -- EXERCISE 5
 
-cong2 : {A B C : Set} (f : A -> B -> C) {x y : A} {u v : B} -> x == y -> u == v -> f x u == f y v
+cong2 : ∀{A B C : Set} (f : A -> B -> C) {x y : A} {u v : B} -> x == y -> u == v -> f x u == f y v
 cong2 _ refl refl = refl
 ```
+{:.solution}
