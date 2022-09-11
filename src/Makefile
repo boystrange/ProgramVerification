@@ -4,7 +4,11 @@ NULL =
 HTMLDIR = ../pages
 
 all: Main.lagda.md
-	agda --html-dir=$(HTMLDIR) --html --html-highlight=auto $^
+	( \
+		TEMPDIR=`mktemp -d`; \
+		agda --html-dir=$$TEMPDIR --html --html-highlight=auto $^; \
+		rsync -r -c -v --delete $$TEMPDIR/ $(HTMLDIR)/; \
+	)
 
 dependencies.dot: Main.lagda.md
 	agda --dependency-graph=$@ Main.lagda.md
