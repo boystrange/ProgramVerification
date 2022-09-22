@@ -10,11 +10,13 @@ next:  Chapter.Imp.HoareLogic
 ```
 -->
 
+```
+module Chapter.Imp.SmallStep where
+```
+
 ## Imports 
 
 ```
-module Chapter.Imp.SmallStep where
-
 open import Library.Bool
 open import Library.Nat
 open import Library.Nat.Properties

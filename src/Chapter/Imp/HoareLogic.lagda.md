@@ -9,8 +9,7 @@ next:  Chapter.Imp.HoareLogicExample
 {-# OPTIONS --allow-unsolved-metas #-}
 ```
 -->
-
-## Imports
+ 
 
 ```
 module Chapter.Imp.HoareLogic where

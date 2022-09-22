@@ -1,13 +1,13 @@
 ---
 title: "Soundness of Hoare Logic"
 prev:  Chapter.Imp.HoareLogicExample
+next:  Chapter.Imp.HoareLogicCompleteness
 ---
   
-
 ```
 module Chapter.Imp.HoareLogicSoundness where
 ```
-
+ 
 ## Imports 
 
 ```
@@ -22,7 +22,6 @@ open import Library.Equality.Reasoning
 open import Chapter.Imp.AexpBexp
 open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
-
 ```
 
 

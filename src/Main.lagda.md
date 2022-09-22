@@ -59,6 +59,7 @@ import Chapter.Imp.SmallStep
 import Chapter.Imp.HoareLogic
 import Chapter.Imp.HoareLogicExample
 import Chapter.Imp.HoareLogicSoundness
+import Chapter.Imp.HoareLogicCompleteness
 ```
 
 ## Appendix: mini Agda library
