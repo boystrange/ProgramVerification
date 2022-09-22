@@ -39,6 +39,8 @@ Fact {P} {c} {Q} = only-if
                             ((s : State) -> P s -> wp c Q s)
     only-if hyp1 s hyp2 t = hyp1 hyp2
 
+-- Execise
+
     if-part : ((s : State) -> P s -> wp c Q s) ->
                            ({s t : State} -> P s -> ⦅ c , s ⦆ ⇒ t -> Q t)
     if-part hyp1 {s} {t} hyp2 hyp3  = hyp1 s hyp2 t hyp3
