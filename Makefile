@@ -31,6 +31,13 @@ zip:
 		zip --filesync -b /tmp -r "$$NAMEDATE".zip $(NAME) \
 	)
 
+.PHONY: Library.zip
+Library.zip:
+	( \
+		cd src; \
+		zip ../$@ `find . -name "*.agda"`\
+	)
+
 assets/pdf/%.pdf: target/%.md $(DEPS)
 	@echo "Converting" $< "..."
 	@node js/print.js http://localhost:4000/$(<:%.md=%.html)?handout $@ A5 landscape

@@ -8,18 +8,13 @@ exclude:
   - "*.agdai"
   - "*.sh"
   - old
-  - src/Chapter
-  - src/Makefile
-  - src/Main.lagda.html
+  - src
   - "*.pdf"
   - vendor
   - README.md
   - Gemfile
   - Gemfile.lock
   - TODO.md
-
-include:
-  - "src/Library/*"
 
 defaults:
   -
