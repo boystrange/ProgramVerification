@@ -39,6 +39,9 @@ import Chapter.Logic.LessThan
 
 ## Verification of functional programs
 
+WORK IN PROGRESS
+
+<!--
 ```
 import Chapter.Fun.SortedLists
 import Chapter.Fun.ExtrinsicInsertionSort
@@ -48,6 +51,7 @@ import Chapter.Fun.RegularExpressions
 import Chapter.Fun.Division
 import Chapter.Fun.QuickSort
 ```
+-->
 
 ## Verification of imperative programs
 
