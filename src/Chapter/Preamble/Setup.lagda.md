@@ -152,7 +152,7 @@ clicking the executable file and following the instructions.
    $env:Path += ";C:\Users\name\AppData\Roaming\cabal\bin"
    ```
 
-2. Now if you enter `agda` in the Powershell, you should see
+2. Now if you enter `agda --version` in the Powershell, you should see
    something like "Agda version 2.6.2.1".
 
 3. Enter the following command, replacing `name` with your own
