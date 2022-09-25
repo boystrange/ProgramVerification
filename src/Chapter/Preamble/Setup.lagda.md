@@ -16,11 +16,9 @@ substantially depending on the Operating System.  Below are some
 instructions originally written by [Peter Selinger and Frank
 Fu](https://www.mathstat.dal.ca/~selinger/agda-lectures/) to install
 Agda and Emacs on [Linux](#linux), [Mac OS](#mac-os) and [Windows
-10](#windows-10). While I am reasonably sure that the given
-instructions for Linux and Mac OS are still valid, I have no
-experience at all on installing Agda on Windows. At the bottom of
-the page is a simple [sanity check](#sanity-check) to verify whether
-the installation has been successful.
+10](#windows-10). At the bottom of the page is a simple [sanity
+check](#sanity-check) to verify whether the installation has been
+successful.
 
 Before following these instructions, it may be worth having a look
 at the [Agda
@@ -142,28 +140,22 @@ clicking the executable file and following the instructions.
 4. Enter `cabal update`.
 
 5. Enter `cabal install Agda` to install Agda.  This will take quite
-   some time (even 2+ hours, depending on the configuration of the
-   PC).
+   some time (possibly more than 30 minutes, depending on the
+   configuration of the PC).
 
 ### Configure Emacs and Agda mode
 
-1. In the Powershell, enter the following command (please replace
-   'name' with your own username):
+1. In the Powershell, enter the following command, replacing `name`
+   with your own username.
 
    ```posh
    $env:Path += ";C:\Users\name\AppData\Roaming\cabal\bin"
    ```
 
-   Then follow with the following command:
-
-   ```posh
-   [Environment]::SetEnvironmentVariable("INCLUDE", $env:INCLUDE, [System.EnvironmentVariableTarget]::User)
-   ```
-
 2. Now if you enter `agda` in the Powershell, you should see
    something like "Agda version 2.6.2.1".
 
-3. Enter the following command replacing `name` with your own
+3. Enter the following command, replacing `name` with your own
    username.
 
    ```posh
@@ -174,13 +166,14 @@ clicking the executable file and following the instructions.
    the specified directory.
 
 4. Open the above `.emacs` file using the installed Emacs editor.
-   Paste the following code to the file, save it and closed Emacs.
+   Paste the following code to the file, save it and close Emacs.
    (Use `Ctrl-X` followed by `Ctrl-S` to save, and `Ctrl-X` followed
    by `Ctrl-C` to close Emacs).
 
-   ```emacs
+   ```elisp
+   (setq exec-path (append exec-path '("C:\\cabal\\bin")))
    (load-file (let ((coding-system-for-read 'utf-8))
-          (shell-command-to-string "agda-mode locate")))
+          (shell-command-to-string "C:\\cabal\\bin\\agda-mode locate")))
    ```
 
 ## Sanity Check
