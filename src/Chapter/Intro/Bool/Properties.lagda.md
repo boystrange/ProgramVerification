@@ -28,10 +28,10 @@ leads to a contradiction). In this chapter we will use
 but is actually [definable as a data
 type](Chapter.Logic.Equality.html). For the time being, we simply
 *use* the definition of propositional equality from the library
-without pretending to understand how it works. To this aim, we
-*import* the `Equality` module, along with the previous section from
-which we inherit the definition of `Bool` and the functions on
-boolean values.
+without looking at its definition. To this aim, we *import* the
+`Equality` module, along with the previous section from which we
+inherit the definition of `Bool` and the functions on boolean
+values.
 
 ```
 open import Library.Equality
@@ -77,15 +77,15 @@ false-eq = refl
 ```
 
 In general, `refl` can be used to prove any equality of the form `v
-== w` where `v` and `w` are the "same" expression. In `true-eq` and
-`false-eq` we have taken `v` and `w` to be syntactically the same
-term, which resulted in somewhat obvious and rather uninteresting
-properties. In general, Agda considers two expressions to be the
-same if they evaluate to the same value (technically speaking, if
-they have the same normal form). In the previous section we have
-seen the use of `C-c C-n` to *normalize* an expression such as `not
-true`, which yields `false`. So, `false` is the normal form of `not
-true`, meaning that for Agda `not true` and `false` are actually
+== w` where `v` and `w` "are the same". In `true-eq` and `false-eq`
+we have taken `v` and `w` to be syntactically the same term, which
+resulted in somewhat obvious and rather uninteresting properties. In
+general, Agda considers two expressions to be the same if they
+evaluate to the same value (technically speaking, if they have the
+same normal form). In the previous section we have seen the use of
+`C-c C-n` to *normalize* an expression such as `not true`, which
+yields `false`. So, `false` is the normal form of `not true`,
+meaning that for Agda `not true` and `false` are actually
 "equal". This leads to a more interesting result about the behavior
 of `not`.
 
@@ -123,7 +123,7 @@ which the function is applied. The `∀` symbol is purely cosmetic and
 may be omitted. We will use it merely for readability.
 
 Going back to our goal, proving that `not` is an involution is the
-same as finding a function that has type `(x : Bool) -> not (not x)
+same as finding a function that has type `∀(x : Bool) -> not (not x)
 == x`. That is, our goal is to fill the hole in the following
 partial definition:
 
