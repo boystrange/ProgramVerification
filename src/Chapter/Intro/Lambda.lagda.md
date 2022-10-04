@@ -30,7 +30,7 @@ Agda. For now we only consider a small set of **simple types**:
 * `ℕ` stands for the type of **natural numbers**;
 * if `A` and `B` are types, then `(A -> B)` is the type of
   **functions** that, when applied to an argument of type `A`, yield a
-  *result of type `B`.
+  result of type `B`.
 
 To limit the amount of parentheses we have to write in types and to
 improve readability, we adopt the following conventions:
@@ -69,9 +69,9 @@ number of terms defined therein are also available. In particular:
 * `succ` of type `ℕ -> ℕ` is a function that, applied to a natural
   number, yields its successor.
 
-The usual decimal notation for natural numbers is also available, so
-that `0` can be used as abbreviation for `zero`, `2` can be used for
-abbreviation for `(succ (succ zero))` and `42` can be used for
+The usual positional notation for natural numbers is also available,
+so that `0` can be used as abbreviation for `zero`, `2` can be used
+for abbreviation for `(succ (succ zero))` and `42` can be used for
 abbreviation for 42 applications of `succ` to `zero`.
 
 As for types, also for terms we adopt some syntactic conventions to
@@ -105,23 +105,22 @@ f = λ x -> x ^ 2 + 1
 The first line provides the **signature** of `f`. Top-level
 definitions like this one must always be accompanied by a
 signature. The second line provides the **definition** of `f` with
-which we establish that `f` is **definitionally** the same as the
-abstraction `λ x - x ^ 2 + 1`. That is, for Agda the name `f` and
-the term `λ x -> x ^ 2 + 1` are **equal**. Note that we omit the
+which we establish that the name `f` is **definitionally** the same
+as the abstraction `λ x - x ^ 2 + 1`. That is, for Agda the name `f`
+and the term `λ x -> x ^ 2 + 1` are **equal**. Note that we omit the
 type of the argument `x` for this abstraction: Agda is able to
 figure out that `x` has type `ℕ` from both the signature of `f` and
 the fact that the operators `^` and `+` concern natural
 numbers. Speaking of these operators, `^` and `+` are defined in the
 `Nat` module by means of equations analogous to the one defining
-`f`. Here, we take them for granted. Note that it is possible to
-*click* on any colored symbol to reach its definition.
+`f`. Here, we take them for granted. In this document, it is
+possible to *click* on any colored symbol to reach its definition.
 
 A note on **spacing** in Agda: unlike most programming languages,
 Agda allows almost any character to be part of an identifier. For
 example, `^` and `+` are plain Agda identifiers just like `f` and
 `ℕ`. If we write `x^2` (without spaces around `^`), Agda considers
-this as a single identifier (for which we have provided no
-definition).
+this as a single identifier (for which there is no definition).
 
 By loading the program using `C-c C-l`, Agda verifies that `f` is
 well typed and that its type is consistent with the one provided in

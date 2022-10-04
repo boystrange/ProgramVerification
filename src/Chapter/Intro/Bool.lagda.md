@@ -76,20 +76,20 @@ function yields when applied to a particular boolean value. As
 always when we use the symbol `=`, we are telling Agda that `not
 true` is definitionally equal to `false` and that `not false` is
 definitionally equal to `true`. By "definitionally equal" we mean
-that these terms are interchangeable in the sense that one may be
-used where the other is expected without Agda noticing any
-difference.
+that these terms are interchangeable: one may be used where the
+other is expected without Agda noticing any difference.
 
 We can ask Agda to *infer* the type of an application such as `not
-true` or `not false` by hitting `C-c C-d`. In both cases Agda
-answers `Bool`, meaning that both `not true` and `not false` are
-expressions of type `Bool`, namely expressions that, once evaluated,
-yield either `true` or `false`. In fact, we can also ask Agda to
-evaluate the application of `not` to a boolean value by hitting `C-c
-C-n` (the `n` in `C-n` abbreviates "normalize", which is the
-technical term to indicate the evaluation process). We see that `not
-true` evaluates to `false` and `not false` evaluates to `true`, in
-accordance with the definition of `not`.
+true` or `not false` by entering `C-c C-d not true` or `C-c C-d not
+false`. In both cases Agda answers `Bool`, meaning that both `not
+true` and `not false` are expressions of type `Bool`, namely
+expressions that, once evaluated, yield either `true` or `false`. In
+fact, we can also ask Agda to evaluate the application of `not` to a
+boolean value by entering `C-c C-n` (the `n` in `C-n` abbreviates
+"normalize", which is the technical term to indicate the evaluation
+process). We see that `not true` evaluates to `false` and `not
+false` evaluates to `true`, in accordance with the definition of
+`not`.
 
 We will extensively use this style of defining functions by case
 analysis on their arguments. In fact, Agda provides a convenient
@@ -152,14 +152,14 @@ argument. Since `false` is the absorbing element of the boolean
 conjunction, when the first argument of `and` is `false` the result
 is simply `false` regardless of the second argument. When an
 argument is not used in an equation, we can replace it with an
-undeerscore `_`. It is not necessary to do so, but using underscores
+underscore `_`. It is not necessary to do so, but using underscores
 on the left hand side of equations sometimes helps us keeping the
 code clean and easier to read, highlighting the fact that some
 arguments are not used in some cases.
 
 We can ask Agda to evaluate `and` applied to some inputs to convince
-ourseleves that the function behaves as expected. For example, `C-c
-C-n and true true` yields `true` whereas C-c C-n and false true`
+ourselves that the function behaves as expected. For example, `C-c
+C-n and true true` yields `true` whereas `C-c C-n and false true`
 yields `false`.
 
 Note that the above definition of `and` is not the only way to
@@ -187,9 +187,9 @@ of `true` and `false` by means of the expression `and true (and true
 false)` which evaluates to `false`. This notation, in which a
 function application is denoted by the function *followed by* its
 arguments, is sometimes called **prefix notation** and is widespread
-in most programming languages. However, it is occasionally desirable
-to introduce a more lightweight and possibly more familiar notation
-for function applications whereby a function with two arguments is
+in most programming languages. Sometimes it is desirable to
+introduce a more lightweight and possibly more familiar notation for
+function applications whereby a function with two arguments is
 placed *in between* its arguments. Agda provides a sophisticated
 mechanism to define such notation, in which the programmer specifies
 the syntactic location of the arguments of a function by means of
@@ -226,10 +226,10 @@ telling Agda that `&&` is meant to be interpreted as a
 *left-associative* operator with priority `6`. We would use `infixr`
 for declaring *right-associative* operators and just `infix` for
 declaring operators that are neither left- nor right-associative
-(typically, these will be operators with one or more than two
-operands). The priority becomes important as soon as more than one
-operator is defined to tell Agda what is the intended priority among
-them.
+(typically, these will be operators with just one operand or more
+than two operands). The priority becomes important as soon as more
+than one operator is defined to tell Agda what is the intended
+priority among them.
 
 ## Exercises
 
