@@ -44,7 +44,7 @@ implication
 The strategy to prove the theorem is first to show that all instances of axioms `H-Skip` and `H-Loc`
 are valid triples, which is immediate. Then the actual task in the proof is to show that
 the remaining rules infer valid triples from valid ones instantiating the respective
-premises. All in all, this a proof by structural induction on the derivation of
+premises. All in all, this is a proof by structural induction on the derivation of
 `|- [ P ] c [ Q ]`.
 
 Going through the proof, we realise that the thesis is an easy consequence of the induction

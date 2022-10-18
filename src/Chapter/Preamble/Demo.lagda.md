@@ -14,7 +14,7 @@ and of the equality predicate, which must be suitably defined and
 imported for this program to correctly type check and compile. The
 directives shown below import the necessary definitions from the
 Agda library used in this course. For the time being, we will use
-natural numbers and equality as black boxes, will see how they can
+natural numbers and equality as black boxes; we will see how they can
 be defined in Agda later on.
 
 ```
@@ -46,7 +46,7 @@ fibo (succ (succ k)) = fibo k + fibo (succ k)
 
 Once this script is loaded, we can ask Agda to compute the result of
 applying `fibo` to some numbers. By pressing `C-c C-n` and then
-entering `fibo 11` we obtain 55, as expected.
+entering `fibo 10` we obtain 55, as expected. 
 
 It is a known fact that the shown implementation of `fibo` is very
 inefficient. In fact, the time for computing the k-th Fibonacci
