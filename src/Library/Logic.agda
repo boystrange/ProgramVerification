@@ -1,7 +1,7 @@
 module Library.Logic where
 
 infixr 1 _<=>_
-infix  2 _∨_ Σ-syntax ∃-syntax
+infix  2 _∨_ Σ-syntax ∃-syntax Σ₁-syntax ∃₁-syntax
 infixr 3 _∧_
 infixr 4 _,_
 
@@ -39,6 +39,24 @@ snd (_ , y) = y
 ∃-syntax = ∃
 
 syntax ∃-syntax (λ x -> B) = ∃[ x ] B
+
+-- SIGMA TYPE AND EXISTENTIAL OVER Set₁
+
+data Σ₁ (A : Set₁) (P : A -> Set) : Set₁ where
+  _,_ : ∀(x : A) -> P x -> Σ₁ A P
+
+Σ₁-syntax : ∀(A : Set₁) (P : A -> Set) -> Set₁
+Σ₁-syntax = Σ₁
+
+syntax Σ₁-syntax A (λ x -> P) = Σ₁[ x ∈ A ] P
+
+∃₁ : ∀{A : Set₁} -> (A -> Set) -> Set₁
+∃₁ = Σ₁ _
+
+∃₁-syntax : ∀{A : Set₁} -> (A -> Set) -> Set₁
+∃₁-syntax = ∃₁
+
+syntax ∃₁-syntax (λ x -> B) = ∃₁[ x ] B
 
 -- CONJUNCTION
 
