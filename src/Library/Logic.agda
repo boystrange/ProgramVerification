@@ -50,6 +50,15 @@ data Σ₁ (A : Set₁) (P : A -> Set) : Set₁ where
 
 syntax Σ₁-syntax A (λ x -> P) = Σ₁[ x ∈ A ] P
 
+fst₁ : ∀{A : Set₁} {P : A -> Set} -> Σ₁ A P -> A
+fst₁ (x , _) = x
+
+snd₁ : ∀{A : Set₁} {P : A -> Set} (p : Σ₁ A P) -> P (fst₁ p)
+snd₁ (_ , y) = y
+
+
+-- EXISTENTIAL
+
 ∃₁ : ∀{A : Set₁} -> (A -> Set) -> Set₁
 ∃₁ = Σ₁ _
 
