@@ -393,19 +393,21 @@ usual `E ==⟨ P ⟩ E'`.
    `zero` and verify its behavior using `C-c C-n`. Provide a fixity
    declaration for `-` so that is is left associative and has the
    same precedence as `+`.
-2. Define the factorial function `fact : ℕ -> ℕ` and verify its
+2. Prove the theorems `plus-minus-l : ∀(x y : ℕ) -> (x + y) - x ==
+   y` and `plus-minus-r : ∀(x y : ℕ) -> (x + y) - y == x`.
+3. Define the factorial function `fact : ℕ -> ℕ` and verify its
    behavior using `C-c C-n`.
-3. Prove `*-unit-l` and `*-unit-r` showing that `1` is a left and
+4. Prove `*-unit-l` and `*-unit-r` showing that `1` is a left and
    right unit for `*`.
-4. Prove `*-comm` showing that `*` is commutative.
-5. Prove `*-dist-l` showing that `*` distributes over `+` on the
+5. Prove `*-comm` showing that `*` is commutative.
+6. Prove `*-dist-l` showing that `*` distributes over `+` on the
    left using `*-comm` and `*-dist-r`.
-6. Define the exponentiation function `_^_ : ℕ -> ℕ -> ℕ` and
+7. Define the exponentiation function `_^_ : ℕ -> ℕ -> ℕ` and
    provide a fixity declaration so that it is left associative and
    has higher precedence than `*`.
-7. Prove that `x ^ m * x ^ n == x ^ (m + n)`.
-8. Prove that `(x * y) ^ n == x ^ n * y ^ n`.
-9. Prove that `x ^ m ^ n == x ^ (m * n)`.
+8. Prove that `x ^ m * x ^ n == x ^ (m + n)`.
+9. Prove that `(x * y) ^ n == x ^ n * y ^ n`.
+10. Prove that `x ^ m ^ n == x ^ (m * n)`.
 
 ```
 -- EXERCISE 1
@@ -417,6 +419,20 @@ succ x - succ y = x - y
 
 -- EXERCISE 2
 
+plus-minus-l : ∀(x y : ℕ) -> (x + y) - x == y
+plus-minus-l zero     y = refl
+plus-minus-l (succ x) y = plus-minus-l x y
+
+plus-minus-r : ∀(x y : ℕ) -> (x + y) - y == x
+plus-minus-r x y =
+  begin
+    (x + y) - y ==⟨ cong (_- y) (+-comm x y) ⟩
+    (y + x) - y ==⟨ plus-minus-l y x ⟩
+    x
+  end
+
+-- EXERCISE 3
+
 fact : ℕ -> ℕ
 fact zero     = 1
 fact (succ x) = succ x * fact x
@@ -425,7 +441,7 @@ fact (succ x) = succ x * fact x
 *-zero-r zero     = refl
 *-zero-r (succ x) = *-zero-r x
 
--- EXERCISE 3
+-- EXERCISE 4
 
 *-unit-l : ∀(x : ℕ) -> 1 * x == x
 *-unit-l x =
@@ -440,7 +456,7 @@ fact (succ x) = succ x * fact x
 *-unit-r zero     = refl
 *-unit-r (succ x) = cong succ (*-unit-r x)
 
--- EXERCISE 4
+-- EXERCISE 5
 
 *-succ : ∀(x y : ℕ) -> x + x * y == x * succ y
 *-succ zero y = refl
@@ -467,7 +483,7 @@ fact (succ x) = succ x * fact x
     y * succ x
   end
 
--- EXERCISE 5
+-- EXERCISE 6
 
 *-dist-l : ∀(x y z : ℕ) -> x * (y + z) == x * y + x * z
 *-dist-l x y z =
@@ -479,7 +495,7 @@ fact (succ x) = succ x * fact x
     x * y + x * z
   end
 
--- EXERCISE 6
+-- EXERCISE 7
 
 infixl 8 _^_
 
@@ -487,7 +503,7 @@ _^_ : ℕ -> ℕ -> ℕ
 x ^ zero = 1
 x ^ succ n = x * x ^ n
 
--- EXERCISE 7
+-- EXERCISE 8
 
 ^-prop-1 : ∀(x m n : ℕ) -> x ^ m * x ^ n == x ^ (m + n)
 ^-prop-1 x zero     n = *-unit-l (x ^ n)
@@ -499,7 +515,7 @@ x ^ succ n = x * x ^ n
     x * x ^ (m + n)
   end
 
--- EXERCISE 8
+-- EXERCISE 9
 
 ^-prop-2 : ∀(x y n : ℕ) -> (x * y) ^ n == x ^ n * y ^ n
 ^-prop-2 x y zero = refl
@@ -516,7 +532,7 @@ x ^ succ n = x * x ^ n
     x ^ succ n * y ^ succ n
   end
 
--- EXERCISE 9
+-- EXERCISE 10
 
 ^-unit : ∀(n : ℕ) -> 1 ^ n == 1
 ^-unit zero = refl
