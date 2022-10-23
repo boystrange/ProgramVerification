@@ -1,7 +1,8 @@
 ---
 title: "Relative Completeness of Hoare Logic"
 prev:  Chapter.Imp.HoareLogicSoundness
----
+next:  Chapter.Imp.VerificationConditions
+--- 
   
 ```
 module Chapter.Imp.HoareLogicCompleteness where
