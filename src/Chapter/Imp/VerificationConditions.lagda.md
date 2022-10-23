@@ -219,7 +219,7 @@ vc-mono {P} {P'} (WHILE[ I ] b DO C) hyp (hyp1 , hyp2 , hyp3) = th1 , th2 , th3
 
 vc-completeness : ∀ {P Q : Assn} c →
             |- [ P ] c [ Q ] →
-            ∃₁[ C ] ( c == strip C ∧ vc C Q ∧ (∀ s → P s → pre C Q s) )
+            ∃[ C ] ( c == strip C ∧ vc C Q ∧ (∀ s → P s → pre C Q s) )
 
 vc-completeness SKIP H-Skip = SKIP , refl , (<> , (λ s h → h))
 vc-completeness (x := a) H-Loc = (x := a) , (refl , (<> , λ s h → h))
@@ -230,23 +230,23 @@ vc-completeness (c₁ :: c₂) (H-Comp {P = P} {R} {Q} hyp₁ hyp₂) =
   -- hyp₂ : |- [ R ] c₂ [ Q ]
 
   where
-    IH₁ : ∃₁[ C₁ ] ( c₁ == strip C₁ ∧ vc C₁ R ∧ (∀ s → P s → pre C₁ R s) )
+    IH₁ : ∃[ C₁ ] ( c₁ == strip C₁ ∧ vc C₁ R ∧ (∀ s → P s → pre C₁ R s) )
     IH₁ = vc-completeness {P} {R} c₁ hyp₁
 
-    IH₂ : ∃₁[ C₂ ] ( c₂ == strip C₂ ∧ vc C₂ Q ∧ (∀ s → R s → pre C₂ Q s) )
+    IH₂ : ∃[ C₂ ] ( c₂ == strip C₂ ∧ vc C₂ Q ∧ (∀ s → R s → pre C₂ Q s) )
     IH₂ = vc-completeness {R} {Q} c₂ hyp₂
   
     C₁ : Acom
-    C₁ = fst₁ IH₁
+    C₁ = fst IH₁
 
     C₂ : Acom
-    C₂ = fst₁ IH₂
+    C₂ = fst IH₂
 
     Matr₁ : c₁ == strip C₁ ∧ vc C₁ R ∧ (∀ s → P s → pre C₁ R s)
-    Matr₁ = snd₁ IH₁
+    Matr₁ = snd IH₁
 
     Matr₂ : c₂ == strip C₂ ∧ vc C₂ Q ∧ (∀ s → R s → pre C₂ Q s)
-    Matr₂ = snd₁ IH₂
+    Matr₂ = snd IH₂
 
     A : (c₁ :: c₂) == strip (C₁ :: C₂)
     A = begin c₁ :: c₂             ==⟨ cong (λ z → z :: c₂)       (fst Matr₁) ⟩
@@ -275,23 +275,23 @@ vc-completeness (IF b THEN c₁ ELSE c₂) (H-If {P = P} {Q = Q} hyp₁ hyp₂) 
 
   where
 
-    IH₁ : ∃₁[ C₁ ] ( c₁ == strip C₁ ∧ vc C₁ Q ∧ (∀ s → P s ∧ bval b s == true → pre C₁ Q s) )
+    IH₁ : ∃[ C₁ ] ( c₁ == strip C₁ ∧ vc C₁ Q ∧ (∀ s → P s ∧ bval b s == true → pre C₁ Q s) )
     IH₁ = vc-completeness c₁ hyp₁
 
-    IH₂ : ∃₁[ C₂ ] ( c₂ == strip C₂ ∧ vc C₂ Q ∧ (∀ s → P s ∧ bval b s == false → pre C₂ Q s) )
+    IH₂ : ∃[ C₂ ] ( c₂ == strip C₂ ∧ vc C₂ Q ∧ (∀ s → P s ∧ bval b s == false → pre C₂ Q s) )
     IH₂ = vc-completeness c₂ hyp₂
 
     C₁ : Acom
-    C₁ = fst₁ IH₁
+    C₁ = fst IH₁
 
     C₂ : Acom
-    C₂ = fst₁ IH₂
+    C₂ = fst IH₂
 
     Matr₁ : c₁ == strip C₁ ∧ vc C₁ Q ∧ (∀ s → P s ∧ bval b s == true → pre C₁ Q s)
-    Matr₁ = snd₁ IH₁
+    Matr₁ = snd IH₁
 
     Matr₂ : c₂ == strip C₂ ∧ vc C₂ Q ∧ (∀ s → P s ∧ bval b s == false → pre C₂ Q s)
-    Matr₂ = snd₁ IH₂
+    Matr₂ = snd IH₂
 
     A : (IF b THEN c₁ ELSE c₂) == (IF b THEN strip C₁ ELSE strip C₂)
     A = begin
@@ -329,14 +329,14 @@ vc-completeness (WHILE b DO c) (H-While {P} hyp) =
 
   where
 
-    IH : ∃₁[ C ] (c == strip C ∧ vc C P ∧ (∀ s → P s ∧ bval b s == true → pre C P s))
+    IH : ∃[ C ] (c == strip C ∧ vc C P ∧ (∀ s → P s ∧ bval b s == true → pre C P s))
     IH = vc-completeness c hyp
 
     C : Acom
-    C = fst₁ IH
+    C = fst IH
 
     Matr : c == strip C ∧ vc C P ∧ (∀ s → P s ∧ bval b s == true → pre C P s)
-    Matr = snd₁ IH
+    Matr = snd IH
 
     A : (WHILE b DO c) == (WHILE b DO strip C)
     A = begin
@@ -364,14 +364,14 @@ vc-completeness {P} {Q} c (H-Conseq {P'} {Q'} hyp₁ hyp hyp₂) = C , A , (D , 
   -- hyp₂ : ∀ s → Q' s → Q s
 
   where
-    IH : ∃₁[ C ] (c == strip C ∧ vc C Q' ∧ (∀ s → P' s → pre C Q' s) )
+    IH : ∃[ C ] (c == strip C ∧ vc C Q' ∧ (∀ s → P' s → pre C Q' s) )
     IH = vc-completeness c hyp
   
     C : Acom
-    C = fst₁ IH
+    C = fst IH
 
     Matr : c == strip C ∧ vc C Q' ∧ (∀ s → P' s → pre C Q' s)
-    Matr = snd₁ IH
+    Matr = snd IH
 
     A : c == strip C
     A = fst Matr
