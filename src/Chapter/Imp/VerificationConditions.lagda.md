@@ -213,9 +213,6 @@ vc-mono {P} {P'} (WHILE[ I ] b DO C) hyp (hyp1 , hyp2 , hyp3) = th1 , th2 , th3
 -- Completeness Theorem
 ------------------------
 
--- Note: in the next theorem we use ∃₁ : (A : Set₁) → (B : A → Set) → Set₁
--- instead of just ∃ : (A : Set) → (B : A → Set) → Set
--- to quantify over C : Acom, since Acom : Set₁
 
 vc-completeness : ∀ {P Q : Assn} c →
             |- [ P ] c [ Q ] →
