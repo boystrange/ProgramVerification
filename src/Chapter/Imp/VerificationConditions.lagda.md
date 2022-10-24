@@ -1,6 +1,6 @@
 ---
 title: "Verification Conditions"
-prev:  Chapter.Imp.HoareLogicCompleteness
+prev:  Chapter.Imp.HoareLogicCompleteness 
 ---
   
 ```
