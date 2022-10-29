@@ -20,21 +20,98 @@ open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
 
 ```
+
+The verification of the program `sum-prog` in chapter
+[Example of derivation with Hoare Logic]({% link pages/Chapter.Imp.HoareLogicExample.md %})
+makes it apparent how difficult may be to directly use Hoare logic for program verification without the help
+of some mechanical procedure. From a quick insepection of that proof one realizes that most of the effort
+resides in establishing rather obvious implications among assertions occurring in the rule `H-Conseq` or its
+variants. At least in this example, these consist of simple facts from arithmetic, involving sum and order,
+stated using quantifier-free formulas; but such formulas could be proved authomatically using e.g. tools
+based on satisfiability-modulo-theories, SMT.
+
+To make such a remark effective, it would be of great advantage to factor the arithmetic part of the proofs
+out of the remaining inferences using other rules of Hoare logic. In fact, the latters essentially follow the
+structure of the program and seem to be computable starting with the post-condition. This is suggested by the
+the main properties of the predicate `wp` in chapter
+[Relative Completeness of Hoare Logic]({% link pages/Chapter.Imp.HoareLogicCompleteness.md %}), namely
+
+     Fact : ∀ {P c Q} -> |= [ P ] c [ Q ] -> (∀ s -> P s -> wp c Q s)
+     wp-lemma : ∀ c {Q : Assn} -> |- [ wp c Q ] c [ Q ]
+
+Indeed, suppose that we have to verify the program `c` against the pre-condition `P` and post-condition `Q`; this
+amounts to prove that `|= [ P ] c [ Q ]` which by the
+[soundness of hoare logic]({% link pages/Chapter.Imp.HoareLogicSoundness.md %})
+is consequence of the derivability of `|- [ P ] c [ Q ]`. By computing `wp c Q` we have
+that `∀ s -> P s -> wp c Q s` by `Fact` and `|- [ wp c Q ] c [ Q ]` by the `wp-lemma`,
+from which the desired proof of `|- [ P ] c [ Q ]` follows by rule `H-Str`:
+
+          ∀ s -> P s -> wp c Q s     |- [ wp c Q ] c [ Q ]
+    H-Str ------------------------------------------------
+                       |- [ P ] c [ Q ]
+
+However the definition of `wp` is semantic, while we need a syntactic definition to compute the weakest precondition
+`wp c Q`. Let us try to define `wp c Q` by induction over the command `c`. The first cases are rather obvious:
+
+    wp SKIP     Q s = Q s
+    wp (x := a) Q s = Q (s [ x ::= aval a s ])
+
+From the proof of lemma `wp-lemma` in case of the command `c₁ :: c₂` we see that we can define:
+
+    wp (c₁ :: c₂) Q s = wp c₁ (wp c₂ Q) s 
+
+The case of `IF` command is easy:
+                                    
+    wp (IF b THEN c₁ ELSE c₂) Q s = wp c₁ Q s     if aval b s == true
+                                  = wp c₂ Q s     if aval b s == false
+ 
+Where the attempt fails is in case of a `WHILE` command. Indeed, by exploting the equivalence 
+
+    (WHILE b DO c) ∼ (IF b THEN (c :: (WHILE b DO c)) ELSE SKIP)
+
+(see chapter [Big-step operational semantics]({% link pages/Chapter.Imp.BigStep.md %}), exercise 3) we could set
+
+    pre (WHILE b DO c) Q s = wp (c :: (WHILE b DO c)) Q s    if bval b s == true
+                           = Q s                             if bval b s == false
+
+so that in case `bval b s == true` we have 
+
+    wp (c :: (WHILE b DO c)) Q s = wp c (wp (WHILE b DO c) Q) s
+
+But then the definition of `pre (WHILE b DO c) Q` depends on itself. 
+ 
+ 
+## Annotated commands
+ 
+Let us look at the rule `H-While`:
+
+             |- [ (λ s -> P s ∧ bval b s == true) ] c [ P ]
+     H-While ------------------------------------------------------------
+             |- [ P ] (WHILE b DO c) [ (λ s -> P s ∧ bval b s == false) ]
+     
+Then the pre-condition `P` in the conclusion is the invariant assertion of the command `WHILE b DO c` and it is the
+desired `wp (WHILE b DO c) Q` provided that `P s ∧ bval b s == false` implies `Q s` for all `s`.
+
+Now, a way out of the impasse in the inductive definition of `wp` in case of the `WHILE` command is to ask the user to provide
+herself an invariant `I` for each loop in her program, and then to verify that such `I`s are the
+correct choice by generating a formula expressing that they are actual invariants of the respective `WHILE` commands:
+these are the *verification conditions*.
+
+We begin by defining the grammar of *annotated commands*, namely IMP commands where each `WHILE` command
+carries its (candidate) invariant assertion.
  
 ```
------------------------
--- Annotated Commands
------------------------
-
 data Acom : Set₁ where
   SKIP  :  Acom
   _:=_  :  Vname → Aexp → Acom           
   _::_  :  Acom → Acom → Acom   
   IF_THEN_ELSE_ : Bexp → Acom → Acom → Acom 
-  WHILE[_]_DO_  : Assn → Bexp → Acom → Acom       
+  WHILE[_]_DO_  : Assn → Bexp → Acom → Acom
 
--- Erasure map
+```
+To recover the IMP command corresponding to `C : Acom` there is an obvious erasure map called `strip`: 
 
+```
 strip : Acom → Com
 strip SKIP = SKIP
 strip (x := a) = x := a
