@@ -20,10 +20,10 @@ open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
 
 ```
-
+ 
 The verification of the program `sum-prog` in chapter
 [Example of derivation with Hoare Logic]({% link pages/Chapter.Imp.HoareLogicExample.md %})
-makes it apparent how difficult may be to directly use Hoare logic for program verification without the help
+makes it apparent how difficult may be to directly use Hoare Logic for program verification without the help
 of some mechanical procedure. From a quick insepection of that proof one realizes that most of the effort
 resides in establishing rather obvious implications among assertions occurring in the rule `H-Conseq` or its
 variants. At least in this example, these consist of simple facts from arithmetic, involving sum and order,
@@ -41,7 +41,7 @@ the main properties of the predicate `wp` in chapter
 
 Indeed, suppose that we have to verify the program `c` against the pre-condition `P` and post-condition `Q`; this
 amounts to prove that `|= [ P ] c [ Q ]` which by the
-[soundness of hoare logic]({% link pages/Chapter.Imp.HoareLogicSoundness.md %})
+[soundness of Hoare Logic]({% link pages/Chapter.Imp.HoareLogicSoundness.md %})
 is consequence of the derivability of `|- [ P ] c [ Q ]`. By computing `wp c Q` we have
 that `∀ s -> P s -> wp c Q s` by `Fact` and `|- [ wp c Q ] c [ Q ]` by the `wp-lemma`,
 from which the desired proof of `|- [ P ] c [ Q ]` follows by rule `H-Str`:
@@ -81,7 +81,7 @@ so that in case `bval b s == true` we have
 But then the definition of `pre (WHILE b DO c) Q` depends on itself. 
  
  
-## Annotated commands
+## Verification conditions
  
 Let us look at the rule `H-While`:
 
@@ -92,13 +92,14 @@ Let us look at the rule `H-While`:
 Then the pre-condition `P` in the conclusion is the invariant assertion of the command `WHILE b DO c` and it is the
 desired `wp (WHILE b DO c) Q` provided that `P s ∧ bval b s == false` implies `Q s` for all `s`.
 
-Now, a way out of the impasse in the inductive definition of `wp` in case of the `WHILE` command is to ask the user to provide
-herself an invariant `I` for each loop in her program, and then to verify that such `I`s are the
-correct choice by generating a formula expressing that they are actual invariants of the respective `WHILE` commands:
-these are the *verification conditions*.
+Now, a way out of the impasse in the inductive definition of `wp` in case of the `WHILE` command is to ask
+the user to provide
+herself an invariant `I` for each loop in her program, and then to verify that such `I`'s are the
+correct choice by generating a formula expressing that they are actual invariants of the
+respective `WHILE` commands: these are the *verification conditions*.
 
 We begin by defining the grammar of *annotated commands*, namely IMP commands where each `WHILE` command
-carries its (candidate) invariant assertion.
+carries a (candidate) invariant assertion.
  
 ```
 data Acom : Set₁ where
@@ -119,12 +120,10 @@ strip (C₁ :: C₂) = strip C₁ :: strip C₂
 strip (IF b THEN C₁ ELSE C₂) = IF b THEN strip C₁ ELSE strip C₂
 strip (WHILE[ I ] b DO C) = WHILE b DO strip C
 
-----------------------------
--- Verification Conditions
-----------------------------
+```
+Inspired to the tentative syntactic definition of `wp`, we define the assertion `pre C Q` as follows:
 
--- Precondition (similar to wp but in case WHILE)
-
+```
 pre : Acom → Assn → Assn
 pre SKIP Q = Q
 pre (x := a) Q s =  Q (s [ x ::= aval a s ])
@@ -134,8 +133,14 @@ pre (IF b THEN C₁ ELSE C₂) Q s with bval b s
 ...   | false = pre C₂ Q s
 pre (WHILE[ I ] b DO C) Q = I
 
--- Verification condition
+```
+Then, given an annotated command `C : Acom` and the post-condition `Q`,
+we define the verification condition `vc C Q` asserting that all the invariants
+`I` occurring in some subexpression `WHILE[ I ] b DO C'` of `C` are actual invariants
+of the command `WHILE b DO (strip C')`, so that `pre C Q` can be regarded as a valid
+pre-condition of the command `strip C` with respect to the post-condition `Q`: 
 
+```
 vc : Acom → Assn → Set
 vc SKIP Q = ⊤
 vc (x := a) Q = ⊤
@@ -145,26 +150,28 @@ vc (WHILE[ I ] b DO C) Q =
    (∀ s → I s ∧ bval b s == true → pre C I s) ∧
    (∀ s → I s ∧ bval b s == false → Q s) ∧
    vc C I
+```
 
-----------------------------------------
--- Soundness of Verification Conditions
-----------------------------------------
+Now, we have to prove that if the verification condition `vc C Q` is satisfied then we can derive
+`|- [ pre C Q ] strip C [ Q ]` in Hoare Logic, and hence `|= [ pre C Q ] strip C [ Q ]`, namely
+the triple `[ pre C Q ] strip C [ Q ]` is valid. 
 
-vc-sound-lemma : ∀ {Q : Assn} C → vc C Q → |- [ pre C Q ] strip C [ Q ]
-vc-sound-lemma SKIP hyp = H-Skip
-vc-sound-lemma (x := a) hyp = H-Loc
-vc-sound-lemma {Q} (C₁ :: C₂) (hyp1 , hyp2) = H-Comp IH1 IH2
+```
+vc-sound : ∀ {Q : Assn} C → vc C Q → |- [ pre C Q ] strip C [ Q ]
+vc-sound SKIP hyp = H-Skip
+vc-sound (x := a) hyp = H-Loc
+vc-sound {Q} (C₁ :: C₂) (hyp1 , hyp2) = H-Comp IH1 IH2
   where
     IH1 : |- [ pre C₁ (pre C₂ Q) ] strip C₁ [ pre C₂ Q ]
-    IH1 = vc-sound-lemma C₁ hyp1
+    IH1 = vc-sound C₁ hyp1
 
     IH2 : |- [ pre C₂ Q ] strip C₂ [ Q ]
-    IH2 = vc-sound-lemma C₂ hyp2
+    IH2 = vc-sound C₂ hyp2
 
-vc-sound-lemma {Q} (IF b THEN C₁ ELSE C₂) (hyp1 , hyp2) = H-If if-True if-False
+vc-sound {Q} (IF b THEN C₁ ELSE C₂) (hyp1 , hyp2) = H-If if-True if-False
   where
     IH1 : |- [ pre C₁ Q ] strip C₁ [ Q ]
-    IH1 = vc-sound-lemma C₁ hyp1
+    IH1 = vc-sound C₁ hyp1
 
     case-True : ∀ s → pre (IF b THEN C₁ ELSE C₂) Q s ∧ bval b s == true → pre C₁ Q s
     case-True s (hyp3 , hyp4) rewrite hyp4 = hyp3
@@ -176,7 +183,7 @@ vc-sound-lemma {Q} (IF b THEN C₁ ELSE C₂) (hyp1 , hyp2) = H-If if-True if-Fa
     if-True = H-Str case-True IH1
 
     IH2 : |- [ pre C₂ Q ] strip C₂ [ Q ]
-    IH2 = vc-sound-lemma C₂ hyp2
+    IH2 = vc-sound C₂ hyp2
 
     case-False : ∀ s → pre (IF b THEN C₁ ELSE C₂) Q s ∧ bval b s == false → pre C₂ Q s
     case-False s (hyp5 , hyp6) rewrite hyp6 = hyp5
@@ -187,7 +194,7 @@ vc-sound-lemma {Q} (IF b THEN C₁ ELSE C₂) (hyp1 , hyp2) = H-If if-True if-Fa
     if-False : |- [ (λ s → pre (IF b THEN C₁ ELSE C₂) Q s ∧ bval b s == false) ] strip C₂ [ Q ]
     if-False = H-Str case-False IH2
 
-vc-sound-lemma {Q} (WHILE[ I ] b DO C) (hyp7 , hyp8 , hyp9) = H-Weak While-conclusion hyp8
+vc-sound {Q} (WHILE[ I ] b DO C) (hyp7 , hyp8 , hyp9) = H-Weak While-conclusion hyp8
 
   -- hyp7 : ∀ s → I s ∧ bval b s == true → pre C I s
   -- hyp8 : ∀ s → I s ∧ bval b s == false → Q s
@@ -195,20 +202,27 @@ vc-sound-lemma {Q} (WHILE[ I ] b DO C) (hyp7 , hyp8 , hyp9) = H-Weak While-concl
   
   where
     IH : |- [ pre C I ] strip C [ I ]
-    IH = vc-sound-lemma C hyp9
+    IH = vc-sound C hyp9
 
     While-premise : |- [ (λ s → I s ∧ bval b s == true) ] strip C [ I ]
     While-premise = H-Str hyp7 IH
 
     While-conclusion : |- [ I ] WHILE b DO (strip C) [ (λ s → I s ∧ bval b s == false) ]
     While-conclusion = H-While While-premise
+```
 
+## Completeness of the verification conditions method 
 
--------------------------------------------
--- Completeness of Verification Conditions
--------------------------------------------
+Should it be the case that `|- [ pre C Q ] strip C [ Q ]` implies that `vc C Q` is valid? The answer is obviously
+not; indeed this would be clearly false if the invariants in `C` are ill choosen, say because they are just trivial
+assertions like `⊤'`. However it is true that any proof of `|- [ P ] c [ Q ]` implicitly includes its own
+verification condition, so that we can show that for any such triple there exists a properly annotated
+command `C` such that `c == strip C`, the assertion `vc C Q` is valid and `P` implies `pre C Q`.
 
--- lemma
+Toward the proof of such a theorem, we prove two lemmas stating that if `P` implies `P'` then
+both `pre C P` implies `pre C P'` and `vc C P` implies `vc C P'`. 
+
+```
 pre-mono : ∀{P P' : Assn} {s : State} (C : Acom)
            → (∀ s' → P s' → P' s') → pre C P s → pre C P' s
            
@@ -238,7 +252,7 @@ pre-mono (WHILE[ I ] b DO C) hyp1 hyp2 = hyp2
   -- hyp1 : ∀ s' → P s' → P' s'
   -- hyp2 : I s
 
--- lemma
+
 vc-mono : ∀ {P P' : Assn} (C : Acom) →
                (∀ s -> P s → P' s) → vc C P → vc C P'
 
@@ -286,11 +300,12 @@ vc-mono {P} {P'} (WHILE[ I ] b DO C) hyp (hyp1 , hyp2 , hyp3) = th1 , th2 , th3
       th3 = hyp3
 
 
-------------------------
--- Completeness Theorem
-------------------------
+```
 
+We are now in place to prove the completeness theorem of verification conditions by induction
+over the derivation of `|- [ P ] c [ Q ]`. 
 
+```
 vc-completeness : ∀ {P Q : Assn} c →
             |- [ P ] c [ Q ] →
             ∃[ C ] ( c == strip C ∧ vc C Q ∧ (∀ s → P s → pre C Q s) )
