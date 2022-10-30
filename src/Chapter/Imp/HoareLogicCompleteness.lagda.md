@@ -24,6 +24,28 @@ open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
 open import Chapter.Imp.HoareLogicSoundness
 ```
+The opposite implication to soundness is *completeness*, namely the claim that all valid triple is derivable
+in Hoare Logic; in symbols
+
+    |= [ P ] c [ Q ] ==> |- [ P ] c [ Q ]
+ 
+However it is easy to see that `|= P`, namely `∀ s → P s`, holds if and only if
+`|= [ ⊤' ] SKIP [ P ]`; but assertions are fomulas of first order arithmetic, hence
+were Hoare logic complete we would have a complete axiomatization of arithmetic, contradicting the
+(first) Goedel's incompleteness theorem. Also we would have a decision method to check whether
+the triple `[ ⊤' ] c [ ⊥' ]`, where `⊥'` is the assertion that never holds, is valid for any command
+`c`; but such a triple is valid if and only if for all `s : State` there exists no `t` such that
+`⦅ c , s ⦆ ⇒ t`, which is known to be undecidable from computability theory. See Winskel's book, chapter 7.
+
+In contrast, in his famous 1978 paper Stephen A. Cook proved that Hoare logic is relative complete,
+that is Hoare logic is complete if have an oracle deciding assertions. In our formulation such an oracle
+exists: it is Agda itself. More precisely, Hoare logic is complete with respect to the assertions that
+are provable by Agda: here there is no contradiction with Goedel's theorem, as Agda
+necessarily embodies an incomplete axiomatization of arithmetic.
+
+## Weakest preconditions
+
+The present proof of the relative completeness theorem relies on Djikstra's notion of *weakest precondition*
 
 ```
 -------------------------
