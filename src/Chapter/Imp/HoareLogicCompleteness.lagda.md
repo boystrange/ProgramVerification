@@ -45,33 +45,36 @@ necessarily embodies an incomplete axiomatization of arithmetic.
 
 ## Weakest preconditions
 
-The present proof of the relative completeness theorem relies on Djikstra's notion of *weakest precondition*
+The proof of the relative completeness theorem relies on Djikstra's notion of *weakest precondition*.
+Let us define: 
 
 ```
--------------------------
--- Weakest preconditions
--------------------------
-
 wp : Com -> Assn -> Assn
 wp c Q s = ∀ t -> ⦅ c , s ⦆ ⇒ t -> Q t
+```
+Then an immediate consequence of the definition is the following:
 
+```
 Fact : ∀ {P c Q} -> |= [ P ] c [ Q ] -> (∀ s -> P s -> wp c Q s)
 Fact {P} {c} {Q} = only-if
   where
     only-if : ({s t : State} -> P s -> ⦅ c , s ⦆ ⇒ t -> Q t) ->
                             ((s : State) -> P s -> wp c Q s)
     only-if hyp1 s hyp2 t = hyp1 hyp2
+```
+If we identify an assertion `P`, that is a predicate of states `P : State → Set`, with the set
+`⟦P⟧ = {s : State ∣ P s}` i.e. the set of states of which `P` holds, the larger is `⟦P⟧` the weaker
+are the requirements for a state `s` to satisfy `P`. On the other hand implication is equivalent
+to subset inclusion:
 
--- Execise
+     ∀ s → P s → P' s  <==> ⟦P⟧ ⊆ ⟦P'⟧
 
-    if-part : ((s : State) -> P s -> wp c Q s) ->
-                           ({s t : State} -> P s -> ⦅ c , s ⦆ ⇒ t -> Q t)
-    if-part hyp1 {s} {t} hyp2 hyp3  = hyp1 s hyp2 t hyp3
+Now, unravelling the statement `Fact` we have that if `|= [ P ] c [ Q ]` then `⟦P⟧ ⊆ ⟦wp c Q⟧`,
+so that `wp c Q` is *weaker* then any precondition `P` of `c` with respect to `Q`. It remains to show
+that `wp c Q` is itself a precondition of `c` and `Q` namely its *weakest precondition*,
+which is the content of the next lemma.
 
----------------
--- Main Lemma
----------------
-
+```
 wp-lemma : ∀ c {Q : Assn} -> |- [ wp c Q ] c [ Q ]
 
 wp-lemma SKIP {Q} = H-Str left-premise H-Skip
@@ -173,14 +176,29 @@ wp-lemma (WHILE b DO c) {Q} = H-Weak claim2 weak-premise
 -- Ps s : ⦅ WHILE b DO c , s ⦆ ⇒ s -> Q s
 -- b=false : bval b s == false
 -- WhileFalse b=false : ⦅ WHILE b DO c , s ⦆ ⇒ s
+```
+Eventually, we can prove the (relative) completeness theorem of Hoare logic
+using rule `H-Str` with `Fact` and `wp-lemma` as premises.
 
-------------------------
--- Completeness Theorem
-------------------------
-
+```
 completeness : ∀ (c : Com) {P Q : Assn} -> |= [ P ] c [ Q ] -> |-  [ P ] c [ Q ]
 completeness c {P} {Q} hyp = H-Str str-left (wp-lemma c)
   where
     str-left : ∀ s -> P s -> wp c Q s
     str-left = Fact {P} {c} {Q} hyp
 ```
+
+## Exercise
+
+Prove the converse implication of `Fact`, namely that
+
+     ∀ {P c Q} -> (∀ s -> P s -> wp c Q s) -> |= [ P ] c [ Q ]
+
+```
+-- EXERCISE
+
+Inv-Fact : ∀ {P c Q} -> (∀ s -> P s -> wp c Q s) -> |= [ P ] c [ Q ]
+Inv-Fact hyp1 {s} {t} hyp2 hyp3 = hyp1 s hyp2 t hyp3
+```
+{:.solution}
+ 
