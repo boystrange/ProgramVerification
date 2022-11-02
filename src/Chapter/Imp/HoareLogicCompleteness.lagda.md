@@ -24,32 +24,57 @@ open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
 open import Chapter.Imp.HoareLogicSoundness
 ```
+The opposite implication to soundness is *completeness*, namely the claim that all valid triple is derivable
+in Hoare Logic; in symbols
+
+    |= [ P ] c [ Q ] ==> |- [ P ] c [ Q ]
+ 
+However it is easy to see that `|= P`, namely `∀ s → P s`, holds if and only if
+`|= [ ⊤' ] SKIP [ P ]`; but assertions are fomulas of first order arithmetic, hence
+were Hoare logic complete we would have a complete axiomatization of arithmetic, contradicting the
+(first) Goedel's incompleteness theorem. Also we would have a decision method to check whether
+the triple `[ ⊤' ] c [ ⊥' ]`, where `⊥'` is the assertion that never holds, is valid for any command
+`c`; but such a triple is valid if and only if for all `s : State` there exists no `t` such that
+`⦅ c , s ⦆ ⇒ t`, which is known to be undecidable from computability theory. See Winskel's book, chapter 7.
+
+In contrast, in his famous 1978 paper Stephen A. Cook proved that Hoare logic is relative complete,
+that is Hoare logic is complete if have an oracle deciding assertions. In our formulation such an oracle
+exists: it is Agda itself. More precisely, Hoare logic is complete with respect to the assertions that
+are provable by Agda: here there is no contradiction with Goedel's theorem, as Agda
+necessarily embodies an incomplete axiomatization of arithmetic.
+
+## Weakest preconditions
+
+The proof of the relative completeness theorem relies on Djikstra's notion of *weakest precondition*.
+Let us define: 
 
 ```
--------------------------
--- Weakest preconditions
--------------------------
-
 wp : Com -> Assn -> Assn
 wp c Q s = ∀ t -> ⦅ c , s ⦆ ⇒ t -> Q t
+```
+Then an immediate consequence of the definition is the following:
 
+```
 Fact : ∀ {P c Q} -> |= [ P ] c [ Q ] -> (∀ s -> P s -> wp c Q s)
 Fact {P} {c} {Q} = only-if
   where
     only-if : ({s t : State} -> P s -> ⦅ c , s ⦆ ⇒ t -> Q t) ->
                             ((s : State) -> P s -> wp c Q s)
     only-if hyp1 s hyp2 t = hyp1 hyp2
+```
+If we identify an assertion `P`, that is a predicate of states `P : State → Set`, with the set
+`⟦P⟧ = {s : State ∣ P s}` i.e. the set of states of which `P` holds, the larger is `⟦P⟧` the weaker
+are the requirements for a state `s` to satisfy `P`. On the other hand implication is equivalent
+to subset inclusion:
 
--- Execise
+     ∀ s → P s → P' s  <==> ⟦P⟧ ⊆ ⟦P'⟧
 
-    if-part : ((s : State) -> P s -> wp c Q s) ->
-                           ({s t : State} -> P s -> ⦅ c , s ⦆ ⇒ t -> Q t)
-    if-part hyp1 {s} {t} hyp2 hyp3  = hyp1 s hyp2 t hyp3
+Now, unravelling the statement `Fact` we have that if `|= [ P ] c [ Q ]` then `⟦P⟧ ⊆ ⟦wp c Q⟧`,
+so that `wp c Q` is *weaker* then any precondition `P` of `c` with respect to `Q`. It remains to show
+that `wp c Q` is itself a precondition of `c` and `Q` namely its *weakest precondition*,
+which is the content of the next lemma.
 
----------------
--- Main Lemma
----------------
-
+```
 wp-lemma : ∀ c {Q : Assn} -> |- [ wp c Q ] c [ Q ]
 
 wp-lemma SKIP {Q} = H-Str left-premise H-Skip
@@ -151,14 +176,29 @@ wp-lemma (WHILE b DO c) {Q} = H-Weak claim2 weak-premise
 -- Ps s : ⦅ WHILE b DO c , s ⦆ ⇒ s -> Q s
 -- b=false : bval b s == false
 -- WhileFalse b=false : ⦅ WHILE b DO c , s ⦆ ⇒ s
+```
+Eventually, we can prove the (relative) completeness theorem of Hoare logic
+using rule `H-Str` with `Fact` and `wp-lemma` as premises.
 
-------------------------
--- Completeness Theorem
-------------------------
-
+```
 completeness : ∀ (c : Com) {P Q : Assn} -> |= [ P ] c [ Q ] -> |-  [ P ] c [ Q ]
 completeness c {P} {Q} hyp = H-Str str-left (wp-lemma c)
   where
     str-left : ∀ s -> P s -> wp c Q s
     str-left = Fact {P} {c} {Q} hyp
 ```
+
+## Exercise
+
+Prove the converse implication of `Fact`, namely that
+
+     ∀ {P c Q} -> (∀ s -> P s -> wp c Q s) -> |= [ P ] c [ Q ]
+
+```
+-- EXERCISE
+
+Inv-Fact : ∀ {P c Q} -> (∀ s -> P s -> wp c Q s) -> |= [ P ] c [ Q ]
+Inv-Fact hyp1 {s} {t} hyp2 hyp3 = hyp1 s hyp2 t hyp3
+```
+{:.solution}
+ 
