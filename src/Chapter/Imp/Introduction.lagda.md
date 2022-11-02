@@ -133,7 +133,7 @@ to introduce the basic results of computability theory.
  
 The book [4] has been the basis of our work in this last part of the book. It is a concise exposition
 of IMP and Hoare logic (with other topics), where all the definitions and results have been checked
-using the proof assistant Isabel. The proof assistant and the underlying logics constitute the main
+using the proof assistant Isabel. The proof assistant and the underlying logic constitutes the main
 difference with the present work. While Isabel is based on Higher Order Logic, which is
 classical logic at higher types, Agda is an implementation of intuitionistic type theory; moreover
 Isabel exclusively uses tacticals to prove theorems, and no proof object is produced. On the
