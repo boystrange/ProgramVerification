@@ -37,6 +37,8 @@ defined data types.
 ```
 open import Library.Fun
 open import Library.Nat
+open import Library.Bool
+open import Library.Equality
 ```
 
 ## Conjunction
@@ -244,6 +246,9 @@ accepted by Agda in later sections.
    -> A ∨ ⊥ <=> A`.
 7. Prove that `⊥` absorbs conjunctions, namely the theorems `∧-⊥-l :
    ∀{A : Set} -> ⊥ ∧ A <=> ⊥` and `∧-⊥-r : ∀{A : Set} -> A ∧ ⊥ <=> ⊥`.
+8. Prove that every boolean value is either `true` or `false`,
+   namely the theorem `Bool-∨ : ∀(b : Bool) -> (b == true) ∨ (b ==
+   false)`.
 
 ```
 -- EXERCISE 1
@@ -290,5 +295,11 @@ accepted by Agda in later sections.
 
 ∧-⊥-r : ∀{A : Set} -> A ∧ ⊥ <=> ⊥
 ∧-⊥-r = snd , ex-falso
+
+-- EXERCISE 8
+Bool-∨ : ∀(b : Bool) -> (b == true) ∨ (b == false)
+Bool-∨ true  = inl refl
+Bool-∨ false = inr refl
+
 ```
 {:.solution}
