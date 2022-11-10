@@ -1,4 +1,3 @@
-
 module Lab.Lab2-end where
 
 open import Library.Fun

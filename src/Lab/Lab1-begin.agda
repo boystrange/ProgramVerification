@@ -1,3 +1,4 @@
+module Lab.Lab1-begin where
 
 open import Library.Bool
 open import Library.Nat
