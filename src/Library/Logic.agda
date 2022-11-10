@@ -1,7 +1,8 @@
 module Library.Logic where
 
 infixr 1 _<=>_
-infix  2 _∨_ Σ-syntax ∃-syntax -- Σ₁-syntax ∃₁-syntax
+infix  2 Σ-syntax ∃-syntax -- Σ₁-syntax ∃₁-syntax
+infixr 2 _∨_
 infixr 3 _∧_
 infixr 4 _,_
 
