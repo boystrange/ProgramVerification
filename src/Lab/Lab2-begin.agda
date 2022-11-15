@@ -9,7 +9,7 @@ open import Library.Equality
 -- EXERCISE 1: prove the isomorphism between the types A -> B -> C
 -- and A ∧ B -> C
 
-uncurry : ∀{A B C : Set} -> (A -> B -> C ) -> A ∧ B -> C
+uncurry : ∀{A B C : Set} -> (A -> B -> C) -> A ∧ B -> C
 uncurry = {!!}
 
 curry : ∀{A B C : Set} -> (A ∧ B -> C) -> A -> B -> C
@@ -46,7 +46,7 @@ succ-succ-not-one : ∀(x : ℕ) -> succ (succ x) != 1
 succ-succ-not-one = {!!}
 
 -- EXERCISE 5: prove that every natural number is either equal to 0
--- or or different from 0
+-- or different from 0
 
 zero-or-not-zero : ∀(x : ℕ) -> x == 0 ∨ x != 0
 zero-or-not-zero = {!!}
