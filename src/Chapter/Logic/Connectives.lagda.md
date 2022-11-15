@@ -234,7 +234,7 @@ accepted by Agda in later sections.
    `∧-idem : ∀{A : Set} -> A ∧ A <=> A` and `∨-idem : ∀{A : Set} -> A
    ∨ A <=> A`.
 3. Prove that `∧` distributes over `∨` on the left, namely the
-   theorem `∧∨-dist : ∀{A B C : Set} -> A ∧ (B ∨ C) => (A ∧ B) ∨ (A ∧
+   theorem `∧∨-dist : ∀{A B C : Set} -> A ∧ (B ∨ C) <=> (A ∧ B) ∨ (A ∧
    C)`.
 4. Prove that `⊤` is the unit of conjuction, namely the theorems
    `∧-unit-l : ∀{A : Set} -> ⊤ ∧ A <=> A` and `∧-unit-r : ∀{A : Set}
