@@ -44,9 +44,23 @@ contradiction : ∀{A : Set} -> A -> ¬ A -> ⊥
 contradiction p ¬p = ¬p p
 ```
 
-The second and more interesting law concerning negation is
-**contraposition**, asserting that if `A` implies `B`, then `¬ B`
-implies `¬ A`.
+Recalling that in Agda the type `¬ A` is *defined* to be the same as
+the type `A -> ⊥`, the type of `contradiction` can also be written
+as `∀{A : Set} -> A -> ¬ ¬ A`. This is one of the so-called "double
+negation" laws.
+
+```
+double-negation : ∀{A : Set} -> A -> ¬ ¬ A
+double-negation = contradiction
+```
+
+In classical logic, the inverse implication `¬ ¬ A -> A` is also
+assumed to be true. However, this implication is not provable in
+constructive logic (it is instructive to **attempt** proving this
+property).
+
+Another interesting law concerning negation is **contraposition**,
+asserting that if `A` implies `B`, then `¬ B` implies `¬ A`.
 
 ```
 contrapositive : ∀{A B : Set} -> (A -> B) -> ¬ B -> ¬ A
@@ -60,13 +74,12 @@ type `¬ B` (that would be `p`). However, the type `¬ A` is actually
 the type `A -> ⊥`, so `contrapositive` can be seen as also having a
 third argument of type `A`, that would be `q`.
 
-Finally, we can prove the law of **double negation**, asserting that
-if `A` is true, then it is not true that the negation of `A` is
-true.
+Using `contrapositive` and `double-negation` we can prove that
+*triple* negation implies *single* negation.
 
 ```
-double-negation : ∀{A : Set} -> A -> ¬ ¬ A
-double-negation x p = p x
+triple-negation : ∀{A : Set} -> ¬ ¬ ¬ A -> ¬ A
+triple-negation = contrapositive double-negation
 ```
 
 ## Decidability
@@ -121,6 +134,8 @@ Bool-eq-decidable₁ false true  = no λ ()
 Bool-eq-decidable₁ false false = yes refl
 ```
 
+<!--
+
 Another example of decidabile property is the equality for natural
 numbers. In this case, when we compare two numbers of the form `succ
 x` and `succ y`, we first decide whether `x` and `y` are equal. If
@@ -159,6 +174,8 @@ we have to compare both the heads and the tails of the two
 lists. Only if both components are equal can we conclude that the
 original lists are equal. Note that each case after the `with`
 clauses has as many patterns as the number of `with` clauses.
+
+-->
 
 ## Exercises
 
