@@ -113,8 +113,11 @@ Bool-eq-decidable false false = inr refl
 
 Note that we use the constructor `inr` ("inject right") for
 representing a positive answer to the question "is `x` equal to
-`y`?" and `inl` ("inject left") for representing a negative
-answer. For readability purposes, it may be appropriate to give
+`y`?" and `inl` ("inject left") for representing a negative answer.
+
+<!--
+
+For readability purposes, it may be appropriate to give
 these constructors more evocative names, such as `yes` and `no`. We
 can do so (without defining an *ad hoc* `Decidable` data type) by
 means of **pattern synonyms**.
@@ -133,8 +136,6 @@ Bool-eq-decidable₁ true  false = no λ ()
 Bool-eq-decidable₁ false true  = no λ ()
 Bool-eq-decidable₁ false false = yes refl
 ```
-
-<!--
 
 Another example of decidabile property is the equality for natural
 numbers. In this case, when we compare two numbers of the form `succ
@@ -198,7 +199,6 @@ clauses has as many patterns as the number of `with` clauses.
    the excluded middle, namely prove the theorem `dn-em : (∀{A : Set}
    -> (¬ ¬ A -> A)) -> ∀{A : Set} -> Decidable A `. Hint: use the
    solution to the previous exercise.
-
 ```
 -- EXERCISE 1
 
