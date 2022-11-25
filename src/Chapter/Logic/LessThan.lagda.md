@@ -13,9 +13,11 @@ natural numbers and prove some of its fundamental properties.
 ## Imports
 
 ```
+open import Library.Fun
 open import Library.Bool
 open import Library.Nat
 open import Library.Logic
+open import Library.Logic.Laws
 open import Library.Equality
 ```
 
@@ -157,9 +159,8 @@ another. This follows from a straightforward cases analysis on them.
 le-total : ∀(x y : ℕ) -> x <= y ∨ y <= x
 le-total zero     _    = inl le-zero
 le-total (succ _) zero = inr le-zero
-le-total (succ x) (succ y) with le-total x y
-... | inl x<=y = inl (le-succ x<=y)
-... | inr y<=x = inr (le-succ y<=x)
+le-total (succ x) (succ y) =
+  ∨-elim (inl ∘ le-succ) (inr ∘ le-succ) (le-total x y)
 ```
 
 ## Exercises
@@ -175,11 +176,11 @@ le-total (succ x) (succ y) with le-total x y
 -- EXERCISE 1
 
 _<=?_ : ∀(x y : ℕ) -> Decidable (x <= y)
-zero   <=? y    = yes le-zero
-succ x <=? zero = no λ ()
+zero   <=? y    = inr le-zero
+succ x <=? zero = inl λ ()
 succ x <=? succ y with x <=? y
-... | no  gt = no λ { (le-succ le) -> gt le }
-... | yes le = yes (le-succ le)
+... | inl gt = inl λ { (le-succ le) -> gt le }
+... | inr le = inr (le-succ le)
 
 _<_ : ℕ -> ℕ -> Set
 x < y = succ x <= y
