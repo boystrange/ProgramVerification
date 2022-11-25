@@ -288,11 +288,11 @@ not-even (succ (succ x)) nev = cong (succ ∘ succ) (not-even x (lem x nev))
 -- EXERCISE 3
 
 Even? : ∀(x : ℕ) -> Decidable (Even-i x)
-Even? zero            = yes even-zero
-Even? (succ zero)     = no λ ()
+Even? zero            = inr even-zero
+Even? (succ zero)     = inl λ ()
 Even? (succ (succ x)) with Even? x
-... | yes ev = yes (even-succ ev)
-... | no nev = no λ { (even-succ ev) → nev ev }
+... | inr ev  = inr (even-succ ev)
+... | inl nev = inl λ { (even-succ ev) → nev ev }
 
 -- EXERCISE 4
 
