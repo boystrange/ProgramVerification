@@ -179,7 +179,7 @@ We can now provide a verified version of insertion sort that
 satisfies the `SortingFunction` specification.
 
 ```
-extrinsically-verified-insertion-sort : SortingFunction
-extrinsically-verified-insertion-sort xs =
+verified-insertion-sort : SortingFunction
+verified-insertion-sort xs =
   insertion-sort xs , insertion-sort-permutation xs , sorted-insertion-sort xs
 ```
