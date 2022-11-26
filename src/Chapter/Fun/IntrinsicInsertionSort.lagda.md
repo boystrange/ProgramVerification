@@ -1,5 +1,8 @@
 ---
+title: Intrinsic verification of insertion sort
+prev:  Chapter.Fun.ExtrinsicInsertionSort
 ---
+
 
 ```agda
 open import Library.Logic

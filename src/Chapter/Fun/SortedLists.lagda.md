@@ -1,5 +1,6 @@
 ---
 title: Specification of a sorting algorithm
+next:  Chapter.Fun.ExtrinsicInsertionSort
 ---
 
 ```
@@ -252,7 +253,7 @@ permutation of `xs`, and a proof that `ys` is sorted.
 
 ```
 SortingFunction : Set
-SortingFunction = ∀(xs : List ℕ) -> ∃[ ys ] xs # ys ∧ Sorted ys
+SortingFunction = ∀(xs : List ℕ) -> ∃[ ys ] ys # xs ∧ Sorted ys
 ```
 
 ## Exercises

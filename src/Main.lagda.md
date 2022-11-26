@@ -41,11 +41,11 @@ import Chapter.Logic.LessThan
 
 ```
 import Chapter.Fun.SortedLists
+import Chapter.Fun.ExtrinsicInsertionSort
 ```
 
 <!--
 ```
-import Chapter.Fun.ExtrinsicInsertionSort
 import Chapter.Fun.IntrinsicInsertionSort
 import Chapter.Fun.RedBlackTree
 import Chapter.Fun.RegularExpressions
