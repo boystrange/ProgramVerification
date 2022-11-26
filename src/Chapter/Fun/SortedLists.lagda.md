@@ -2,43 +2,30 @@
 title: Specification of a sorting algorithm
 ---
 
+```
+module Chapter.Fun.SortedLists where
+```
+
 In this chapter we address the problem of specifying the type of a
 *sorting algorithm* on lists. This specification will be
 instrumental in the following chapters, where we will verify the
-correctness of some sorting algorithms.
+correctness of some sorting algorithms. For the sake of simplicity
+we will specify and verify sorting algorithms that work on lists of
+natural numbers, but the Agda code can be easily generalized to work
+with lists of arbitrary elements, provided that such elements are
+equipped with a total order.
 
-<!--
+## Imports
+
 ```
 open import Library.Fun
+open import Library.Nat
+open import Library.LessThan
 open import Library.Logic
 open import Library.Equality
 open import Library.List using (List; []; _::_; [_]; reverse; _++_)
 open import Library.List.Properties
 ```
--->
-
-## Modules with parameters
-
-Since we are going to implement and verify polymorphic sorting
-algorithms, we assume to work with a given type `A` of the elements
-of the lists being sorted and a total order relation `_≼_` over such
-elements. We specify these assumptions as parameters to the modules
-in which they are necessary. For instance, the module corresponding
-to this chapter is declared thus.
-
-```
-module Chapter.Fun.SortedLists
-  (A       : Set)
-  (_≼_     : A -> A -> Set)
-  (≼-refl  : {x : A} -> x ≼ x)
-  (≼-trans : {x y z : A} -> x ≼ y -> y ≼ z -> x ≼ z)
-  (≼-total : (x y : A) -> x ≼ y ∨ y ≼ x)
-  where
-```
-
-We have specified the properties `≼-refl`, `≼-trans` and `≼-total`
-as an illustration of module parameters, but we are not going to use
-any of these properties of `≼` in this chapter.
 
 ## What is a sorting function?
 
@@ -46,8 +33,8 @@ There are various levels at which we can specify the type of a
 sorting function. The most basic - and less informative -
 specification is that of a function from lists to lists:
 
-* A sorting function takes a list of elements of type `A` and
-  returns a list of elements of type `A`.
+* A sorting function takes a list of elements of type `ℕ` and
+  returns a list of elements of type `ℕ`.
 
 This specification is very imprecise, as it characterizes many
 functions that have nothing to do with sorting. For example, both
@@ -55,8 +42,8 @@ the identity function and the constant function that always yields
 `[]` satisfy this specification. We can refine this specification
 stating that the resulting list should be sorted:
 
-* A sorting function takes a list of elements of type `A` and
-  returns a *sorted* list of elements of type `A`.
+* A sorting function takes a list of elements of type `ℕ` and
+  returns a *sorted* list of elements of type `ℕ`.
 
 A function satisfying this property is guaranteed to return a sorted
 list, but the specification is still weak. For example, the constant
@@ -68,8 +55,8 @@ fact that the resulting list should contain the same elements as the
 original list, possibly in a different order. Technically, the
 returned list should be a permutation of the original one:
 
-* A sorting function takes a list `xs` of elements of type `A` and
-  returns a *sorted* list `ys` of elements of type `A` that is a
+* A sorting function takes a list `xs` of elements of type `ℕ` and
+  returns a *sorted* list `ys` of elements of type `ℕ` that is a
   *permutation* of `xs`.
 
 In this specification, we are somehow forced to give names to the
@@ -78,58 +65,68 @@ closely. This suggests that we will make use of dependent and
 existential types to formalize this specification in Agda.
 
 We now proceed specifying first what it means for a list to be
-sorted (according to `≼`) and then what it means for a list to be a
-permutation of another list.
+sorted and then what it means for a list to be a permutation of
+another list.
 
 ## Sorted lists
 
 In order to define a "sorted" predicate for lists, it is useful to
-define an auxiliary predicate `≼*` such that `x ≼* xs` holds if `x`
-is a *lower bound* for all of the elements in the list `xs`. To this
-aim, we define a parametric `All` predicate such that `All P xs`
-holds if so does `P x` for each element `x` of `xs`.
+define an auxiliary predicate `LowerBound` such that `LowerBound x
+xs` holds if `x` is a *lower bound* for all of the elements in the
+list `xs`. We can define this predicate inductively by means of the
+inference system below.
+
+                                   x <= y    LowerBound x ys
+    lb-[] ---------------    lb-:: -------------------------
+          LowerBound x []           LowerBound x (y :: ys)
+
+The element `x` is always a lower bound for the empty list, no
+matter what `x` is. In order for `x` to be the lower bound of a
+non-empty list `y :: ys`, it must be the case that `x <= y` and that
+`x` is a lower bound for `ys` as well. The translation of this
+inference system into an Agda data type is straightforward.
 
 ```
-All : {A : Set} -> (A -> Set) -> List A -> Set
-All P []        = ⊤
-All P (x :: xs) = P x ∧ All P xs
+data LowerBound (x : ℕ) : List ℕ -> Set where
+  lb-[] : LowerBound x []
+  lb-:: : ∀{y : ℕ} {ys : List ℕ} -> x <= y -> LowerBound x ys ->
+          LowerBound x (y :: ys)
 ```
 
-Note that `All P xs` is an example of type-level computation and is
-defined by structural induction on `xs` by creating a conjunction of
-propositions concerning each individual element `x` of `xs`. In
-general, we have
-
-    All P (x₁ :: x₂ :: ... :: xₙ :: []) = P x₁ ∧ P x₂ ∧ ... ∧ P xₙ
-
-We can obtain `≼*` as a simple specialization of `All`, thus:
+A property of `LowerBound` that will be useful in the following is
+the fact that a lower bound can be further lowered.
 
 ```
-_≼*_ : A -> List A -> Set
-x ≼* xs = All (x ≼_) xs
+lower-lower-bound : ∀{x y : ℕ} {ys : List ℕ} -> x <= y -> LowerBound y ys ->
+                    LowerBound x ys
+lower-lower-bound x≤y lb-[] = lb-[]
+lower-lower-bound x≤y (lb-:: y≤z y≤ys) =
+  lb-:: (le-trans x≤y y≤z) (lower-lower-bound x≤y y≤ys)
 ```
 
-Note that we are creating the predicate "being ≼-larger than `x`" by
-means of the expression `(x ≼_)`, in which we supply the left
-operand of `≼` (that is `x`) but not the right operand of `≼`. This
-expression is just a short form for the abstraction `λ y -> x ≼ y`.
+We make use of `LowerBound` to define the `Sorted` predicate as
+follows.
 
-We make use of type-level computation once more to define the
-`Sorted` predicate: the empty list is trivially sorted. A non-empty
-list with head `x` and tail `xs` is sorted if `x` is a lower bound
-of `xs` and if `xs` is in turn sorted.
+                                     LowerBound x xs    Sorted xs
+    sorted-[] ---------    sorted-:: ----------------------------
+              Sorted []                    Sorted (x :: xs)
+
+The empty list is trivially sorted. A non-empty list `x :: xs` is
+sorted provided that `x` is a lower bound for `xs` and `xs` is
+sorted as well. In Agda code we obtain:
 
 ```
-Sorted : List A -> Set
-Sorted []        = ⊤
-Sorted (x :: xs) = x ≼* xs ∧ Sorted xs
+data Sorted : List ℕ -> Set where
+  sorted-[] : Sorted []
+  sorted-:: : ∀{x : ℕ} {xs : List ℕ} -> LowerBound x xs -> Sorted xs ->
+              Sorted (x :: xs)
 ```
 
 It is easy to prove that every singleton list is sorted.
 
 ```
-singleton-sorted : (x : A) -> Sorted [ x ]
-singleton-sorted _ = <> , <>
+singleton-sorted : ∀(x : ℕ) -> Sorted [ x ]
+singleton-sorted _ = sorted-:: lb-[] sorted-[]
 ```
 
 ## Permutations
@@ -142,29 +139,31 @@ the position of two subsequent elements in a list. In the simplest
 case, the swapped elements are found just at the beginning of the
 list, so we start by defining the following axiom.
 
-    [#swap] ---------------------------
-            x :: y :: xs # y :: x :: xs
+    #swap ---------------------------
+          x :: y :: xs # y :: x :: xs
 
 In general, we might want to swap two subsequent elements of a list
 no matter how deep they are found within the list. So we extend the
 predicate with the following congruence rule.
 
-                 xs # ys
-    [#cong] -----------------
-            x :: xs # x :: ys
+               xs # ys
+    #cong -----------------
+          x :: xs # x :: ys
 
 Finally, we take the reflexive and transitive closure of the swap
 relation defined so far, which allows us to combine an arbitrary
 number of swaps into a permutation.
 
-                                xs # ys     ys # zs
-    [#refl] -------    [#trans] -------------------
-            xs # xs                   xs # zs
+                            xs # ys     ys # zs
+    #refl -------    #trans -------------------
+          xs # xs                 xs # zs
 
 Similarly to what we have done for the "less than" relation, we
-define this inference system as an Agda data type. The data type has
-one parameter `A`, the type of the elements of the lists, and two
-indices which are the lists being related.
+define this inference system as an Agda data type. Since the notion
+of permutation of a list is unrelated to the type of its elements,
+we can define a data type with one parameter `A`, the type of the
+elements of the lists, and two indices which are the lists being
+related.
 
 ```
 infix  4 _#_
@@ -253,68 +252,80 @@ permutation of `xs`, and a proof that `ys` is sorted.
 
 ```
 SortingFunction : Set
-SortingFunction = (xs : List A) -> ∃[ ys ] xs # ys ∧ Sorted ys
+SortingFunction = ∀(xs : List ℕ) -> ∃[ ys ] xs # ys ∧ Sorted ys
 ```
 
 ## Exercises
 
-The following is an alternative definition of sorted list based on
-the intuition that the empty list and every singleton list are
-trivially sorted and that a list with two or more elements is sorted
-if the first element is `≼`-smaller than the second one, and if the
-sub-list starting from the second element is sorted.
+Prove that permutations preserve lower bounds.
 
 ```
-Sorted' : List A -> Set
-Sorted' []             = ⊤
-Sorted' (_ :: [])      = ⊤
-Sorted' (x :: y :: xs) = x ≼ y ∧ Sorted' (y :: xs)
-```
-
-Prove the following theorems asserting that `Sorted` and `Sorted'`
-are equivalent.  What could make `Sorted'` less convenient to use
-compared to `Sorted`?
-
-```
-Sorted->Sorted' : {xs : List A} -> Sorted xs -> Sorted' xs
-Sorted'->Sorted : {xs : List A} -> Sorted' xs -> Sorted xs
+lower-bound-permutation : ∀{x : ℕ} {xs ys : List ℕ} -> ys # xs ->
+                          LowerBound x xs -> LowerBound x ys
 ```
 
 ```
-Sorted->Sorted' {[]}           p               = <>
-Sorted->Sorted' {x :: []}      p               = <>
-Sorted->Sorted' {x :: y :: xs} ((x≼y , _) , q) = x≼y , Sorted->Sorted' q
-
-Sorted'->Sorted {[]}      p = <>
-Sorted'->Sorted {x :: []} p = <> , <>
-Sorted'->Sorted {x :: y :: xs} (x≼y , p) = (x≼y , lem x≼y p) , Sorted'->Sorted p
-  where
-    lem : {x y : A} {xs : List A} -> x ≼ y -> Sorted' (y :: xs) -> All (x ≼_) xs
-    lem {_} {_} {[]} x≼y p = <>
-    lem {x} {y} {z :: xs} x≼y (y≼z , p) = ≼-trans x≼y y≼z , lem (≼-trans x≼y y≼z) p
+lower-bound-permutation #refl x≤xs = x≤xs
+lower-bound-permutation #swap (lb-:: x≤y (lb-:: x≤z x≤xs)) =
+  lb-:: x≤z (lb-:: x≤y x≤xs)
+lower-bound-permutation (#cong π) (lb-:: x≤y x≤xs) =
+  lb-:: x≤y (lower-bound-permutation π x≤xs)
+lower-bound-permutation (#trans π π') x≤xs =
+  lower-bound-permutation π (lower-bound-permutation π' x≤xs)
 ```
 {:.solution}
 
-Prove the following theorem, asserting that list predicates defined
-using `All` are preserved by permutations.
+The following is an alternative definition of sorted list based on a
+weaker notion of "lower bound" which only considers the head of a
+list.
 
 ```
-#All : {A : Set} (P : A -> Set) {xs ys : List A} -> xs # ys -> All P xs -> All P ys
+data HeadLowerBound : ℕ -> List ℕ -> Set where
+  hlb-[] : ∀{x : ℕ} -> HeadLowerBound x []
+  hlb-:: : ∀{x y : ℕ} {ys : List ℕ} -> x <= y -> HeadLowerBound x (y :: ys)
+
+data Sorted' : List ℕ -> Set where
+  sorted-[] : Sorted' []
+  sorted-:: : ∀{x : ℕ} {xs : List ℕ} -> HeadLowerBound x xs -> Sorted' xs -> Sorted' (x :: xs)
+```
+
+Prove the following theorems asserting that `Sorted` and `Sorted'`
+are equivalent.
+
+```
+Sorted->Sorted' : ∀{xs : List ℕ} -> Sorted xs -> Sorted' xs
+Sorted'->Sorted : ∀{xs : List ℕ} -> Sorted' xs -> Sorted xs
 ```
 
 ```
-#All P #refl         ps           = ps
-#All P #swap         (p , q , ps) = q , p , ps
-#All P (#cong π)     (p , ps)     = p , #All P π ps
-#All P (#trans π π') ps           = #All P π' (#All P π ps)
+Sorted->Sorted' sorted-[] = sorted-[]
+Sorted->Sorted' (sorted-:: x≤xs p) = sorted-:: (lemma x≤xs) (Sorted->Sorted' p)
+  where
+    lemma : ∀{x : ℕ} {xs : List ℕ} -> LowerBound x xs -> HeadLowerBound x xs
+    lemma lb-[] = hlb-[]
+    lemma (lb-:: x≤y p) = hlb-:: x≤y
+
+Sorted'->Sorted sorted-[] = sorted-[]
+Sorted'->Sorted (sorted-:: p q) = sorted-:: (lemma p q) (Sorted'->Sorted q)
+  where
+    lower : ∀{x y : ℕ} {xs : List ℕ} -> x <= y -> HeadLowerBound y xs ->
+            HeadLowerBound x xs
+    lower x≤y hlb-[] = hlb-[]
+    lower x≤y (hlb-:: y≤z) = hlb-:: (le-trans x≤y y≤z)
+
+    lemma : ∀{x : ℕ} {xs : List ℕ} -> HeadLowerBound x xs -> Sorted' xs ->
+            LowerBound x xs
+    lemma hlb-[] sorted-[] = lb-[]
+    lemma (hlb-:: x≤y) (sorted-:: p q) = lb-:: x≤y (lemma (lower x≤y p) q)
 ```
+{:.solution}
 
 Prove the following theorem asserting that the first element of any
-list can be pushed arbitrarily deep into list still obtaining a
+list can be pushed arbitrarily deep into the list still obtaining a
 permutation of the original list.
 
 ```
-#push : {A : Set} (x : A) (xs ys : List A) -> x :: xs ++ ys # xs ++ x :: ys
+#push : ∀{A : Set} (x : A) (xs ys : List A) -> x :: xs ++ ys # xs ++ x :: ys
 ```
 
 ```
@@ -332,7 +343,7 @@ Prove the following theorem showing that `xs ++ ys` and `ys ++ xs`
 are one the permutation of the other.
 
 ```
-#++ : {A : Set} (xs ys : List A) -> xs ++ ys # ys ++ xs
+#++ : ∀{A : Set} (xs ys : List A) -> xs ++ ys # ys ++ xs
 ```
 
 ```
@@ -351,7 +362,7 @@ Prove the following theorem, asserting that the reverse of `xs` is a
 particular permutation of `xs`.
 
 ```
-#reverse : {A : Set} (xs : List A) -> reverse xs # xs
+#reverse : ∀{A : Set} (xs : List A) -> reverse xs # xs
 ```
 
 ```

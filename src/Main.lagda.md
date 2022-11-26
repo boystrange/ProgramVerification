@@ -39,11 +39,12 @@ import Chapter.Logic.LessThan
 
 ## Verification of functional programs
 
-WORK IN PROGRESS
+```
+import Chapter.Fun.SortedLists
+```
 
 <!--
 ```
-import Chapter.Fun.SortedLists
 import Chapter.Fun.ExtrinsicInsertionSort
 import Chapter.Fun.IntrinsicInsertionSort
 import Chapter.Fun.RedBlackTree
