@@ -319,7 +319,7 @@ Z=X+I∧I<Y+1->Z=X+I∧I<=Y s (x , y) = x , h2
     h2 : s I <= s Y
     h2 = lemma-<-+-1-><= h1
 ```
-Putting al togather, we obtain: 
+Putting all together, we obtain: 
 ```
 pr2-7 : |- [ (Z=X+I ∧' I<=Y) ∧' I<Y ]
             sum-prog-body
@@ -414,7 +414,7 @@ pr2-9 : |- [ Z=X+I ∧' I<=Y ]
             
 pr2-9 = H-While' pr2-7 Z=X+I∧I<=Y∧¬I<Y->Z=X+Y
 ```
-Eventually we put all togather: 
+Eventually we put all together: 
 ```
 pr2-3' : |- [ ⊤' ]
            ((Z := V X) :: (I := N 0))

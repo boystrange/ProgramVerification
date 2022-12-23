@@ -24,7 +24,7 @@ open import Chapter.Imp.BigStep
 open import Chapter.Imp.HoareLogic
 open import Chapter.Imp.HoareLogicSoundness
 ```
-The opposite implication to soundness is *completeness*, namely the claim that all valid triple is derivable
+The opposite implication to soundness is *completeness*, namely the claim that all valid triples are derivable
 in Hoare Logic; in symbols
 
     |= [ P ] c [ Q ] ==> |- [ P ] c [ Q ]
