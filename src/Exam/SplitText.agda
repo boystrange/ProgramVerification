@@ -39,18 +39,18 @@ data Split {A : Set} : List A -> List A -> List A -> Set where
 
 -- EXERCISE 1 (4 POINTS)
 
-split-comm : {A : Set} {xs ys zs : List A} -> Split xs ys zs -> Split xs zs ys
-split-comm = {!!}
-
--- EXERCISE 2 (4 POINTS)
-
 split-refl : {A : Set} (xs : List A) -> Split xs [] xs
 split-refl = {!!}
 
--- EXERCISE 3 (4 POINTS)
+-- EXERCISE 2 (4 POINTS)
 
 split-++ : {A : Set} (xs ys : List A) -> Split (xs ++ ys) xs ys
 split-++ = {!!}
+
+-- EXERCISE 3 (4 POINTS)
+
+split-comm : {A : Set} {xs ys zs : List A} -> Split xs ys zs -> Split xs zs ys
+split-comm = {!!}
 
 -- EXERCISE 4 (14 POINTS)
 

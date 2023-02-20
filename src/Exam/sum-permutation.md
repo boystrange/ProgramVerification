@@ -1,5 +1,6 @@
 ---
 title: Static Analysis and Program Verification -- Exam
+fontfamily: palatino
 fontsize: 12pt
 papersize: a4
 pagestyle: empty
