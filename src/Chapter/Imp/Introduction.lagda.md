@@ -36,7 +36,7 @@ the relation `⦅ c , s ⦆ ⇒ t`, where `⦅_,_⦆ ⇒ _ ⊆ (Com × State) ×
 is called **big-step** operational semantics because it relates the initial to
 the final state of a terminating execution of a command:
 
-      ⦅ c , s ⦆ ⇒ t if the execution of c when started in the state s termintes
+      ⦅ c , s ⦆ ⇒ t if the execution of c when started in the state s terminates
                     yielding the state t
 
 A second relation we consider is the **small-step** semantics, which is a relation
@@ -71,7 +71,7 @@ a notation which is not permitted by Agda, alas) respectively.
 
 A triple `[ P ] c [ Q ]` is *valid*, written `|= [ P ] c [ Q ]`, if
 
-      For any states s and t such that P s and  ⦅ c , s ⦆ ⇒ t it is Q s
+      For any states s and t if P s and  ⦅ c , s ⦆ ⇒ t then Q t
 
 or in symbols:
 
@@ -145,4 +145,4 @@ have been completely reworked.
 2. H. R. Nielson & F. Nielson,
    [*Semantics with Applications*](http://www.cs.ru.nl/~herman/onderwijs/semantics2019/wiley.pdf), Wiley  
 3. A. J. Kfoury, R. N. Moll & R. A. Arbib, *A Programming Approach to Computability*, Springer
-4. T. Nipkow & G. Klein,[*Concrete Semantics*](http://concrete-semantics.org/), Springer
+4. T. Nipkow & G. Klein, [*Concrete Semantics*](http://concrete-semantics.org/), Springer
