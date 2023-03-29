@@ -211,7 +211,7 @@ theorem-small-big (⟶*-incl x hyp) = lemma-small-big x indHyp
 ```
 
 Proving the only if part of the Equivalence Theorem is more laborious.
-We begin by estblishing `lemma-big-small` which is the extension to `⟶*` of
+We begin by establishing `lemma-big-small` which is the extension to `⟶*` of
 rule `Comp₂` in the definition of  `⟶`, therefore allowing several setps in the
 execution of the `c` command while executing `c :: c''`.
 This will be of help in the theorem proof when treating the case of sequential composition.
@@ -226,7 +226,7 @@ lemma-big-small (⟶*-incl x hyp) =
            ⟶*-incl (Comp₂ x) (lemma-big-small hyp)
 ```
 
-Then we prove `theorem-small-big` by induction over the derivation
+Then we prove `theorem-big-small` by induction over the derivation
 of `⦅ c , s ⦆ ⇒ t`. In this proof we profit of the macros for reasoning
 about reductions, hopefully making the argument more readable. 
 ```
@@ -279,7 +279,7 @@ is consequence of the fact that both are formal descriptions of an interpreter f
 programs. In fact, in spite of its rudimentary syntax, IMP is a Turing complete programming
 language, even slightly extending the *While* language used in Kfoury, Mall and Arbib's book
 *A Programming Approach to Computability*
-as an equivalent substitute for Turing machines. Were either big or small-step relations decidable,
+as an equivalent substitute for Turing machines. Were either big or small-step semantics decidable,
 we would have an algorithm deciding the halting problem.
 
 ## Exercise
