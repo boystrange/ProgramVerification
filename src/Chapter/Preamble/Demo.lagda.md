@@ -56,32 +56,31 @@ Fibonacci number in linear time, as follows.
 
 ```
 fibo-from : ℕ -> ℕ -> ℕ -> ℕ
-fibo-from m n 0               = m
-fibo-from m n 1               = n
-fibo-from m n (succ (succ k)) = fibo-from n (m + n) (succ k)
+fibo-from m n 0        = m
+fibo-from m n (succ k) = fibo-from n (m + n) k
 
 fast-fibo : ℕ -> ℕ
 fast-fibo = fibo-from 0 1
 ```
 
 The `fast-fibo` function is just a wrapper for the auxiliary
-`fibo-from` function, which takes three arguments: `m` and `n`, which
-are supposed to be two subsequent numbers in the Fibonacci sequence,
-and then an index `k` which represents the number of steps to make
-in the sequence, starting from `m` and `n`, in order to reach the
-desired number. When `k` is 0, the desired number is just `m`. When
-`k` is 1, the desired number is just `n`.  When `k` is greater than
-one, we recursively apply `fibo-from` so that `m` becomes `n`, `n`
-becomes the sum of the (old) `m` and of the (old) `n`, and `k` is
-decreased by one. That is, `fibo-from` is basically a functional
-implementation of the classical loop that finds the desired number
-in the Fibonacci sequence by using (and updating) two auxiliary
-variables `m` and `n` initialized with 0 and 1.
+`fibo-from` function, which takes three arguments: `m` and `n`,
+which are supposed to be two subsequent numbers in the Fibonacci
+sequence, and then an index `k` which represents the number of steps
+to make in the sequence, starting from `m` and `n`, in order to
+reach the desired number. When `k` is 0, the desired number is just
+`m`. When `k` is greater than 0 we recursively apply `fibo-from` so
+that `m` becomes `n`, `n` becomes the sum of the (old) `m` and of
+the (old) `n`, and `k` is decreased by one. That is, `fibo-from` is
+basically a functional implementation of the classical loop that
+finds the desired number in the Fibonacci sequence by using (and
+updating) two auxiliary variables `m` and `n` initialized with 0 and
+1.
 
 Now, since `fast-fibo` (and particularly `fibo-from` on which it
 relies) is substantially more complex than `fibo`, we may wonder
 whether `fast-fibo` is in fact equivalent to `fibo`. We may perform
-a few test asking Agda to evaluate `fast-fibo`, but these tests are
+a few tests asking Agda to evaluate `fast-fibo`, but these tests are
 **necessarily finite**. The only way to be absolutely sure that
 `fibo` and `fast-fibo` are the same function is by **proving** that
 they are equivalent.
@@ -111,20 +110,16 @@ the application `fibo k`.
 
 ```
 lemma : ∀(k i : ℕ) -> fibo-from (fibo k) (fibo (succ k)) i == fibo (i + k)
-lemma k 0 = refl
-lemma k 1 = refl
-lemma k (succ (succ i)) =
+lemma k zero = refl
+lemma k (succ i) =
   begin
-    fibo-from (fibo (succ k)) (fibo k + fibo (succ k)) (succ i) ==⟨⟩
-    fibo-from (fibo (succ k)) (fibo (succ (succ k))) (succ i)
-      ==⟨ lemma (succ k) (succ i) ⟩
-    fibo (succ i + succ k) ==⟨⟩
-    fibo (succ (i + succ k))
-      ==⟨ cong (λ x -> fibo (succ x)) (+-comm i (succ k)) ⟩
-    fibo (succ (succ k + i)) ==⟨⟩
-    fibo (succ (succ (k + i)))
-      ==⟨ cong (λ x -> fibo (succ (succ x))) (+-comm k i) ⟩
-    fibo (succ (succ (i + k)))
+    fibo-from (fibo k) (fibo (succ k)) (succ i) ==⟨⟩
+    fibo-from (fibo (succ k)) (fibo k + fibo (succ k)) i ==⟨⟩
+    fibo-from (fibo (succ k)) (fibo (succ (succ k))) i
+      ==⟨ lemma (succ k) i ⟩
+    fibo (i + succ k)
+      ==⟨ cong fibo (symm (+-succ i k)) ⟩
+    fibo (succ i + k)
   end
 
 theorem : ∀(k : ℕ) -> fast-fibo k == fibo k
@@ -159,11 +154,10 @@ performance is more important.
    = $F_{i+k}$ by induction on $k$.
 
    > By induction on $k$. There are two base cases: when $k = 0$,
-   > then `fibo-from` $F_i$ $F_{i+1}$ $0$ = $F_i$ = $F_{i+k}$; when
-   > $k = 1$, then `fibo-from` $F_i$ $F_{i+1}$ $1$ = $F_{i+1}$ =
-   > $F_{i+k}$. In the inductive case we have $k > 1$. By definition
-   > of `fibo-from` we have `fibo-from` $F_i$ $F_{i+1}$ $k$ =
+   > then `fibo-from` $F_i$ $F_{i+1}$ $0$ = $F_i$ = $F_{i+k}$; In
+   > the inductive case we have $k > 0$. By definition of
+   > `fibo-from` we have `fibo-from` $F_i$ $F_{i+1}$ $k$ =
    > `fibo-from` $F_{i+1}$ $F_{i+2}$ $(k-1)$. Using the induction
-   > hypothesis we conclude `fibo-from` $F_{i+1}$ $F_{i+2}$ $(k-1)$ =
-   > $F_{i+k}$.
+   > hypothesis we conclude `fibo-from` $F_{i+1}$ $F_{i+2}$ $(k-1)$
+   > = $F_{i+k}$.
    {:.solution}
