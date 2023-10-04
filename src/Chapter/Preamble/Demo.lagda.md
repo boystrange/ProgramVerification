@@ -81,7 +81,7 @@ variables `m` and `n` initialized with 0 and 1.
 Now, since `fast-fibo` (and particularly `fibo-from` on which it
 relies) is substantially more complex than `fibo`, we may wonder
 whether `fast-fibo` is in fact equivalent to `fibo`. We may perform
-a few test asking Agda to evaluate `fast-fibo`, but these tests are
+a few tests asking Agda to evaluate `fast-fibo`, but these tests are
 **necessarily finite**. The only way to be absolutely sure that
 `fibo` and `fast-fibo` are the same function is by **proving** that
 they are equivalent.
