@@ -39,61 +39,43 @@ improve readability, we adopt the following conventions:
 * we assume that `->` associates to the **right**, so that e.g. `A
   -> B -> C` stands for `A -> (B -> C)` and not for `(A -> B) -> C`.
 
-## Terms
+## Defining functions
 
-We assume the existence of an infinite set of **term variables** `{
-x, y, z, ... }` often called simply variables. Agda is a strongly
-typed language, in the sense that it only considers (and evaluates)
-terms that are **well typed** according to a specific set of
-**typing rules**. In describing the syntax of terms, we also
-informally describe the typing rules that they must obey and how
-their type is determined.
+An Agda function is written as a term of the form `λ (x : A) -> M`
+where
 
-* A variable of type `A` is also a term of type `A`.
-* If `x` is a variable, `A` is a type and `M` is a term of type `B`
-  assuming that `x` has type `A`, then `(λ (x : A) -> M)` is a term
-  of type `A -> B` called **abstraction** and representing a function
-  that produces `M` when applied to `x`. We say that `x` is the
-  **argument** of the function and that `M` is its **body**.
-* If `M` is a term of type `A -> B` and `N` is a term of type `A`,
-  then `(M N)` is a term of type `B` called **application**
-  representing the application of (the function) `M` to (the
-  argument) `N`. It is useful to think of function application as of
-  an invisible operator placed in between `M` and `N`.
+* `x` is the **name of the argument** of the function;
+* `A` is the **type of the argument** of the function;
+* `M` is the **body** of the function, namely the expression that
+  computes the result of applying the function to its argument.
 
-We will introduce new terms in the following chapters. For the time
-being, since we have imported the `Nat` module from the library, a
-number of terms defined therein are also available. In particular:
+Below are a few simple examples of functions that make use of types
+and operators defined in the `Nat` module:
 
-* `zero` of type `ℕ` represents the natural number zero;
-* `succ` of type `ℕ -> ℕ` is a function that, applied to a natural
-  number, yields its successor.
+* `λ (x : ℕ) -> x` is the identity function for natural numbers;
+* `λ (x : ℕ) -> x + 1` is the successor function for natural numbers;
+* `λ (x : ℕ) -> x ^ 2 + 1` is the function that, applied to a
+  natural number $x$, computes $x^2 + 1$.
 
-The usual positional notation for natural numbers is also available,
-so that `0` can be used as abbreviation for `zero`, `2` can be used
-for abbreviation for `(succ (succ zero))` and `42` can be used for
-abbreviation for 42 applications of `succ` to `zero`.
+All of these functions have type `ℕ -> ℕ` since they accept a
+natural number as argument (the `ℕ` to the lhs of `->`) and produce
+a natural number as result (the `ℕ` to the rhs of `->`).  The type
+annotation of the argument can be omitted when its type can be
+inferred from the context. For example, since the `+` and `^`
+operators defined in the `Nat` module can only be applied to natural
+numbers, the last two functions above can be more concisely written
+as `λ x -> x + 1` and `λ x -> x ^ 2 + 1` respectively. We can verify
+this by asking Agda to compute the type of these functions. This is
+achieved by typing `C-c C-d` followed by the function (more
+generally the term) for which we want Agda to infer the type.
 
-As for types, also for terms we adopt some syntactic conventions to
-improve readability.
-
-* We omit topmost parentheses, so that e.g. `M N` stands for `(M
-  N)`.
-* We omit the type of an argument when it is unimportant or clear
-  from the context. For example, we may write `λ x -> x` instead of
-  `λ (x : A) -> x`.
-* We often collapse nested abstractions into one, so that e.g. `λ x
-  y z -> M` stands for `λ x -> λ y -> λ z -> M`.
-* We assume that the body of an abstraction extends as much as
-  possible to the right. For example, `λ x y -> x y` stands for `λ x
-  y -> (x y)` and not for `(λ x y -> x) y`.
-* We assume that application is **left associative**, so that `M₁ M₂
-  M₃` stands for `(M₁ M₂) M₃` and not for `M₁ (M₂ M₃)`.
-
-## Definitions
-
-An Agda program consists mainly of **definitions** with which we
-give names to terms and we specify their type. For example, the
+All the examples above define **anonymous functions**, functions
+without a name that are defined "on the spot", wherever we need. It
+if often convenient to give names to functions, especially if we
+plan to apply them multiple times or if we want to make them
+available in a library or a complex Agda development. In an Agda
+**program** we can use **definitions** to give names to terms and to
+specify their type. For example, the program containing the
 following two lines specify that `f` is a function of type `ℕ -> ℕ`
 that maps $x$ to $x^2 + 1$:
 
@@ -106,30 +88,20 @@ The first line provides the **signature** of `f`. Top-level
 definitions like this one must always be accompanied by a
 signature. The second line provides the **definition** of `f` with
 which we establish that the name `f` is **definitionally** the same
-as the abstraction `λ x - x ^ 2 + 1`. That is, for Agda the name `f`
-and the term `λ x -> x ^ 2 + 1` are **equal**. Note that we omit the
-type of the argument `x` for this abstraction: Agda is able to
-figure out that `x` has type `ℕ` from both the signature of `f` and
-the fact that the operators `^` and `+` concern natural
-numbers. Speaking of these operators, `^` and `+` are defined in the
-`Nat` module by means of equations analogous to the one defining
-`f`. Here, we take them for granted. In this document, it is
+as the abstraction `λ x -> x ^ 2 + 1`. That is, for Agda the name
+`f` and the term `λ x -> x ^ 2 + 1` are **equal**. Note that we omit
+the type of the argument `x` for this abstraction, since Agda is
+able to figure out that `x` has type `ℕ` from both the signature of
+`f` and the fact that the operators `^` and `+` concern natural
+numbers. Speaking of these operators, in definitions like this it is
 possible to *click* on any colored symbol to reach its definition.
-
-A note on **spacing** in Agda: unlike most programming languages,
-Agda allows almost any character to be part of an identifier. For
-example, `^` and `+` are plain Agda identifiers just like `f` and
-`ℕ`. If we write `x^2` (without spaces around `^`), Agda considers
-this as a single identifier (for which there is no definition).
 
 By loading the program using `C-c C-l`, Agda verifies that `f` is
 well typed and that its type is consistent with the one provided in
-its signature.  We can verify the behavior of `f` by applying it to
-some natural numbers. For example, if we enter `C-c C-n f 2` we
-obtain `5` as result. The command `C-c C-n` asks Agda to *evaluate*
-(technically, to *normalize*), the provided expression.
+its signature. Once this is done, we can use again `C-c C-d` to
+verify that `f` has type `ℕ -> ℕ`.
 
-When defining abstractions, Agda provides an alternative, more
+When defining functions, Agda provides an alternative, more
 convenient notation with which argument and body of the function are
 separated by the symbol `=` . For example, an equivalent way of
 defining `f` is
@@ -143,8 +115,70 @@ which can be read as "`f₁` applied to `x` is equal to `x ^ 2 +
 1`". We have named this alternative definition of the function `f₁`
 instead of `f` to avoid a *name clash*: there cannot be two
 definitions with the same name in the same Agda file. Here and in
-the following we will use indices when providing multiple versions
-of the same definition.
+the following we will use indices whenever we need to provide
+multiple versions of the same definition.
+
+## Applying functions
+
+Applying a function `M` to an argument `N` is achieved simply by
+placing `M` and `N` next to each other, usually separated by one
+space. For example, the expression `f 2` means the application of
+`f` (defined above) to the natural number `2`. We can evaluate this
+application by entering `C-c C-n f 2`, with which we obtain `5` as
+result. The command `C-c C-n` asks Agda to *evaluate* (technically,
+to *normalize*), the provided expression.
+
+Agda is a strongly typed language, in the sense that it only
+considers (and evaluates) terms that are **well typed** according to
+a specific set of **typing rules**. We will not describe Agda's
+typing rules in detail. For the time being, the following informal
+statements explain when a function and an application are well
+typed:
+
+* If `M` is a term of type `B` under the assumption that `x` has
+  type `A`, then `λ (x : A) -> M` is a term of type `A -> B`;
+* If `M` is a term of type `A -> B` and `N` is a term of type `A`,
+  then `M N` is a term of type `B`.
+
+In order to limit the use of parentheses and improve readability, in
+the following we will make extensive use of some (standard)
+conventions concerning function definitions and applications:
+
+* We will omit the type of an argument when it is unimportant or
+  clear from the context.
+* We will often collapse nested functions into one, so that e.g. `λ
+  x y z -> M` stands for `λ x -> λ y -> λ z -> M`.
+* We will assume that the body of a function extends as much as
+  possible to the right. For example, `λ x y -> x y` stands for `λ x
+  y -> (x y)` and not for `(λ x y -> x) y`.
+* We will assume that application is **left associative**, so that
+  `M₁ M₂ M₃` stands for `(M₁ M₂) M₃` and not for `M₁ (M₂ M₃)`.
+
+We will introduce new terms in the following chapters. For the time
+being, since we have imported the `Nat` module from the library, a
+number of terms defined therein are also available. In particular:
+
+* `zero` of type `ℕ` represents the natural number zero;
+* `succ` of type `ℕ -> ℕ` is a function that, applied to a natural
+  number, yields its successor.
+* `_+_` of type `ℕ -> ℕ -> ℕ` is the function such that `_+_ M N`
+  adds `M` and `N`. We often write this application in the usual
+  infix notation `M + N`.
+* `_^_` of type `ℕ -> ℕ -> ℕ` is the functon such that `_^_ M N`
+  computes `M` to the power `N`. We often write this application in
+  the infix notation `M ^ N`.
+
+The usual positional notation for natural numbers is also available,
+so that `0` can be used as abbreviation for `zero`, `2` can be used
+for abbreviation for `(succ (succ zero))` and `42` can be used for
+abbreviation for 42 applications of `succ` to `zero`.
+
+Finally, a note on **spacing** in Agda: unlike most programming
+languages, Agda allows almost any character to be part of an
+identifier. For example, `^` and `+` are plain Agda identifiers just
+like `f` and `ℕ`. If we write `x^2` (without spaces around `^`),
+Agda considers this as a single identifier (for which there is no
+definition).
 
 ## Multi-argument and higher-order functions
 
