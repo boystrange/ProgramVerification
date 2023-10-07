@@ -35,7 +35,7 @@ zip:
 Library.zip:
 	( \
 		cd src; \
-		zip ../$@ `find . -name "*.agda"`\
+		zip ../$@ `find Library -name "*.agda"`\
 	)
 
 assets/pdf/%.pdf: target/%.md $(DEPS)
