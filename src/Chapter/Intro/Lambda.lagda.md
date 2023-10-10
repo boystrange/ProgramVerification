@@ -164,7 +164,7 @@ number of terms defined therein are also available. In particular:
 * `_+_` of type `ℕ -> ℕ -> ℕ` is the function such that `_+_ M N`
   adds `M` and `N`. We often write this application in the usual
   infix notation `M + N`.
-* `_^_` of type `ℕ -> ℕ -> ℕ` is the functon such that `_^_ M N`
+* `_^_` of type `ℕ -> ℕ -> ℕ` is the function such that `_^_ M N`
   computes `M` to the power `N`. We often write this application in
   the infix notation `M ^ N`.
 
