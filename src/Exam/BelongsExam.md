@@ -11,8 +11,9 @@ header-includes: |
 	\usepackage{newunicodechar}
 	\newunicodechar{∀}{\ensuremath\forall}
 	\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
-        \newunicodechar{∧}{\ensuremath{\wedge}}
-        \newunicodechar{∨}{\ensuremath{\vee}}
+	\newunicodechar{∧}{\ensuremath{\wedge}}
+	\newunicodechar{∨}{\ensuremath{\vee}}
+	\newunicodechar{∈}{\ensuremath{\in}}
 ---
 
 \thispagestyle{empty}
@@ -30,27 +31,22 @@ header-includes: |
 
 ## Assignment
 
-Consider the following definitions.
+Consider the following definition of the "belongs to" predicate `∈`.
 
 ``` agda
-take : ∀{A : Set} -> ℕ -> List A -> List A
-take zero     xs        = []
-take (succ n) []        = []
-take (succ n) (x :: xs) = x :: take n xs
+infix 4 _∈_
+
+data _∈_ {A : Set} (x : A) : List A -> Set where
+  in-head : {xs : List A} -> x ∈ (x :: xs)
+  in-tail : {y : A} {xs : List A} -> x ∈ xs -> x ∈ (y :: xs)
 ```
 
-Solve the following exercises.
+Solve the following exercises. Type `\in` to enter the `∈` symbol.
 
-1. State and prove the property that the length of `take n xs` is
-   always smaller than (`<=`) the length of `xs`.
-2. Define a predicate `Prefix` such that `Prefix xs ys` holds if the
-   list `xs` is a **prefix** of the list `ys` (that is, `ys` begins
-   with `xs` and is possibly followed by something else). Make sure
-   that `Prefix` can be used on lists of any type.
-3. State and prove the property that `take n xs` is always a prefix
-   of `xs`.
-4. State and prove the property that, for every natural number `n`
-   and list `xs`, there exists a list `ys` such that `take n xs ++ ys == xs`.
-5. Prove that `::` (the constructor of lists) is injective, namely
-   that if `x :: xs == y :: ys` then `x == y` and `xs == ys`.
-6. Prove the theorem `∀{A B : Set} -> A ∧ B -> ¬ (¬ A ∨ ¬ B)`.
+1. Prove that the natural number `2` belongs to the list `0 :: 1 :: 2 :: 3 :: 4 :: []`.
+2. Prove that `x` belongs to any list of the form `xs ++ x :: ys`.
+3. Prove that `x ∈ xs` implies `1 <= length xs`.
+4. Prove `∀{A : Set} (xs : List A) -> (∀(x : A) -> ¬ (x ∈ xs)) -> xs == []`.
+5. Prove that if `x` belongs to `xs` and `ys` is a permutation of
+   `xs`, then `x` belongs to `ys`.
+6. Prove that `x ∈ xs ++ ys` implies `x ∈ xs ∨ x ∈ ys`.
