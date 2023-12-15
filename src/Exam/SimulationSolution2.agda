@@ -1,4 +1,4 @@
-module Exam.BelongsExamSolutions where
+module Exam.SimulationSolution2 where
 
 open import Library.Logic
 open import Library.Logic.Laws
