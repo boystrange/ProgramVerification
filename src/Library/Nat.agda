@@ -39,4 +39,4 @@ max (succ x) (succ y) = succ (max x y)
 
 _! : ℕ -> ℕ
 zero   ! = 1
-succ n ! = n * (n !)
+succ n ! = succ n * (n !)
