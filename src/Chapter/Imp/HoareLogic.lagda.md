@@ -39,7 +39,7 @@ specifications, which nowdays is called *functional correctness* and
 The formalization of the operational semantics of IMP lays the ground for
 precise reasoning e.g. about implementations of IMP intepreters,
 like that one provided by the small-step semantics in chapter
-[Small-step operational semantics]({% link pages/Chapter.Imp.SmallStep.md %}),
+[Small-step operational semantics]({% link _pages/Chapter.Imp.SmallStep.md %}),
 or of a compiler as described in chapter 8 of Nipkow and Klein's book.
 However, reasoning about single programs using the operational semantics,
 albeit possible in principle, is quite awkward in practice.
@@ -140,7 +140,7 @@ among the rules above and the original ones. In case of rule `H-Loc` Hoare's for
 
 where `P[a/x]` is the result of the substitution of `x` by `a` in the formula `P`.
 To understand rule `H-Loc`, suppose to extend the  *substitution lemma* in chapter
-[Arithmetic and boolean expressions]({% link pages/Chapter.Imp.AexpBexp.md %})
+[Arithmetic and boolean expressions]({% link _pages/Chapter.Imp.AexpBexp.md %})
 to the syntax of formulas (if we had such things in our 
 code, which we don't). Then we would have:
 

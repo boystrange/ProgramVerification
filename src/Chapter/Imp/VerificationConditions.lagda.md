@@ -22,7 +22,7 @@ open import Chapter.Imp.HoareLogic
 ```
  
 The verification of the program `sum-prog` in chapter
-[Example of derivation with Hoare logic]({% link pages/Chapter.Imp.HoareLogicExample.md %})
+[Example of derivation with Hoare logic]({% link _pages/Chapter.Imp.HoareLogicExample.md %})
 makes it apparent how difficult may be to directly use Hoare logic for program verification without the help
 of some mechanical procedure. From a quick insepection of that proof one realizes that most of the effort
 resides in establishing rather obvious implications among assertions occurring in the rule `H-Conseq` or its
@@ -34,14 +34,14 @@ To make such a remark effective, it would be of great advantage to factor the ar
 out of the remaining inferences using other rules of Hoare logic. In fact, the latters essentially follow the
 structure of the program and seem to be computable starting with the post-condition. This is suggested by the
 the main properties of the predicate `wp` in chapter
-[Relative Completeness of Hoare logic]({% link pages/Chapter.Imp.HoareLogicCompleteness.md %}), namely
+[Relative Completeness of Hoare logic]({% link _pages/Chapter.Imp.HoareLogicCompleteness.md %}), namely
 
      Fact : ∀ {P c Q} -> |= [ P ] c [ Q ] -> (∀ s -> P s -> wp c Q s)
      wp-lemma : ∀ c {Q : Assn} -> |- [ wp c Q ] c [ Q ]
 
 Indeed, suppose that we have to verify the program `c` against the pre-condition `P` and post-condition `Q`; this
 amounts to prove that `|= [ P ] c [ Q ]` which by the
-[soundness of Hoare logic]({% link pages/Chapter.Imp.HoareLogicSoundness.md %})
+[soundness of Hoare logic]({% link _pages/Chapter.Imp.HoareLogicSoundness.md %})
 is consequence of the derivability of `|- [ P ] c [ Q ]`. By computing `wp c Q` we have
 that `∀ s -> P s -> wp c Q s` by `Fact` and `|- [ wp c Q ] c [ Q ]` by the `wp-lemma`,
 from which the desired proof of `|- [ P ] c [ Q ]` follows by rule `H-Str`:
@@ -69,7 +69,7 @@ Where the attempt fails is in case of a `WHILE` command. Indeed, by exploting th
 
     (WHILE b DO c) ∼ (IF b THEN (c :: (WHILE b DO c)) ELSE SKIP)
 
-(see chapter [Big-step operational semantics]({% link pages/Chapter.Imp.BigStep.md %}), exercise 3) we could set
+(see chapter [Big-step operational semantics]({% link _pages/Chapter.Imp.BigStep.md %}), exercise 3) we could set
 
     pre (WHILE b DO c) Q s = wp (c :: (WHILE b DO c)) Q s    if bval b s == true
                            = Q s                             if bval b s == false
