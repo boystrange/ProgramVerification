@@ -2,7 +2,7 @@
 title: Introduction to Program Verification in Agda
 ---
 
-[GO TO THE TABLE OF CONTENTS](pages/Main.html){:.table-of-contents}
+[GO TO THE TABLE OF CONTENTS](_pages/Main.html){:.table-of-contents}
 
 ## Summary of Emacs shortcuts
 
