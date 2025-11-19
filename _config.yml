@@ -18,12 +18,14 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - TODO.md
+  - insert.sed
+
+# - scope:
+#      path: "" # all files in the project
+#    values:
+#      layout: "page"
 
 defaults:
-  - scope:
-      path: "" # all files in the project
-    values:
-      layout: "page"
   - scope:
       path: "_pages"
       type: pages
