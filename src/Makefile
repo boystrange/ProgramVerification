@@ -1,7 +1,7 @@
 
 NULL =
 
-HTMLDIR = ../pages
+HTMLDIR = ../_pages
 
 all: Main.lagda.md
 	( \

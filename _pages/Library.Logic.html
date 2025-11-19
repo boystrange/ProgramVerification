@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Library.Logic</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Keyword">module</a> <a id="8" href="Library.Logic.html" class="Module">Library.Logic</a> <a id="22" class="Keyword">where</a>
+
+<a id="29" class="Keyword">infixr</a> <a id="36" class="Number">1</a> <a id="38" href="Library.Logic.html#1613" class="Function Operator">_&lt;=&gt;_</a>
+<a id="44" class="Keyword">infix</a>  <a id="51" class="Number">2</a> <a id="53" href="Library.Logic.html#303" class="Function">Σ-syntax</a> <a id="62" href="Library.Logic.html#632" class="Function">∃-syntax</a> <a id="71" class="Comment">-- Σ₁-syntax ∃₁-syntax</a>
+<a id="94" class="Keyword">infixr</a> <a id="101" class="Number">2</a> <a id="103" href="Library.Logic.html#1416" class="Datatype Operator">_∨_</a>
+<a id="107" class="Keyword">infixr</a> <a id="114" class="Number">3</a> <a id="116" href="Library.Logic.html#1349" class="Function Operator">_∧_</a>
+<a id="120" class="Keyword">infixr</a> <a id="127" class="Number">4</a> <a id="129" href="Library.Logic.html#271" class="InductiveConstructor Operator">_,_</a>
+
+<a id="134" class="Comment">-- BOTTOM</a>
+
+<a id="145" class="Keyword">data</a> <a id="⊥"></a><a id="150" href="Library.Logic.html#150" class="Datatype">⊥</a> <a id="152" class="Symbol">:</a> <a id="154" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="158" class="Keyword">where</a>
+
+<a id="165" class="Comment">-- TOP</a>
+
+<a id="173" class="Keyword">data</a> <a id="⊤"></a><a id="178" href="Library.Logic.html#178" class="Datatype">⊤</a> <a id="180" class="Symbol">:</a> <a id="182" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="186" class="Keyword">where</a>
+  <a id="⊤.&lt;&gt;"></a><a id="194" href="Library.Logic.html#194" class="InductiveConstructor">&lt;&gt;</a> <a id="197" class="Symbol">:</a> <a id="199" href="Library.Logic.html#178" class="Datatype">⊤</a>
+
+<a id="202" class="Comment">-- SIGMA TYPE</a>
+
+<a id="217" class="Keyword">data</a> <a id="Σ"></a><a id="222" href="Library.Logic.html#222" class="Datatype">Σ</a> <a id="224" class="Symbol">{</a><a id="225" href="Library.Logic.html#225" class="Bound">ℓ</a><a id="226" class="Symbol">}</a> <a id="228" class="Symbol">(</a><a id="229" href="Library.Logic.html#229" class="Bound">A</a> <a id="231" class="Symbol">:</a> <a id="233" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="237" href="Library.Logic.html#225" class="Bound">ℓ</a><a id="238" class="Symbol">)</a> <a id="240" class="Symbol">(</a><a id="241" href="Library.Logic.html#241" class="Bound">P</a> <a id="243" class="Symbol">:</a> <a id="245" href="Library.Logic.html#229" class="Bound">A</a> <a id="247" class="Symbol">-&gt;</a> <a id="250" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="253" class="Symbol">)</a> <a id="255" class="Symbol">:</a> <a id="257" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="261" href="Library.Logic.html#225" class="Bound">ℓ</a> <a id="263" class="Keyword">where</a>
+  <a id="Σ._,_"></a><a id="271" href="Library.Logic.html#271" class="InductiveConstructor Operator">_,_</a> <a id="275" class="Symbol">:</a> <a id="277" class="Symbol">∀(</a><a id="279" href="Library.Logic.html#279" class="Bound">x</a> <a id="281" class="Symbol">:</a> <a id="283" href="Library.Logic.html#229" class="Bound">A</a><a id="284" class="Symbol">)</a> <a id="286" class="Symbol">-&gt;</a> <a id="289" href="Library.Logic.html#241" class="Bound">P</a> <a id="291" href="Library.Logic.html#279" class="Bound">x</a> <a id="293" class="Symbol">-&gt;</a> <a id="296" href="Library.Logic.html#222" class="Datatype">Σ</a> <a id="298" href="Library.Logic.html#229" class="Bound">A</a> <a id="300" href="Library.Logic.html#241" class="Bound">P</a>
+
+<a id="Σ-syntax"></a><a id="303" href="Library.Logic.html#303" class="Function">Σ-syntax</a> <a id="312" class="Symbol">:</a> <a id="314" class="Symbol">∀{</a><a id="316" href="Library.Logic.html#316" class="Bound">ℓ</a><a id="317" class="Symbol">}</a> <a id="319" class="Symbol">(</a><a id="320" href="Library.Logic.html#320" class="Bound">A</a> <a id="322" class="Symbol">:</a> <a id="324" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="328" href="Library.Logic.html#316" class="Bound">ℓ</a><a id="329" class="Symbol">)</a> <a id="331" class="Symbol">(</a><a id="332" href="Library.Logic.html#332" class="Bound">P</a> <a id="334" class="Symbol">:</a> <a id="336" href="Library.Logic.html#320" class="Bound">A</a> <a id="338" class="Symbol">-&gt;</a> <a id="341" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="344" class="Symbol">)</a> <a id="346" class="Symbol">-&gt;</a> <a id="349" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="353" href="Library.Logic.html#316" class="Bound">ℓ</a>
+<a id="355" href="Library.Logic.html#303" class="Function">Σ-syntax</a> <a id="364" class="Symbol">=</a> <a id="366" href="Library.Logic.html#222" class="Datatype">Σ</a>
+
+<a id="369" class="Keyword">syntax</a> <a id="376" href="Library.Logic.html#303" class="Function">Σ-syntax</a> <a id="385" class="Bound">A</a> <a id="387" class="Symbol">(λ</a> <a id="390" class="Bound">x</a> <a id="392" class="Symbol">-&gt;</a> <a id="395" class="Bound">P</a><a id="396" class="Symbol">)</a> <a id="398" class="Symbol">=</a> <a id="400" class="Function">Σ[</a> <a id="403" class="Bound">x</a> <a id="405" class="Function">∈</a> <a id="407" class="Bound">A</a> <a id="409" class="Function">]</a> <a id="411" class="Bound">P</a>
+
+<a id="fst"></a><a id="414" href="Library.Logic.html#414" class="Function">fst</a> <a id="418" class="Symbol">:</a> <a id="420" class="Symbol">∀{</a><a id="422" href="Library.Logic.html#422" class="Bound">ℓ</a><a id="423" class="Symbol">}</a> <a id="425" class="Symbol">{</a><a id="426" href="Library.Logic.html#426" class="Bound">A</a> <a id="428" class="Symbol">:</a> <a id="430" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="434" href="Library.Logic.html#422" class="Bound">ℓ</a><a id="435" class="Symbol">}</a> <a id="437" class="Symbol">{</a><a id="438" href="Library.Logic.html#438" class="Bound">P</a> <a id="440" class="Symbol">:</a> <a id="442" href="Library.Logic.html#426" class="Bound">A</a> <a id="444" class="Symbol">-&gt;</a> <a id="447" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="450" class="Symbol">}</a> <a id="452" class="Symbol">-&gt;</a> <a id="455" href="Library.Logic.html#222" class="Datatype">Σ</a> <a id="457" href="Library.Logic.html#426" class="Bound">A</a> <a id="459" href="Library.Logic.html#438" class="Bound">P</a> <a id="461" class="Symbol">-&gt;</a> <a id="464" href="Library.Logic.html#426" class="Bound">A</a>
+<a id="466" href="Library.Logic.html#414" class="Function">fst</a> <a id="470" class="Symbol">(</a><a id="471" href="Library.Logic.html#471" class="Bound">x</a> <a id="473" href="Library.Logic.html#271" class="InductiveConstructor Operator">,</a> <a id="475" class="Symbol">_)</a> <a id="478" class="Symbol">=</a> <a id="480" href="Library.Logic.html#471" class="Bound">x</a>
+
+<a id="snd"></a><a id="483" href="Library.Logic.html#483" class="Function">snd</a> <a id="487" class="Symbol">:</a> <a id="489" class="Symbol">∀{</a><a id="491" href="Library.Logic.html#491" class="Bound">ℓ</a><a id="492" class="Symbol">}</a> <a id="494" class="Symbol">{</a><a id="495" href="Library.Logic.html#495" class="Bound">A</a> <a id="497" class="Symbol">:</a> <a id="499" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="503" href="Library.Logic.html#491" class="Bound">ℓ</a><a id="504" class="Symbol">}</a> <a id="506" class="Symbol">{</a><a id="507" href="Library.Logic.html#507" class="Bound">P</a> <a id="509" class="Symbol">:</a> <a id="511" href="Library.Logic.html#495" class="Bound">A</a> <a id="513" class="Symbol">-&gt;</a> <a id="516" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="519" class="Symbol">}</a> <a id="521" class="Symbol">(</a><a id="522" href="Library.Logic.html#522" class="Bound">p</a> <a id="524" class="Symbol">:</a> <a id="526" href="Library.Logic.html#222" class="Datatype">Σ</a> <a id="528" href="Library.Logic.html#495" class="Bound">A</a> <a id="530" href="Library.Logic.html#507" class="Bound">P</a><a id="531" class="Symbol">)</a> <a id="533" class="Symbol">-&gt;</a> <a id="536" href="Library.Logic.html#507" class="Bound">P</a> <a id="538" class="Symbol">(</a><a id="539" href="Library.Logic.html#414" class="Function">fst</a> <a id="543" href="Library.Logic.html#522" class="Bound">p</a><a id="544" class="Symbol">)</a>
+<a id="546" href="Library.Logic.html#483" class="Function">snd</a> <a id="550" class="Symbol">(_</a> <a id="553" href="Library.Logic.html#271" class="InductiveConstructor Operator">,</a> <a id="555" href="Library.Logic.html#555" class="Bound">y</a><a id="556" class="Symbol">)</a> <a id="558" class="Symbol">=</a> <a id="560" href="Library.Logic.html#555" class="Bound">y</a>
+
+<a id="563" class="Comment">-- EXISTENTIAL</a>
+
+<a id="∃"></a><a id="579" href="Library.Logic.html#579" class="Function">∃</a> <a id="581" class="Symbol">:</a> <a id="583" class="Symbol">∀{</a><a id="585" href="Library.Logic.html#585" class="Bound">ℓ</a><a id="586" class="Symbol">}</a> <a id="588" class="Symbol">{</a><a id="589" href="Library.Logic.html#589" class="Bound">A</a> <a id="591" class="Symbol">:</a> <a id="593" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="597" href="Library.Logic.html#585" class="Bound">ℓ</a><a id="598" class="Symbol">}</a> <a id="600" class="Symbol">-&gt;</a> <a id="603" class="Symbol">(</a><a id="604" href="Library.Logic.html#589" class="Bound">A</a> <a id="606" class="Symbol">-&gt;</a> <a id="609" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="612" class="Symbol">)</a> <a id="614" class="Symbol">-&gt;</a> <a id="617" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="621" href="Library.Logic.html#585" class="Bound">ℓ</a>
+<a id="623" href="Library.Logic.html#579" class="Function">∃</a> <a id="625" class="Symbol">=</a> <a id="627" href="Library.Logic.html#222" class="Datatype">Σ</a> <a id="629" class="Symbol">_</a>
+
+<a id="∃-syntax"></a><a id="632" href="Library.Logic.html#632" class="Function">∃-syntax</a> <a id="641" class="Symbol">:</a> <a id="643" class="Symbol">∀{</a><a id="645" href="Library.Logic.html#645" class="Bound">ℓ</a><a id="646" class="Symbol">}</a> <a id="648" class="Symbol">{</a><a id="649" href="Library.Logic.html#649" class="Bound">A</a> <a id="651" class="Symbol">:</a> <a id="653" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="657" href="Library.Logic.html#645" class="Bound">ℓ</a><a id="658" class="Symbol">}</a> <a id="660" class="Symbol">-&gt;</a> <a id="663" class="Symbol">(</a><a id="664" href="Library.Logic.html#649" class="Bound">A</a> <a id="666" class="Symbol">-&gt;</a> <a id="669" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="672" class="Symbol">)</a> <a id="674" class="Symbol">-&gt;</a> <a id="677" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="681" href="Library.Logic.html#645" class="Bound">ℓ</a>
+<a id="683" href="Library.Logic.html#632" class="Function">∃-syntax</a> <a id="692" class="Symbol">=</a> <a id="694" href="Library.Logic.html#579" class="Function">∃</a>
+
+<a id="697" class="Keyword">syntax</a> <a id="704" href="Library.Logic.html#632" class="Function">∃-syntax</a> <a id="713" class="Symbol">(λ</a> <a id="716" class="Bound">x</a> <a id="718" class="Symbol">-&gt;</a> <a id="721" class="Bound">B</a><a id="722" class="Symbol">)</a> <a id="724" class="Symbol">=</a> <a id="726" class="Function">∃[</a> <a id="729" class="Bound">x</a> <a id="731" class="Function">]</a> <a id="733" class="Bound">B</a>
+
+<a id="736" class="Comment">-- -- SIGMA TYPE AND EXISTENTIAL OVER Set₁</a>
+
+<a id="780" class="Comment">-- data Σ₁ (A : Set₁) (P : A -&gt; Set) : Set₁ where</a>
+<a id="830" class="Comment">--   _,_ : ∀(x : A) -&gt; P x -&gt; Σ₁ A P</a>
+
+<a id="868" class="Comment">-- Σ₁-syntax : ∀(A : Set₁) (P : A -&gt; Set) -&gt; Set₁</a>
+<a id="918" class="Comment">-- Σ₁-syntax = Σ₁</a>
+
+<a id="937" class="Comment">-- syntax Σ₁-syntax A (λ x -&gt; P) = Σ₁[ x ∈ A ] P</a>
+
+<a id="987" class="Comment">-- fst₁ : ∀{A : Set₁} {P : A -&gt; Set} -&gt; Σ₁ A P -&gt; A</a>
+<a id="1039" class="Comment">-- fst₁ (x , _) = x</a>
+
+<a id="1060" class="Comment">-- snd₁ : ∀{A : Set₁} {P : A -&gt; Set} (p : Σ₁ A P) -&gt; P (fst₁ p)</a>
+<a id="1124" class="Comment">-- snd₁ (_ , y) = y</a>
+
+
+<a id="1146" class="Comment">-- -- EXISTENTIAL</a>
+
+<a id="1165" class="Comment">-- ∃₁ : ∀{A : Set₁} -&gt; (A -&gt; Set) -&gt; Set₁</a>
+<a id="1207" class="Comment">-- ∃₁ = Σ₁ _</a>
+
+<a id="1221" class="Comment">-- ∃₁-syntax : ∀{A : Set₁} -&gt; (A -&gt; Set) -&gt; Set₁</a>
+<a id="1270" class="Comment">-- ∃₁-syntax = ∃₁</a>
+
+<a id="1289" class="Comment">-- syntax ∃₁-syntax (λ x -&gt; B) = ∃₁[ x ] B</a>
+
+<a id="1333" class="Comment">-- CONJUNCTION</a>
+
+<a id="_∧_"></a><a id="1349" href="Library.Logic.html#1349" class="Function Operator">_∧_</a> <a id="1353" class="Symbol">:</a> <a id="1355" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="1359" class="Symbol">-&gt;</a> <a id="1362" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="1366" class="Symbol">-&gt;</a> <a id="1369" href="Agda.Primitive.html#388" class="Primitive">Set</a>
+<a id="1373" href="Library.Logic.html#1373" class="Bound">A</a> <a id="1375" href="Library.Logic.html#1349" class="Function Operator">∧</a> <a id="1377" href="Library.Logic.html#1377" class="Bound">B</a> <a id="1379" class="Symbol">=</a> <a id="1381" href="Library.Logic.html#222" class="Datatype">Σ</a> <a id="1383" href="Library.Logic.html#1373" class="Bound">A</a> <a id="1385" class="Symbol">λ</a> <a id="1387" href="Library.Logic.html#1387" class="Bound">_</a> <a id="1389" class="Symbol">-&gt;</a> <a id="1392" href="Library.Logic.html#1377" class="Bound">B</a>
+
+<a id="1395" class="Comment">-- DISJUNCTION</a>
+
+<a id="1411" class="Keyword">data</a> <a id="_∨_"></a><a id="1416" href="Library.Logic.html#1416" class="Datatype Operator">_∨_</a> <a id="1420" class="Symbol">(</a><a id="1421" href="Library.Logic.html#1421" class="Bound">A</a> <a id="1423" href="Library.Logic.html#1423" class="Bound">B</a> <a id="1425" class="Symbol">:</a> <a id="1427" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="1430" class="Symbol">)</a> <a id="1432" class="Symbol">:</a> <a id="1434" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="1438" class="Keyword">where</a>
+  <a id="_∨_.inl"></a><a id="1446" href="Library.Logic.html#1446" class="InductiveConstructor">inl</a> <a id="1450" class="Symbol">:</a> <a id="1452" href="Library.Logic.html#1421" class="Bound">A</a> <a id="1454" class="Symbol">-&gt;</a> <a id="1457" href="Library.Logic.html#1421" class="Bound">A</a> <a id="1459" href="Library.Logic.html#1416" class="Datatype Operator">∨</a> <a id="1461" href="Library.Logic.html#1423" class="Bound">B</a>
+  <a id="_∨_.inr"></a><a id="1465" href="Library.Logic.html#1465" class="InductiveConstructor">inr</a> <a id="1469" class="Symbol">:</a> <a id="1471" href="Library.Logic.html#1423" class="Bound">B</a> <a id="1473" class="Symbol">-&gt;</a> <a id="1476" href="Library.Logic.html#1421" class="Bound">A</a> <a id="1478" href="Library.Logic.html#1416" class="Datatype Operator">∨</a> <a id="1480" href="Library.Logic.html#1423" class="Bound">B</a>
+
+<a id="1483" class="Comment">-- NEGATION</a>
+
+<a id="¬_"></a><a id="1496" href="Library.Logic.html#1496" class="Function Operator">¬_</a> <a id="1499" class="Symbol">:</a> <a id="1501" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="1505" class="Symbol">-&gt;</a> <a id="1508" href="Agda.Primitive.html#388" class="Primitive">Set</a>
+<a id="1512" href="Library.Logic.html#1496" class="Function Operator">¬_</a> <a id="1515" href="Library.Logic.html#1515" class="Bound">A</a> <a id="1517" class="Symbol">=</a> <a id="1519" href="Library.Logic.html#1515" class="Bound">A</a> <a id="1521" class="Symbol">-&gt;</a> <a id="1524" href="Library.Logic.html#150" class="Datatype">⊥</a>
+
+<a id="1527" class="Comment">-- DECIDABILITY</a>
+
+<a id="Decidable"></a><a id="1544" href="Library.Logic.html#1544" class="Function">Decidable</a> <a id="1554" class="Symbol">:</a> <a id="1556" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="1560" class="Symbol">-&gt;</a> <a id="1563" href="Agda.Primitive.html#388" class="Primitive">Set</a>
+<a id="1567" href="Library.Logic.html#1544" class="Function">Decidable</a> <a id="1577" href="Library.Logic.html#1577" class="Bound">A</a> <a id="1579" class="Symbol">=</a> <a id="1581" href="Library.Logic.html#1496" class="Function Operator">¬</a> <a id="1583" href="Library.Logic.html#1577" class="Bound">A</a> <a id="1585" href="Library.Logic.html#1416" class="Datatype Operator">∨</a> <a id="1587" href="Library.Logic.html#1577" class="Bound">A</a>
+
+<a id="1590" class="Comment">-- DOUBLE IMPLICATION</a>
+
+<a id="_&lt;=&gt;_"></a><a id="1613" href="Library.Logic.html#1613" class="Function Operator">_&lt;=&gt;_</a> <a id="1619" class="Symbol">:</a> <a id="1621" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="1625" class="Symbol">-&gt;</a> <a id="1628" href="Agda.Primitive.html#388" class="Primitive">Set</a> <a id="1632" class="Symbol">-&gt;</a> <a id="1635" href="Agda.Primitive.html#388" class="Primitive">Set</a>
+<a id="1639" href="Library.Logic.html#1639" class="Bound">A</a> <a id="1641" href="Library.Logic.html#1613" class="Function Operator">&lt;=&gt;</a> <a id="1645" href="Library.Logic.html#1645" class="Bound">B</a> <a id="1647" class="Symbol">=</a> <a id="1649" class="Symbol">(</a><a id="1650" href="Library.Logic.html#1639" class="Bound">A</a> <a id="1652" class="Symbol">-&gt;</a> <a id="1655" href="Library.Logic.html#1645" class="Bound">B</a><a id="1656" class="Symbol">)</a> <a id="1658" href="Library.Logic.html#1349" class="Function Operator">∧</a> <a id="1660" class="Symbol">(</a><a id="1661" href="Library.Logic.html#1645" class="Bound">B</a> <a id="1663" class="Symbol">-&gt;</a> <a id="1666" href="Library.Logic.html#1639" class="Bound">A</a><a id="1667" class="Symbol">)</a>
+</pre></body></html>

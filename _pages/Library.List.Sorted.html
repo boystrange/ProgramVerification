@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Library.List.Sorted</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Keyword">module</a> <a id="8" href="Library.List.Sorted.html" class="Module">Library.List.Sorted</a> <a id="28" class="Symbol">(</a><a id="29" href="Library.List.Sorted.html#29" class="Bound">A</a> <a id="31" class="Symbol">:</a> <a id="33" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="36" class="Symbol">)</a> <a id="38" class="Symbol">(</a><a id="39" href="Library.List.Sorted.html#39" class="Bound Operator">_≼_</a> <a id="43" class="Symbol">:</a> <a id="45" href="Library.List.Sorted.html#29" class="Bound">A</a> <a id="47" class="Symbol">-&gt;</a> <a id="50" href="Library.List.Sorted.html#29" class="Bound">A</a> <a id="52" class="Symbol">-&gt;</a> <a id="55" href="Agda.Primitive.html#388" class="Primitive">Set</a><a id="58" class="Symbol">)</a> <a id="60" class="Keyword">where</a>
+
+<a id="67" class="Keyword">open</a> <a id="72" class="Keyword">import</a> <a id="79" href="Library.List.html" class="Module">Library.List</a>
+<a id="92" class="Keyword">open</a> <a id="97" class="Keyword">import</a> <a id="104" href="Library.Logic.html" class="Module">Library.Logic</a>
+
+<a id="119" class="Comment">-- infix 4 _≼*_ _*≼_</a>
+
+<a id="141" class="Comment">-- _≼*_ : A -&gt; List A -&gt; Set</a>
+<a id="170" class="Comment">-- x ≼* xs = all (x ≼_) xs</a>
+
+<a id="198" class="Comment">-- _*≼_ : List A -&gt; A -&gt; Set</a>
+<a id="227" class="Comment">-- xs *≼ x = all (_≼ x) xs</a>
+
+<a id="255" class="Comment">-- Sorted : List A -&gt; Set</a>
+<a id="281" class="Comment">-- Sorted [] = ⊤</a>
+<a id="298" class="Comment">-- Sorted (x :: xs) = x ≼* xs ∧ Sorted xs</a>
+
+<a id="Sorted"></a><a id="341" href="Library.List.Sorted.html#341" class="Function">Sorted</a> <a id="348" class="Symbol">:</a> <a id="350" href="Library.List.html#84" class="Datatype">List</a> <a id="355" href="Library.List.Sorted.html#29" class="Bound">A</a> <a id="357" class="Symbol">-&gt;</a> <a id="360" href="Agda.Primitive.html#388" class="Primitive">Set</a>
+<a id="364" href="Library.List.Sorted.html#341" class="Function">Sorted</a> <a id="371" href="Library.List.html#113" class="InductiveConstructor">[]</a> <a id="374" class="Symbol">=</a> <a id="376" href="Library.Logic.html#178" class="Datatype">⊤</a>
+<a id="378" href="Library.List.Sorted.html#341" class="Function">Sorted</a> <a id="385" class="Symbol">(</a><a id="386" href="Library.List.Sorted.html#386" class="Bound">x</a> <a id="388" href="Library.List.html#129" class="InductiveConstructor Operator">::</a> <a id="391" href="Library.List.Sorted.html#391" class="Bound">xs</a><a id="393" class="Symbol">)</a> <a id="395" class="Symbol">=</a> <a id="397" href="Library.List.html#849" class="Function">All</a> <a id="401" class="Symbol">(</a><a id="402" href="Library.List.Sorted.html#386" class="Bound">x</a> <a id="404" href="Library.List.Sorted.html#39" class="Bound Operator">≼_</a><a id="406" class="Symbol">)</a> <a id="408" href="Library.List.Sorted.html#391" class="Bound">xs</a> <a id="411" href="Library.Logic.html#1349" class="Function Operator">∧</a> <a id="413" href="Library.List.Sorted.html#341" class="Function">Sorted</a> <a id="420" href="Library.List.Sorted.html#391" class="Bound">xs</a>
+</pre></body></html>

@@ -1,5 +1,8 @@
 title: Introduction to Program Verification in Agda
 theme: minima
+baseurl: /ProgramVerification
+
+include: ["_pages"]
 
 exclude:
   - Makefile
@@ -17,11 +20,15 @@ exclude:
   - TODO.md
 
 defaults:
-  -
-    scope:
+  - scope:
       path: "" # all files in the project
     values:
       layout: "page"
+  - scope:
+      path: "_pages"
+      type: pages
+    values:
+      permalink: /:basename
 
 kramdown:
   parse_block_html: true
