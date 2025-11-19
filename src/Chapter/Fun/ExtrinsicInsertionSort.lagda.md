@@ -11,10 +11,10 @@ module Chapter.Fun.ExtrinsicInsertionSort where
 In this chapter we prove that *insertion sort*, one of the most
 basic sorting algorithms, is correct, namely that it satisfies the
 sorting specification defined in the [previous chapter]({% link
-pages/Chapter.Fun.SortedLists.md %}). We call *extrinsic
+_pages/Chapter.Fun.SortedLists.md %}). We call *extrinsic
 verification* this form of proof since we will define the algorithm
 and the proof as separate entities. In contrast, in the [next
-chapter]({% link pages/Chapter.Fun.IntrinsicInsertionSort.md %}) we
+chapter]({% link _pages/Chapter.Fun.IntrinsicInsertionSort.md %}) we
 will see an *intrinsic form* of verfication whereby the algorithm is
 correct "by construction", in the sense that it incorporates the
 proof that it satisfies the specification.
@@ -100,7 +100,7 @@ clearer to see what the proofs `x≤y` and `x≤ys` refer to.
 
 Using this result (as well as `lower-lower-bound` which was proposed
 as an exercise in the [previous chapter]({% link
-pages/Chapter.Fun.SortedLists.md %})), we prove that `insert x ys`
+_pages/Chapter.Fun.SortedLists.md %})), we prove that `insert x ys`
 is a sorted list if so is `ys`.
 
 ```
