@@ -118,7 +118,7 @@ which describes a function that, when applied to a value `x` of type
 `Bool`, yields a proof that `not (not x)` is equal to `x`. Unlike
 the arrow types that we have used until now, this is an example of
 **dependent function type** because the type of the codomain of the
-function -- `not (not x) == x` -- *depends* the argument `x` to
+function -- `not (not x) == x` -- *depends* on the argument `x` to
 which the function is applied. The `∀` symbol is purely cosmetic and
 may be omitted. We will use it merely for readability.
 
