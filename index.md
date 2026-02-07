@@ -70,7 +70,7 @@ font.
 
 ## References
 
-This course material is partially based on and inspired from the
+This course material is partially based on and inspired by the
 following courses, books and notes.
 
 * Dan Licata, [Programming and Proving in
